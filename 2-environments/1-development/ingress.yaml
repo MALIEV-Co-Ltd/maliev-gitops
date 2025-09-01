@@ -1,0 +1,63 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gce-ingress-maliev-development
+  namespace: maliev-dev
+  annotations:
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.allow-http: "true"
+    kubernetes.io/ingress.global-static-ip-name: maliev-www-ip
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+  - hosts:
+    - dev.www.maliev.com
+    secretName: dev-www-maliev-com-tls
+  - hosts:
+    - dev.api.maliev.com
+    secretName: dev-api-maliev-com-tls
+  - hosts:
+    - dev.intranet.maliev.com
+    secretName: dev-intranet-maliev-com-tls
+  rules:
+  - host: dev.www.maliev.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-web
+            port:
+              number: 80
+  - host: dev.api.maliev.com
+    http:
+      paths:
+      - path: /auth
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-authservice-api
+            port:
+              number: 80
+      # Add other dev API paths here as needed
+  - host: dev.intranet.maliev.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-intranet
+            port:
+              number: 80
+  - host: dev.maliev.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-web
+            port:
+              number: 80

@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-employeeservice-api
+  labels:
+    app: maliev-employeeservice-api
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-employeeservice-api
+  template:
+    metadata:
+      labels:
+        app: maliev-employeeservice-api
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: maliev-employeeservice-api
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.employeeservice.api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /employees/liveness
+            port: 8080
+          initialDelaySeconds: 45
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /employees/readiness
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        env:
+        - name: ConnectionStrings__EmployeeIdentityDbContext
+          valueFrom:
+            secretKeyRef:
+              name: employee-identity-db-conn
+              key: connection-string
+        - name: ConnectionStrings__EmployeeDbContext
+          valueFrom:
+            secretKeyRef:
+              name: employee-db-conn
+              key: connection-string
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string

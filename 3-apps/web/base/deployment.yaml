@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-web
+  labels:
+    app: maliev-web
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-web
+  template:
+    metadata:
+      labels:
+        app: maliev-web
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: maliev-web
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.web:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /liveness
+            port: 8080
+          initialDelaySeconds: 45
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        envFrom:
+        - secretRef:
+            name: line-bot-secrets

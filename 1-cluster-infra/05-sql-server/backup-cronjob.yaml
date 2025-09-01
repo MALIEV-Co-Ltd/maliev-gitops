@@ -1,0 +1,73 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mssql-full-backup
+spec:
+  # Schedule for 2:00 AM daily
+  schedule: "0 2 * * *"
+  # Don't run multiple backup jobs at once
+  concurrencyPolicy: Forbid
+  # Keep the last 3 job logs
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      # If a job fails, don't retry it automatically. Let the next day's run handle it.
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: mssql-backup
+            # Use an image with both gcloud and mssql-tools pre-installed for reliability
+            # For this example, we install mssql-tools on the fly.
+            image: google/cloud-sdk:slim
+            command: ["/bin/sh", "-c"]
+            args:
+            - |
+              set -e
+              echo "Installing SQL Server tools..."
+              apt-get update -y && apt-get install -y mssql-tools unixodbc-dev
+
+              # 1. Define backup variables
+              BACKUP_DATE=$(date +%Y-%m-%d)
+              DB_SERVER="maliev-mssql.maliev-production.svc.cluster.local" # Use the full in-cluster DNS name
+              DB_USER="sa"
+              DB_PASSWORD=$(cat /etc/secrets/sa-password)
+              GCS_FOLDER="gs://maliev.com/database/full/${BACKUP_DATE}/"
+              DATABASES=(
+                "Country" "Currency" "Customer" "CustomerIdentity" "DataProtectionKeys"
+                "DataProtectionKeysEmployee" "Employee" "EmployeeIdentity" "Invoice" "JobOffers"
+                "Log" "MachineLearningData" "Material" "Message" "Order" "OrderStatus"
+                "Payment" "PurchaseOrder" "Quotation" "QuotationRequest" "Receipt"
+                "Supplier" "Upload"
+              )
+
+              echo "Starting full backup process..."
+
+              for DB_NAME in "${DATABASES[@]}"; do
+                TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                BACKUP_FILE="/tmp/Full_${DB_NAME}_${TIMESTAMP}.bak"
+                
+                echo "Backing up [${DB_NAME}] to ${BACKUP_FILE}..."
+                /opt/mssql-tools/bin/sqlcmd -S ${DB_SERVER} -U ${DB_USER} -P ${DB_PASSWORD} -Q "BACKUP DATABASE [${DB_NAME}] TO DISK = N'${BACKUP_FILE}' WITH NOFORMAT, NOINIT, NAME = '${DB_NAME}-full', SKIP, NOREWIND, NOUNLOAD, STATS = 10"
+                
+                echo "Uploading [${DB_NAME}] backup to ${GCS_FOLDER}..."
+                gcloud storage cp "${BACKUP_FILE}" "${GCS_FOLDER}"
+
+                echo "Cleaning up local file ${BACKUP_FILE}..."
+                rm "${BACKUP_FILE}"
+              done
+
+              echo "Backup process complete."
+            volumeMounts:
+            - name: mssql-password
+              mountPath: "/etc/secrets"
+              readOnly: true
+          # This CronJob will now use the 'mssql-backup-ksa' service account.
+          # This KSA is linked to a GSA with GCS permissions via Workload Identity.
+          serviceAccountName: mssql-backup-ksa
+          volumes:
+          - name: mssql-password
+            secret:
+              secretName: mssql-sa-password

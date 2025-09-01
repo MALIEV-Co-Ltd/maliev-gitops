@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: maliev-authservice-api
+  labels:
+    app: maliev-authservice-api
+spec:
+  type: ClusterIP
+  selector:
+    app: maliev-authservice-api
+  ports:
+  - port: 80
+    targetPort: 8080

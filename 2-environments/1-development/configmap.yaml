@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: environment-config
+  namespace: maliev-dev
+data:
+  Logging__LogLevel__Default: "Information"
+  AllowedHosts: "*"
+  Cors__AllowedOrigins: "*"
+  ASPNETCORE_ENVIRONMENT: "Development"

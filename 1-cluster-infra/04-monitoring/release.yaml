@@ -1,0 +1,5 @@
+# This file is a placeholder for your monitoring stack (e.g., Prometheus and Grafana).
+# The kube-prometheus-stack Helm chart is a popular choice for this.
+# Example using Helm:
+# helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+# helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace

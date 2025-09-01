@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-intranet
+  labels:
+    app: maliev-intranet
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-intranet
+  template:
+    metadata:
+      labels:
+        app: maliev-intranet
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: maliev-intranet
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.intranet:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /liveness
+            port: 8080
+          initialDelaySeconds: 45
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        env:
+        - name: ConnectionStrings__EmployeeIdentityDbContext
+          valueFrom:
+            secretKeyRef:
+              name: employee-identity-db-conn
+              key: connection-string
+        - name: ConnectionStrings__DataProtectionKeysEmployeeDbContext
+          valueFrom:
+            secretKeyRef:
+              name: data-protection-keys-employee-db-conn
+              key: connection-string
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string

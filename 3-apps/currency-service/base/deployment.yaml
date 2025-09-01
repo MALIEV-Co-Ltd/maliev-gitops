@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-currencyservice-api
+  labels:
+    app: maliev-currencyservice-api
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-currencyservice-api
+  template:
+    metadata:
+      labels:
+        app: maliev-currencyservice-api
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: maliev-currencyservice-api
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.currencyservice.api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /currencies/liveness
+            port: 8080
+          initialDelaySeconds: 45
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /currencies/readiness
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        env:
+        - name: ConnectionStrings__CurrencyDbContext
+          valueFrom:
+            secretKeyRef:
+              name: currency-db-conn
+              key: connection-string
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string

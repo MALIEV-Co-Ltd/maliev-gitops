@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-materialservice-api
+  labels:
+    app: maliev-materialservice-api
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-materialservice-api
+  template:
+    metadata:
+      labels:
+        app: maliev-materialservice-api
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: maliev-materialservice-api
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.materialservice.api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /materials/liveness
+            port: 8080
+          initialDelaySeconds: 45
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /materials/readiness
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        env:
+        - name: ConnectionStrings__MaterialDbContext
+          valueFrom:
+            secretKeyRef:
+              name: material-db-conn
+              key: connection-string
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string

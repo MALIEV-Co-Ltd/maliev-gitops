@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: maliev-receiptservice-api
+  labels:
+    app: maliev-receiptservice-api
+spec:
+  type: ClusterIP
+  selector:
+    app: maliev-receiptservice-api
+  ports:
+  - port: 80
+    targetPort: 8080

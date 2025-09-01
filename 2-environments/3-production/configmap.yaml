@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: environment-config
+  namespace: maliev-production
+data:
+  Logging__LogLevel__Default: "Warning"
+  AllowedHosts: "*"
+  Cors__AllowedOrigins: "http://*.maliev.com,https://*.maliev.com"
+  ASPNETCORE_ENVIRONMENT: "Production"

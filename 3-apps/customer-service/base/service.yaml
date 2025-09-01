@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: maliev-customerservice-api
+  labels:
+    app: maliev-customerservice-api
+spec:
+  type: ClusterIP
+  selector:
+    app: maliev-customerservice-api
+  ports:
+  - port: 80
+    targetPort: 8080

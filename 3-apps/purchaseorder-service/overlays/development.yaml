@@ -1,0 +1,6 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: purchaseorder-service
+spec:
+  replicas: 1

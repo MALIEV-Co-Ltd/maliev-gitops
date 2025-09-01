@@ -1,0 +1,70 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: maliev-staging
+
+resources:
+- namespace.yaml
+- configmap.yaml
+- secrets.yaml
+- ingress.yaml
+- ../../1-cluster-infra/05-sql-server # Assuming staging shares the DB server
+- ../../3-apps/_common
+
+bases:
+- ../../3-apps/auth-service/base
+- ../../3-apps/country-service/base
+- ../../3-apps/currency-service/base
+- ../../3-apps/customer-service/base
+- ../../3-apps/email-service/base
+- ../../3-apps/employee-service/base
+- ../../3-apps/intranet/base
+- ../../3-apps/invoice-service/base
+- ../../3-apps/job-service/base
+- ../../3-apps/logger-service/base
+- ../../3-apps/material-service/base
+- ../../3-apps/message-service/base
+- ../../3-apps/order-service/base
+- ../../3-apps/orderstatus-service/base
+- ../../3-apps/payment-service/base
+- ../../3-apps/pdf-service/base
+- ../../3-apps/prediction-service/base
+- ../../3-apps/purchaseorder-service/base
+- ../../3-apps/quotationrequest-service/base
+- ../../3-apps/quotation-service/base
+- ../../3-apps/receipt-service/base
+- ../../3-apps/supplier-service/base
+- ../../3-apps/upload-service/base
+- ../../3-apps/web/base
+
+# For staging, we use the 'development' overlays as they typically have lower resource requests
+patchesStrategicMerge:
+- ../../3-apps/auth-service/overlays/development.yaml
+- ../../3-apps/country-service/overlays/development.yaml
+- ../../3-apps/currency-service/overlays/development.yaml
+- ../../3-apps/customer-service/overlays/development.yaml
+- ../../3-apps/email-service/overlays/development.yaml
+- ../../3-apps/employee-service/overlays/development.yaml
+- ../../3-apps/intranet/overlays/development.yaml
+- ../../3-apps/invoice-service/overlays/development.yaml
+- ../../3-apps/job-service/overlays/development.yaml
+- ../../3-apps/logger-service/overlays/development.yaml
+- ../../3-apps/material-service/overlays/development.yaml
+- ../../3-apps/message-service/overlays/development.yaml
+- ../../3-apps/order-service/overlays/development.yaml
+- ../../3-apps/orderstatus-service/overlays/development.yaml
+- ../../3-apps/payment-service/overlays/development.yaml
+- ../../3-apps/pdf-service/overlays/development.yaml
+- ../../3-apps/prediction-service/overlays/development.yaml
+- ../../3-apps/purchaseorder-service/overlays/development.yaml
+- ../../3-apps/quotationrequest-service/overlays/development.yaml
+- ../../3-apps/quotation-service/overlays/development.yaml
+- ../../3-apps/receipt-service/overlays/development.yaml
+- ../../3-apps/supplier-service/overlays/development.yaml
+- ../../3-apps/upload-service/overlays/development.yaml
+- ../../3-apps/web/overlays/development.yaml
+
+images:
+- name: gcr.io/maliev-project/maliev.authservice.api
+  newTag: 1.0.0-staging
+# Add other image tags for staging here
+

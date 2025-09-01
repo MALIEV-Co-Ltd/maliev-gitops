@@ -1,0 +1,33 @@
+# This file contains your specific ClusterIssuer configuration.
+# The notes below on how to install the Cert-Manager operator itself are still relevant.
+# helm repo add jetstack https://charts.jetstack.io
+# helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.10.0 --set installCRDs=true
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    email: natthapol.vanasrivilai@maliev.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - selector:
+        dnsNames:
+        - 'line-chatbot.maliev.com'
+      http01:
+        ingress:
+          name: line-chatbot-ingress
+    - selector:
+        dnsNames:
+        - 'www.maliev.com'
+        - 'maliev.com'
+        - 'api.maliev.com'
+        - 'intranet.maliev.com'
+      http01:
+        ingress:
+          name: gce-ingress-maliev

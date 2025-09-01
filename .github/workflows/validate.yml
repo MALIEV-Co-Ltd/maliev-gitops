@@ -1,0 +1,41 @@
+# GitHub Actions Workflow for Validating Kubernetes Manifests
+#
+# This workflow runs on every Pull Request against the `main` branch.
+# It does NOT deploy anything. Its only job is to act as a safety net
+# by ensuring that the Kustomize configurations are valid and can be built successfully.
+#
+# In your GitHub repository settings, you can create a branch protection rule
+# for `main` that requires this check to pass before a PR can be merged.
+
+name: Validate K8s Config
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    name: Validate Kustomize and YAML
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Kustomize
+      uses: imranismail/setup-kustomize@v1
+
+    - name: Validate Production Environment
+      run: |
+        echo "Validating Production Environment..."
+        kustomize build 2-environments/3-production
+
+    - name: Validate Development Environment
+      run: |
+        echo "Validating Development Environment..."
+        kustomize build 2-environments/1-development
+
+    - name: Validate Staging Environment
+      run: |
+        echo "Validating Staging Environment..."
+        kustomize build 2-environments/2-staging
