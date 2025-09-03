@@ -1,6 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: logger-service
+  name: maliev-loggerservice
 spec:
   replicas: 1
+  template:
+    spec:
+      containers:
+      - name: maliev-loggerservice
+        livenessProbe:
+          httpGet:
+            path: /logs/liveness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /logs/readiness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3

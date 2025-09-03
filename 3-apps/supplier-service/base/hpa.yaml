@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: supplier-service-hpa
+  name: maliev-supplierservice-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

@@ -8,63 +8,114 @@ resources:
 - secrets.yaml
 - ingress.yaml
 - ../../1-cluster-infra/05-sql-server # Assuming staging shares the DB server
+- ../../1-cluster-infra/06-cloudnative-pg
+- ../../1-cluster-infra/06-sql-server
 - ../../3-apps/_common
 
 bases:
-- ../../3-apps/auth-service/base
-- ../../3-apps/country-service/base
-- ../../3-apps/currency-service/base
-- ../../3-apps/customer-service/base
-- ../../3-apps/email-service/base
-- ../../3-apps/employee-service/base
-- ../../3-apps/intranet/base
-- ../../3-apps/invoice-service/base
-- ../../3-apps/job-service/base
-- ../../3-apps/logger-service/base
-- ../../3-apps/material-service/base
-- ../../3-apps/message-service/base
-- ../../3-apps/order-service/base
-- ../../3-apps/orderstatus-service/base
-- ../../3-apps/payment-service/base
-- ../../3-apps/pdf-service/base
-- ../../3-apps/prediction-service/base
-- ../../3-apps/purchaseorder-service/base
-- ../../3-apps/quotationrequest-service/base
-- ../../3-apps/quotation-service/base
-- ../../3-apps/receipt-service/base
-- ../../3-apps/supplier-service/base
-- ../../3-apps/upload-service/base
-- ../../3-apps/web/base
+# - ../../3-apps/auth-service/base
+# - ../../3-apps/country-service/base
+# - ../../3-apps/currency-service/base
+# - ../../3-apps/customer-service/base
+# - ../../3-apps/email-service/base
+# - ../../3-apps/employee-service/base
+# - ../../3-apps/intranet/base
+# - ../../3-apps/invoice-service/base
+# - ../../3-apps/job-service/base
+# - ../../3-apps/logger-service/base
+# - ../../3-apps/material-service/base
+# - ../../3-apps/message-service/base
+# - ../../3-apps/order-service/base
+# - ../../3-apps/orderstatus-service/base
+# - ../../3-apps/payment-service/base
+# - ../../3-apps/pdf-service/base
+# - ../../3-apps/prediction-service/base
+# - ../../3-apps/purchaseorder-service/base
+# - ../../3-apps/quotationrequest-service/base
+# - ../../3-apps/quotation-service/base
+# - ../../3-apps/receipt-service/base
+# - ../../3-apps/supplier-service/base
+# - ../../3-apps/upload-service/base
+# - ../../3-apps/web/base
+- ../../3-apps/maliev-line-chatbot-service/base
 
 # For staging, we use the 'development' overlays as they typically have lower resource requests
 patchesStrategicMerge:
-- ../../3-apps/auth-service/overlays/development.yaml
-- ../../3-apps/country-service/overlays/development.yaml
-- ../../3-apps/currency-service/overlays/development.yaml
-- ../../3-apps/customer-service/overlays/development.yaml
-- ../../3-apps/email-service/overlays/development.yaml
-- ../../3-apps/employee-service/overlays/development.yaml
-- ../../3-apps/intranet/overlays/development.yaml
-- ../../3-apps/invoice-service/overlays/development.yaml
-- ../../3-apps/job-service/overlays/development.yaml
-- ../../3-apps/logger-service/overlays/development.yaml
-- ../../3-apps/material-service/overlays/development.yaml
-- ../../3-apps/message-service/overlays/development.yaml
-- ../../3-apps/order-service/overlays/development.yaml
-- ../../3-apps/orderstatus-service/overlays/development.yaml
-- ../../3-apps/payment-service/overlays/development.yaml
-- ../../3-apps/pdf-service/overlays/development.yaml
-- ../../3-apps/prediction-service/overlays/development.yaml
-- ../../3-apps/purchaseorder-service/overlays/development.yaml
-- ../../3-apps/quotationrequest-service/overlays/development.yaml
-- ../../3-apps/quotation-service/overlays/development.yaml
-- ../../3-apps/receipt-service/overlays/development.yaml
-- ../../3-apps/supplier-service/overlays/development.yaml
-- ../../3-apps/upload-service/overlays/development.yaml
-- ../../3-apps/web/overlays/development.yaml
+- ../../3-apps/auth-service/overlays/staging.yaml
+- ../../3-apps/country-service/overlays/staging.yaml
+- ../../3-apps/currency-service/overlays/staging.yaml
+- ../../3-apps/customer-service/overlays/staging.yaml
+- ../../3-apps/email-service/overlays/staging.yaml
+- ../../3-apps/employee-service/overlays/staging.yaml
+- ../../3-apps/intranet/overlays/staging.yaml
+- ../../3-apps/invoice-service/overlays/staging.yaml
+- ../../3-apps/job-service/overlays/staging.yaml
+- ../../3-apps/logger-service/overlays/staging.yaml
+- ../../3-apps/material-service/overlays/staging.yaml
+- ../../3-apps/message-service/overlays/staging.yaml
+- ../../3-apps/order-service/overlays/staging.yaml
+- ../../3-apps/orderstatus-service/overlays/staging.yaml
+- ../../3-apps/payment-service/overlays/staging.yaml
+- ../../3-apps/pdf-service/overlays/staging.yaml
+- ../../3-apps/prediction-service/overlays/staging.yaml
+- ../../3-apps/purchaseorder-service/overlays/staging.yaml
+- ../../3-apps/quotationrequest-service/overlays/staging.yaml
+- ../../3-apps/quotation-service/overlays/staging.yaml
+- ../../3-apps/receipt-service/overlays/staging.yaml
+- ../../3-apps/supplier-service/overlays/staging.yaml
+- ../../3-apps/upload-service/overlays/staging.yaml
+- ../../3-apps/web/overlays/staging.yaml
+- ../../3-apps/maliev-line-chatbot-service/overlays/staging.yaml
 
 images:
-- name: gcr.io/maliev-project/maliev.authservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.authservice
   newTag: 1.0.0-staging
-# Add other image tags for staging here
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.countryservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.currencyservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.customerservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.emailservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.employeeservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.intranet
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.invoiceservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.jobservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.loggerservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.materialservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.messageservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.orderservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.orderstatusservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.paymentservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.pdfservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.predictionservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.purchaseorderservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.quotationrequestservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.quotationservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.receiptservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.supplierservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.uploadservice
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.web
+  newTag: 1.0.0-staging
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/line-chatbot-service
+  newTag: 1.0.0-staging
 

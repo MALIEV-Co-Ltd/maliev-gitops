@@ -8,6 +8,9 @@ resources:
 - secrets.yaml
 - ingress.yaml
 - ../../1-cluster-infra/05-sql-server
+- ../../1-cluster-infra/05-sql-server
+- ../../1-cluster-infra/06-cloudnative-pg
+- ../../1-cluster-infra/06-sql-server
 - ../../1-cluster-infra/02-cert-manager
 - ../../3-apps/_common
 
@@ -38,77 +41,82 @@ bases:
 - ../../3-apps/web/base
 
 patchesStrategicMerge:
-- ../../3-apps/auth-service/overlays/production.yaml
-- ../../3-apps/country-service/overlays/production.yaml
-- ../../3-apps/currency-service/overlays/production.yaml
-- ../../3-apps/customer-service/overlays/production.yaml
-- ../../3-apps/email-service/overlays/production.yaml
-- ../../3-apps/employee-service/overlays/production.yaml
-- ../../3-apps/intranet/overlays/production.yaml
-- ../../3-apps/invoice-service/overlays/production.yaml
-- ../../3-apps/job-service/overlays/production.yaml
-- ../../3-apps/logger-service/overlays/production.yaml
-- ../../3-apps/material-service/overlays/production.yaml
-- ../../3-apps/message-service/overlays/production.yaml
-- ../../3-apps/order-service/overlays/production.yaml
-- ../../3-apps/orderstatus-service/overlays/production.yaml
-- ../../3-apps/payment-service/overlays/production.yaml
-- ../../3-apps/pdf-service/overlays/production.yaml
-- ../../3-apps/prediction-service/overlays/production.yaml
-- ../../3-apps/purchaseorder-service/overlays/production.yaml
-- ../../3-apps/quotationrequest-service/overlays/production.yaml
-- ../../3-apps/quotation-service/overlays/production.yaml
-- ../../3-apps/receipt-service/overlays/production.yaml
-- ../../3-apps/supplier-service/overlays/production.yaml
-- ../../3-apps/upload-service/overlays/production.yaml
-- ../../3-apps/web/overlays/production.yaml
+# - ../../3-apps/auth-service/overlays/production.yaml
+# - ../../3-apps/country-service/overlays/production.yaml
+# - ../../3-apps/currency-service/overlays/production.yaml
+# - ../../3-apps/customer-service/overlays/production.yaml
+# - ../../3-apps/email-service/overlays/production.yaml
+# - ../../3-apps/employee-service/overlays/production.yaml
+# - ../../3-apps/intranet/overlays/production.yaml
+# - ../../3-apps/invoice-service/overlays/production.yaml
+# - ../../3-apps/job-service/overlays/production.yaml
+# - ../../3-apps/logger-service/overlays/production.yaml
+# - ../../3-apps/material-service/overlays/production.yaml
+# - ../../3-apps/message-service/overlays/production.yaml
+# - ../../3-apps/order-service/overlays/production.yaml
+# - ../../3-apps/orderstatus-service/overlays/production.yaml
+# - ../../3-apps/payment-service/overlays/production.yaml
+# - ../../3-apps/pdf-service/overlays/production.yaml
+# - ../../3-apps/prediction-service/overlays/production.yaml
+# - ../../3-apps/purchaseorder-service/overlays/production.yaml
+# - ../../3-apps/quotationrequest-service/overlays/production.yaml
+# - ../../3-apps/quotation-service/overlays/production.yaml
+# - ../../3-apps/receipt-service/overlays/production.yaml
+# - ../../3-apps/supplier-service/overlays/production.yaml
+# - ../../3-apps/upload-service/overlays/production.yaml
+# - ../../3-apps/web/overlays/production.yaml
+- ../../3-apps/line-chatbot-service/overlays/production.yaml
 
 images:
-- name: gcr.io/maliev-project/maliev.authservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.authservice
   newTag: 2.1.0
-- name: gcr.io/maliev-project/maliev.countryservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.countryservice
   newTag: 1.5.2
-- name: gcr.io/maliev-project/maliev.currencyservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.currencyservice
   newTag: 1.2.0
-- name: gcr.io/maliev-project/maliev.customerservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.customerservice
   newTag: 3.0.0
-- name: gcr.io/maliev-project/maliev.emailservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.emailservice
   newTag: 1.8.0
-- name: gcr.io/maliev-project/maliev.employeeservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.employeeservice
   newTag: 2.2.0
-- name: gcr.io/maliev-project/maliev.intranet
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.intranet
   newTag: 4.0.0
-- name: gcr.io/maliev-project/maliev.invoiceservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.invoiceservice
   newTag: 2.4.1
-- name: gcr.io/maliev-project/maliev.jobservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.jobservice
   newTag: 1.1.0
-- name: gcr.io/maliev-project/maliev.loggerservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.loggerservice
   newTag: 1.0.0
-- name: gcr.io/maliev-project/maliev.materialservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.materialservice
   newTag: 2.0.0
-- name: gcr.io/maliev-project/maliev.messageservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.messageservice
   newTag: 1.3.0
-- name: gcr.io/maliev-project/maliev.orderservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.orderservice
   newTag: 2.5.0
-- name: gcr.io/maliev-project/maliev.orderstatusservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.orderstatusservice
   newTag: 1.1.0
-- name: gcr.io/maliev-project/maliev.paymentservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.paymentservice
   newTag: 1.6.0
-- name: gcr.io/maliev-project/maliev.pdfservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.pdfservice
   newTag: 2.0.0
-- name: gcr.io/maliev-project/maliev.predictionservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.predictionservice
   newTag: 1.0.0
-- name: gcr.io/maliev-project/maliev.purchaseorderservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.purchaseorderservice
   newTag: 2.1.0
-- name: gcr.io/maliev-project/maliev.quotationrequestservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.quotationrequestservice
   newTag: 2.2.0
-- name: gcr.io/maliev-project/maliev.quotationservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.quotationservice
   newTag: 2.3.0
-- name: gcr.io/maliev-project/maliev.receiptservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.receiptservice
   newTag: 2.0.0
-- name: gcr.io/maliev-project/maliev.supplierservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.supplierservice
   newTag: 2.0.0
-- name: gcr.io/maliev-project/maliev.uploadservice.api
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.uploadservice
   newTag: 1.4.0
-- name: gcr.io/maliev-project/maliev.web
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.web
   newTag: 4.1.0
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-line-chatbot-service
+  newTag: 1.0.0
+rod/maliev-line-chatbot-service
+  newTag: 1.0.0

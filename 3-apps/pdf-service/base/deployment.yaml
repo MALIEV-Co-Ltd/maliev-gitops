@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: maliev-pdfservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.pdfservice.api:latest
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.pdfservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -37,10 +37,6 @@ spec:
           httpGet:
             path: /pdfs/readiness
             port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
         env:
         - name: ConnectionStrings__LogDbContext
           valueFrom:

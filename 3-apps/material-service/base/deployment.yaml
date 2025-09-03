@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-materialservice-api
+  name: maliev-materialservice
   labels:
-    app: maliev-materialservice-api
+    app: maliev-materialservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-materialservice-api
+      app: maliev-materialservice
   template:
     metadata:
       labels:
-        app: maliev-materialservice-api
+        app: maliev-materialservice
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-materialservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.materialservice.api:latest
+      - name: maliev-materialservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.materialservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,10 +29,6 @@ spec:
           httpGet:
             path: /materials/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /materials/readiness

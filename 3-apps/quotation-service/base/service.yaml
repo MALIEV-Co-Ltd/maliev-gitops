@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: maliev-quotationservice-api
+  name: maliev-quotationservice
   labels:
-    app: maliev-quotationservice-api
+    app: maliev-quotationservice
 spec:
   type: ClusterIP
   selector:
-    app: maliev-quotationservice-api
+    app: maliev-quotationservice
   ports:
   - port: 80
     targetPort: 8080

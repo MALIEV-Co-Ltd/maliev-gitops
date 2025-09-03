@@ -1,6 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: currency-service
+  name: maliev-currencyservice
 spec:
   replicas: 1
+  template:
+    spec:
+      containers:
+      - name: maliev-currencyservice
+        livenessProbe:
+          httpGet:
+            path: /currencies/liveness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /currencies/readiness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3

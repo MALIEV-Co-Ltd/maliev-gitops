@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-supplierservice-api
+  name: maliev-supplierservice
   labels:
-    app: maliev-supplierservice-api
+    app: maliev-supplierservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-supplierservice-api
+      app: maliev-supplierservice
   template:
     metadata:
       labels:
-        app: maliev-supplierservice-api
+        app: maliev-supplierservice
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-supplierservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.supplierservice.api:latest
+      - name: maliev-supplierservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.supplierservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,10 +29,6 @@ spec:
           httpGet:
             path: /suppliers/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /suppliers/readiness

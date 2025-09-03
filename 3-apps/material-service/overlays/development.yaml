@@ -1,6 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: material-service
+  name: maliev-materialservice
 spec:
   replicas: 1
+  template:
+    spec:
+      containers:
+      - name: maliev-materialservice
+        livenessProbe:
+          httpGet:
+            path: /materials/liveness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /materials/readiness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3

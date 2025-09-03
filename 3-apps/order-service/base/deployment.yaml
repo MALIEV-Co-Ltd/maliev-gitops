@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-orderservice-api
+  name: maliev-orderservice
   labels:
-    app: maliev-orderservice-api
+    app: maliev-orderservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-orderservice-api
+      app: maliev-orderservice
   template:
     metadata:
       labels:
-        app: maliev-orderservice-api
+        app: maliev-orderservice
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-orderservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.orderservice.api:latest
+      - name: maliev-orderservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.orderservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,10 +29,6 @@ spec:
           httpGet:
             path: /orders/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /orders/readiness

@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: maliev-loggerservice-api
+  name: maliev-loggerservice
   labels:
-    app: maliev-loggerservice-api
+    app: maliev-loggerservice
 spec:
   type: ClusterIP
   selector:
-    app: maliev-loggerservice-api
+    app: maliev-loggerservice
   ports:
   - port: 80
     targetPort: 8080

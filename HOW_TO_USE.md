@@ -29,12 +29,66 @@ Your responsibility is to ensure that secrets with the names specified in `remot
 
 ---
 
+### Managing Cluster Issuers
+
+Cert-Manager uses `ClusterIssuer` resources to represent certificate authorities. For better isolation and to avoid Let's Encrypt rate limits, we use different `ClusterIssuer` instances for production and non-production environments.
+
+*   **`letsencrypt-prod`**: Used for production domains (e.g., `maliev.com`, `api.maliev.com`). It points to Let's Encrypt's production ACME server.
+*   **`letsencrypt-staging`**: Used for development and staging domains (e.g., `dev.maliev.com`, `staging.maliev.com`). It points to Let's Encrypt's staging ACME server.
+
+These `ClusterIssuer` definitions are located in `1-cluster-infra/02-cert-manager/release.yaml`. When adding a new domain or service, ensure its Ingress resource references the correct `ClusterIssuer` (`letsencrypt-prod` for production, `letsencrypt-staging` for dev/staging).
+
+### Correcting Image Registry Paths
+
+Initially, some services were configured to use `gcr.io/maliev-project` as their image registry. This has been corrected to use `asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-<environment>`.
+
+It is a best practice to use environment-specific repositories within your artifact registry to prevent accidental deployments and improve security.
+
+*   **`maliev-website-artifact-dev`**: For development environment images.
+*   **`maliev-website-artifact-staging`**: For staging environment images.
+*   **`maliev-website-artifact-prod`**: For production environment images.
+
+Ensure your CI/CD pipelines are configured to push images to the correct environment-specific repository.
+
+### Renaming Service Resources
+
+For consistency and brevity, the `.api` suffix has been removed from the names of services in their Kubernetes manifests. For example, `maliev-authservice-api` has been renamed to `maliev-authservice`.
+
+This change affects:
+*   `metadata.name` of Deployments, Services, and HPAs.
+*   `spec.selector.matchLabels.app` and `spec.template.metadata.labels.app` in Deployments.
+*   `spec.scaleTargetRef.name` in HPAs.
+*   `backend.service.name` in Ingress rules.
+
+Ensure that any new services or manual modifications adhere to this new naming convention.
+
+---
+
 ## Prerequisites
 
 Before you start, ensure you have:
 1.  An approved GitOps controller (like Argo CD or Flux) installed and running in the Kubernetes cluster.
 2.  The GitOps controller configured to watch the paths in this repository (e.g., `2-environments/1-development` and `2-environments/3-production`).
 3.  CI pipelines for your microservice repositories configured to automatically create Pull Requests against this repo.
+
+### CI/CD Service Account and PAT
+
+To enable your CI/CD pipelines (e.g., GitHub Actions) to interact with your Google Cloud project and your GitOps repository, you need to configure two important secrets in each of your service repositories on GitHub:
+
+*   **`GCP_SA_KEY`**: This secret contains a Google Cloud service account key with the **"Artifact Registry Writer"** role. It allows your CI/CD pipeline to push Docker images to your Google Artifact Registry. It is recommended to use a dedicated service account for this purpose. A good name would be `github-actions-artifact-writer`.
+
+*   **`GITOPS_PAT`**: This is a GitHub Personal Access Token (PAT) that allows your CI/CD pipeline to create pull requests and push changes to your `maliev-gitops` repository.
+
+    **Important Note for Organization Repositories:** For repositories belonging to an organization, it is a best practice to use a dedicated machine user (bot account) to create the PAT. This avoids tying the CI/CD process to a specific person's account. You can create a new GitHub account to be used as a bot, and then grant that bot account write access to the `maliev-gitops` repository.
+
+    To create the PAT:
+    1.  Log in to GitHub as the user who will create the PAT (ideally, the bot account).
+    2.  Go to `Settings > Developer settings > Personal access tokens > Tokens (classic)`.
+    3.  Click **"Generate new token"**.
+    4.  Give the token a descriptive name (e.g., `maliev-gitops-updater`).
+    5.  Select the **`repo`** scope.
+    6.  Click **"Generate token"**.
+    7.  Copy the generated token immediately and store it securely.
 
 ---
 
@@ -146,7 +200,14 @@ Let's say you've created `new-cool-service`.
 
 1.  **Create App Directory**: In `3-apps/`, create the folder `new-cool-service` with the standard `base` and `overlays` subdirectories.
 
-2.  **Add Manifests**: Create the `deployment.yaml`, `service.yaml`, etc., in the `3-apps/new-cool-service/base/` directory. Also create the `development.yaml` and `production.yaml` patches in the `overlays` directory.
+2.  **Add Manifests**: Create the core Kubernetes manifests in the `3-apps/new-cool-service/base/` directory. This typically includes:
+    *   `deployment.yaml`: Defines the application deployment (e.g., container image, replicas, probes).
+    *   `service.yaml`: Defines the Kubernetes Service to expose your application.
+    *   `hpa.yaml` (Optional): Defines a Horizontal Pod Autoscaler for automatic scaling.
+    *   Any other necessary manifests for dependencies (e.g., `redis-deployment.yaml`, `redis-service.yaml` if your service uses Redis).
+
+    Also, create empty overlay files (`development.yaml`, `staging.yaml`, `production.yaml`) in the `overlays` directory. These will be used for environment-specific configurations like resource limits or node selectors.
+    
 
 3.  **Update Environment Kustomizations**: This is the most important step. You must edit the `kustomization.yaml` for **each environment** where you want to deploy the service.
 
@@ -163,7 +224,7 @@ Let's say you've created `new-cool-service`.
 
     images:
     # ... existing images
-    - name: gcr.io/maliev-project/new.cool.service
+    - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/new.cool.service
       newTag: "v1.0.0"
     ```
 

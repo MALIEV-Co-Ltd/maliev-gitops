@@ -1,6 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: quotationrequest-service
+  name: maliev-quotationrequestservice
 spec:
   replicas: 1
+  template:
+    spec:
+      containers:
+      - name: maliev-quotationrequestservice
+        livenessProbe:
+          httpGet:
+            path: /quotationrequests/liveness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /quotationrequests/readiness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3

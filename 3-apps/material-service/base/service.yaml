@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: maliev-materialservice-api
+  name: maliev-materialservice
   labels:
-    app: maliev-materialservice-api
+    app: maliev-materialservice
 spec:
   type: ClusterIP
   selector:
-    app: maliev-materialservice-api
+    app: maliev-materialservice
   ports:
   - port: 80
     targetPort: 8080

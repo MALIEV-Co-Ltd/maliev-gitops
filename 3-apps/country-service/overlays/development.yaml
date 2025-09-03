@@ -1,6 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: country-service
+  name: maliev-countryservice
 spec:
   replicas: 1
+  template:
+    spec:
+      containers:
+      - name: maliev-countryservice
+        livenessProbe:
+          httpGet:
+            path: /countries/liveness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /countries/readiness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3

@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-uploadservice-api
+  name: maliev-uploadservice
   labels:
-    app: maliev-uploadservice-api
+    app: maliev-uploadservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-uploadservice-api
+      app: maliev-uploadservice
   template:
     metadata:
       labels:
-        app: maliev-uploadservice-api
+        app: maliev-uploadservice
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-uploadservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.uploadservice.api:latest
+      - name: maliev-uploadservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.uploadservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,10 +29,6 @@ spec:
           httpGet:
             path: /uploads/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /uploads/readiness
@@ -51,4 +47,4 @@ spec:
           valueFrom:
             secretKeyRef:
               name: log-db-conn
-              key: connection-string
+              key: connection-stringonnection-string

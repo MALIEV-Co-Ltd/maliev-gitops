@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-customerservice-api
+  name: maliev-customerservice
   labels:
-    app: maliev-customerservice-api
+    app: maliev-customerservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-customerservice-api
+      app: maliev-customerservice
   template:
     metadata:
       labels:
-        app: maliev-customerservice-api
+        app: maliev-customerservice
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-customerservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.customerservice.api:latest
+      - name: maliev-customerservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.customerservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,10 +29,6 @@ spec:
           httpGet:
             path: /customers/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /customers/readiness

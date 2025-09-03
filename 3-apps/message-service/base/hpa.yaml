@@ -6,7 +6,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: maliev-messageservice-api
+    name: maliev-messageservice
   minReplicas: 1
   maxReplicas: 3
   metrics:
@@ -16,3 +16,4 @@ spec:
       target:
         type: Utilization
         averageUtilization: 80
+ation: 80

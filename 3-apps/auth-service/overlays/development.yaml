@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-service
+  name: maliev-authservice
 spec:
   replicas: 1
   template:
     spec:
       containers:
-      - name: auth-service
+      - name: maliev-authservice
         resources:
           requests:
             cpu: 100m
@@ -15,3 +15,19 @@ spec:
           limits:
             cpu: 200m
             memory: 256Mi
+        livenessProbe:
+          httpGet:
+            path: /auth/liveness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /auth/readiness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3

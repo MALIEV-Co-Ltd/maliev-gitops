@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: maliev-invoiceservice-api
+  name: maliev-invoiceservice
   labels:
-    app: maliev-invoiceservice-api
+    app: maliev-invoiceservice
 spec:
   type: ClusterIP
   selector:
-    app: maliev-invoiceservice-api
+    app: maliev-invoiceservice
   ports:
   - port: 80
     targetPort: 8080

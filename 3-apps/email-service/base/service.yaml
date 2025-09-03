@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: maliev-emailservice-api
+  name: maliev-emailservice
   labels:
-    app: maliev-emailservice-api
+    app: maliev-emailservice
 spec:
   type: ClusterIP
   selector:
-    app: maliev-emailservice-api
+    app: maliev-emailservice
   ports:
   - port: 80
     targetPort: 8080

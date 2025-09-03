@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-receiptservice-api
+  name: maliev-receiptservice
   labels:
-    app: maliev-receiptservice-api
+    app: maliev-receiptservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-receiptservice-api
+      app: maliev-receiptservice
   template:
     metadata:
       labels:
-        app: maliev-receiptservice-api
+        app: maliev-receiptservice
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-receiptservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.receiptservice.api:latest
+      - name: maliev-receiptservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.receiptservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,10 +29,6 @@ spec:
           httpGet:
             path: /receipts/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /receipts/readiness

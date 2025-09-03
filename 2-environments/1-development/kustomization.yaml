@@ -8,6 +8,8 @@ resources:
 - secrets.yaml
 - ingress.yaml
 - ../../1-cluster-infra/05-sql-server
+- ../../1-cluster-infra/06-cloudnative-pg
+- ../../1-cluster-infra/06-sql-server
 - ../../1-cluster-infra/02-cert-manager
 - ../../3-apps/_common
 
@@ -35,7 +37,7 @@ bases:
 - ../../3-apps/receipt-service/base
 - ../../3-apps/supplier-service/base
 - ../../3-apps/upload-service/base
-- ../../3-apps/web/base
+- ../../3-apps/maliev-line-chatbot-service/overlays/development.yaml
 
 patchesStrategicMerge:
 - ../../3-apps/auth-service/overlays/development.yaml
@@ -61,54 +63,57 @@ patchesStrategicMerge:
 - ../../3-apps/receipt-service/overlays/development.yaml
 - ../../3-apps/supplier-service/overlays/development.yaml
 - ../../3-apps/upload-service/overlays/development.yaml
-- ../../3-apps/web/overlays/development.yaml
+- ../../3-apps/web/base
+- ../../3-apps/maliev-line-chatbot-service/base
 
 images:
-- name: gcr.io/maliev-project/maliev.authservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.countryservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.currencyservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.customerservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.emailservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.employeeservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.intranet
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.invoiceservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.jobservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.loggerservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.materialservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.messageservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.orderservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.orderstatusservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.paymentservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.pdfservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.predictionservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.purchaseorderservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.quotationrequestservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.quotationservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.receiptservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.supplierservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.uploadservice.api
-  newTag: 1.0.0-dev
-- name: gcr.io/maliev-project/maliev.web
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.authservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.countryservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.currencyservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.customerservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.emailservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.employeeservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.intranet
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.invoiceservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.jobservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.loggerservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.materialservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.messageservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.orderservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.orderstatusservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.paymentservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.pdfservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.predictionservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.purchaseorderservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.quotationrequestservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.quotationservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.receiptservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.supplierservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.uploadservice
+#   newTag: 1.0.0-dev
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev.web
+#   newTag: 1.0.0-dev
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-line-chatbot-service
   newTag: 1.0.0-dev

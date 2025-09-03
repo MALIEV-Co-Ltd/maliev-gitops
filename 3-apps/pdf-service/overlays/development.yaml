@@ -1,6 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pdf-service
+  name: maliev-pdfservice
 spec:
   replicas: 1
+  template:
+    spec:
+      containers:
+      - name: maliev-pdfservice
+        livenessProbe:
+          httpGet:
+            path: /pdfs/liveness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /pdfs/readiness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3

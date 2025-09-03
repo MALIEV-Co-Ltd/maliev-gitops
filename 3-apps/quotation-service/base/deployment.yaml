@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-quotationservice-api
+  name: maliev-quotationservice
   labels:
-    app: maliev-quotationservice-api
+    app: maliev-quotationservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-quotationservice-api
+      app: maliev-quotationservice
   template:
     metadata:
       labels:
-        app: maliev-quotationservice-api
+        app: maliev-quotationservice
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-quotationservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.quotationservice.api:latest
+      - name: maliev-quotationservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.quotationservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -37,10 +37,6 @@ spec:
           httpGet:
             path: /quotations/readiness
             port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
         env:
         - name: ConnectionStrings__QuotationDbContext
           valueFrom:
@@ -51,4 +47,4 @@ spec:
           valueFrom:
             secretKeyRef:
               name: log-db-conn
-              key: connection-string
+              key: connection-stringonnection-string

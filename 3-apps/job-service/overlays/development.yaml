@@ -1,6 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: job-service
+  name: maliev-jobservice
 spec:
   replicas: 1
+  template:
+    spec:
+      containers:
+      - name: maliev-jobservice
+        livenessProbe:
+          httpGet:
+            path: /jobs/liveness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /jobs/readiness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3

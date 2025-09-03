@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: maliev-orderstatusservice-api
+  name: maliev-orderstatusservice
   labels:
-    app: maliev-orderstatusservice-api
+    app: maliev-orderstatusservice
 spec:
   type: ClusterIP
   selector:
-    app: maliev-orderstatusservice-api
+    app: maliev-orderstatusservice
   ports:
   - port: 80
     targetPort: 8080

@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-jobservice-api
+  name: maliev-jobservice
   labels:
-    app: maliev-jobservice-api
+    app: maliev-jobservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-jobservice-api
+      app: maliev-jobservice
   template:
     metadata:
       labels:
-        app: maliev-jobservice-api
+        app: maliev-jobservice
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-jobservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.jobservice.api:latest
+      - name: maliev-jobservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.jobservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,10 +29,6 @@ spec:
           httpGet:
             path: /jobs/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /jobs/readiness
@@ -51,4 +47,4 @@ spec:
           valueFrom:
             secretKeyRef:
               name: log-db-conn
-              key: connection-string
+              key: connection-stringonnection-string

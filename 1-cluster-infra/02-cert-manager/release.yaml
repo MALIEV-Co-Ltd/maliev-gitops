@@ -18,12 +18,6 @@ spec:
     solvers:
     - selector:
         dnsNames:
-        - 'line-chatbot.maliev.com'
-      http01:
-        ingress:
-          name: line-chatbot-ingress
-    - selector:
-        dnsNames:
         - 'www.maliev.com'
         - 'maliev.com'
         - 'api.maliev.com'
@@ -31,3 +25,37 @@ spec:
       http01:
         ingress:
           name: gce-ingress-maliev
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    email: natthapol.vanasrivilai@maliev.com
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+    - selector:
+        dnsNames:
+        - 'dev.www.maliev.com'
+        - 'dev.api.maliev.com'
+        - 'dev.intranet.maliev.com'
+        - 'dev.maliev.com'
+        - 'dev.line-chatbot.maliev.com'
+      http01:
+        ingress:
+          name: gce-ingress-maliev-development
+    - selector:
+        dnsNames:
+        - 'staging.www.maliev.com'
+        - 'staging.api.maliev.com'
+        - 'staging.intranet.maliev.com'
+        - 'staging.maliev.com'
+        - 'staging.line-chatbot.maliev.com'
+      http01:
+        ingress:
+          name: gce-ingress-maliev-staging
