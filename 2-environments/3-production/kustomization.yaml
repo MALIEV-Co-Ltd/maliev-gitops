@@ -39,32 +39,32 @@ bases:
 # - ../../3-apps/web/base
 - ../../3-apps/line-chatbot-service/base
 
-patches:
-# - ../../3-apps/auth-service/overlays/production.yaml
-# - ../../3-apps/country-service/overlays/production.yaml
-# - ../../3-apps/currency-service/overlays/production.yaml
-# - ../../3-apps/customer-service/overlays/production.yaml
-# - ../../3-apps/email-service/overlays/production.yaml
-# - ../../3-apps/employee-service/overlays/production.yaml
-# - ../../3-apps/intranet/overlays/production.yaml
-# - ../../3-apps/invoice-service/overlays/production.yaml
-# - ../../3-apps/job-service/overlays/production.yaml
-# - ../../3-apps/logger-service/overlays/production.yaml
-# - ../../3-apps/material-service/overlays/production.yaml
-# - ../../3-apps/message-service/overlays/production.yaml
-# - ../../3-apps/order-service/overlays/production.yaml
-# - ../../3-apps/orderstatus-service/overlays/production.yaml
-# - ../../3-apps/payment-service/overlays/production.yaml
-# - ../../3-apps/pdf-service/overlays/production.yaml
-# - ../../3-apps/prediction-service/overlays/production.yaml
-# - ../../3-apps/purchaseorder-service/overlays/production.yaml
-# - ../../3-apps/quotationrequest-service/overlays/production.yaml
-# - ../../3-apps/quotation-service/overlays/production.yaml
-# - ../../3-apps/receipt-service/overlays/production.yaml
-# - ../../3-apps/supplier-service/overlays/production.yaml
-# - ../../3-apps/upload-service/overlays/production.yaml
-# - ../../3-apps/web/overlays/production.yaml
-- ../../3-apps/line-chatbot-service/overlays/production.yaml
+components:
+# - ../../3-apps/auth-service/overlays/production
+# - ../../3-apps/country-service/overlays/production
+# - ../../3-apps/currency-service/overlays/production
+# - ../../3-apps/customer-service/overlays/production
+# - ../../3-apps/email-service/overlays/production
+# - ../../3-apps/employee-service/overlays/production
+# - ../../3-apps/intranet/overlays/production
+# - ../../3-apps/invoice-service/overlays/production
+# - ../../3-apps/job-service/overlays/production
+# - ../../3-apps/logger-service/overlays/production
+# - ../../3-apps/material-service/overlays/production
+# - ../../3-apps/message-service/overlays/production
+# - ../../3-apps/order-service/overlays/production
+# - ../../3-apps/orderstatus-service/overlays/production
+# - ../../3-apps/payment-service/overlays/production
+# - ../../3-apps/pdf-service/overlays/production
+# - ../../3-apps/prediction-service/overlays/production
+# - ../../3-apps/purchaseorder-service/overlays/production
+# - ../../3-apps/quotationrequest-service/overlays/production
+# - ../../3-apps/quotation-service/overlays/production
+# - ../../3-apps/receipt-service/overlays/production
+# - ../../3-apps/supplier-service/overlays/production
+# - ../../3-apps/upload-service/overlays/production
+# - ../../3-apps/web/overlays/production
+- ../../3-apps/line-chatbot-service/overlays/production
 
 images:
 # - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-authservice
