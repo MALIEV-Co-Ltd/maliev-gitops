@@ -37,9 +37,9 @@ bases:
 # - ../../3-apps/supplier-service/base
 # - ../../3-apps/upload-service/base
 # - ../../3-apps/web/base
-- ../../3-apps/maliev-line-chatbot-service/base
+- ../../3-apps/line-chatbot-service/base
 
-patchesStrategicMerge:
+patches:
 # - ../../3-apps/auth-service/overlays/production.yaml
 # - ../../3-apps/country-service/overlays/production.yaml
 # - ../../3-apps/currency-service/overlays/production.yaml
@@ -64,56 +64,56 @@ patchesStrategicMerge:
 # - ../../3-apps/supplier-service/overlays/production.yaml
 # - ../../3-apps/upload-service/overlays/production.yaml
 # - ../../3-apps/web/overlays/production.yaml
-- ../../3-apps/maliev-line-chatbot-service/overlays/production.yaml
+- ../../3-apps/line-chatbot-service/overlays/production.yaml
 
 images:
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.authservice
-#   newTag: 2.1.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.countryservice
-#   newTag: 1.5.2
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.currencyservice
-#   newTag: 1.2.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.customerservice
-#   newTag: 3.0.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.emailservice
-#   newTag: 1.8.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.employeeservice
-#   newTag: 2.2.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.intranet
-#   newTag: 4.0.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.invoiceservice
-#   newTag: 2.4.1
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.jobservice
-#   newTag: 1.1.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.loggerservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-authservice
 #   newTag: 1.0.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.materialservice
-#   newTag: 2.0.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.messageservice
-#   newTag: 1.3.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.orderservice
-#   newTag: 2.5.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.orderstatusservice
-#   newTag: 1.1.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.paymentservice
-#   newTag: 1.6.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.pdfservice
-#   newTag: 2.0.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.predictionservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-countryservice
 #   newTag: 1.0.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.purchaseorderservice
-#   newTag: 2.1.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.quotationrequestservice
-#   newTag: 2.2.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.quotationservice
-#   newTag: 2.3.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.receiptservice
-#   newTag: 2.0.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.supplierservice
-#   newTag: 2.0.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.uploadservice
-#   newTag: 1.4.0
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev.web
-#   newTag: 4.1.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-currencyservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-customerservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-emailservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-employeeservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-intranet
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-invoiceservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-jobservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-loggerservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-materialservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-messageservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-orderservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-orderstatusservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-paymentservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-pdfservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-predictionservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-purchaseorderservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-quotationrequestservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-quotationservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-receiptservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-supplierservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-uploadservice
+#   newTag: 1.0.0
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-web
+#   newTag: 1.0.0
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-line-chatbot-service
   newTag: 1.0.0

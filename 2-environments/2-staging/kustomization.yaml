@@ -36,7 +36,7 @@ bases:
 # - ../../3-apps/supplier-service/base
 # - ../../3-apps/upload-service/base
 # - ../../3-apps/web/base
-- ../../3-apps/maliev-line-chatbot-service/base
+- ../../3-apps/line-chatbot-service/base
 
 patchesStrategicMerge:
 # - ../../3-apps/auth-service/overlays/staging.yaml
@@ -63,56 +63,56 @@ patchesStrategicMerge:
 # - ../../3-apps/supplier-service/overlays/staging.yaml
 # - ../../3-apps/upload-service/overlays/staging.yaml
 # - ../../3-apps/web/overlays/staging.yaml
-- ../../3-apps/maliev-line-chatbot-service/overlays/staging.yaml
+- ../../3-apps/line-chatbot-service/overlays/staging.yaml
 
 images:
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.authservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-authservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.countryservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-countryservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.currencyservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-currencyservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.customerservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-customerservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.emailservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-emailservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.employeeservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-employeeservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.intranet
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-intranet
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.invoiceservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-invoiceservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.jobservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-jobservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.loggerservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-loggerservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.materialservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-materialservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.messageservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-messageservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.orderservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-orderservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.orderstatusservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-orderstatusservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.paymentservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-paymentservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.pdfservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-pdfservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.predictionservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-predictionservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.purchaseorderservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-purchaseorderservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.quotationrequestservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-quotationrequestservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.quotationservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-quotationservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.receiptservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-receiptservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.supplierservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-supplierservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.uploadservice
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-uploadservice
 #   newTag: 1.0.0-staging
-# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev.web
+# - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-web
 #   newTag: 1.0.0-staging
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-line-chatbot-service
   newTag: 1.0.0-staging
