@@ -12,7 +12,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: 'git@github.com:MALIEV-Co-Ltd/Maliev.UploadService.git'
     targetRevision: release/v1.0.0
     path: 3-apps/upload-service/overlays/staging
   destination:

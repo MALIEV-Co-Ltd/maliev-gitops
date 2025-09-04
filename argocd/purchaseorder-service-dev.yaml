@@ -12,7 +12,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: 'git@github.com:MALIEV-Co-Ltd/Maliev.PurchaseOrderService.git'
     targetRevision: develop
     path: 3-apps/purchaseorder-service/overlays/development
   destination:

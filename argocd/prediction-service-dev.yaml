@@ -12,7 +12,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: 'git@github.com:MALIEV-Co-Ltd/Maliev.PredictionService.git'
     targetRevision: develop
     path: 3-apps/prediction-service/overlays/development
   destination:

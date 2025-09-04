@@ -12,7 +12,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: 'git@github.com:MALIEV-Co-Ltd/Maliev.QuotationRequestService.git'
     targetRevision: develop
     path: 3-apps/quotationrequest-service/overlays/development
   destination:

@@ -12,7 +12,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: 'git@github.com:MALIEV-Co-Ltd/Maliev.JobService.git'
     targetRevision: develop
     path: 3-apps/job-service/overlays/development
   destination:

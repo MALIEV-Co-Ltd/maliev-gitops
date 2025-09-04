@@ -33,11 +33,111 @@ This directory contains the YAML manifests for the core, shared services that yo
 - **`03-external-secrets`**: Contains the setup for the External Secrets Operator, which securely syncs secrets from Google Secret Manager into the cluster.
 - **`05-sql-server`**: Contains the `StatefulSet` that defines your SQL Server database deployment. This includes its persistent storage (`PersistentVolumeClaim`) and the `LoadBalancer` service to expose it to your applications at a static IP.
 
-### Understanding `secrets.yaml`
+### Understanding `secrets.yaml` and Secret Management
 
-The `secrets.yaml` files in each environment are now populated with all the connection strings and passwords discovered from your applications. They work by creating Kubernetes `Secret` objects that are then mounted into your application pods as environment variables.
+The `secrets.yaml` files in each environment use the External Secrets Operator to securely sync secrets from Google Secret Manager into Kubernetes `Secret` objects, which are then mounted into your application pods as environment variables.
 
-Your responsibility is to ensure that secrets with the names specified in `remoteRef.key` (e.g., `prod-customer-db-conn`, `prod-log-db-conn`, `prod-mssql-sa-password`) exist in your Google Secret Manager project.
+#### Current Secret Management Architecture
+
+**✅ Implemented Secrets:**
+- **LINE Bot Configuration**: `line-bot-secrets` (contains LINE_CHANNEL_SECRET, GEMINI_API_KEY, etc.)
+- **JWT Secrets**: `jwt-secret` for authentication services
+- **Database Connections**: `log-db-conn` (shared), `auth-service-db-conn`, `country-db-conn`
+
+**📋 Secret Naming Standards:**
+We follow a standardized naming convention for consistency across all environments:
+
+**Format**: `{environment}-{scope}-{type}`
+- **Environment**: `dev`, `staging`, `prod`
+- **Scope**: `shared` (multiple services) or `{service-name}` (specific service)  
+- **Type**: `db-conn`, `jwt`, `api`, `config`, `cert`
+
+**Google Secret Manager Key Format**: `maliev-{environment}-{scope}-{type}`
+
+**Examples:**
+- `maliev-dev-shared-jwt` → Creates `jwt-secret` in dev environment
+- `maliev-prod-auth-service-customer-db-conn` → Creates connection for auth service
+- `maliev-staging-shared-log-db-conn` → Creates shared log database connection
+
+#### Secret Content Structure
+
+**Database Connection Secrets:**
+```yaml
+# Single connection string
+connection-string: "Server=...;Database=...;User Id=...;Password=...;"
+
+# Multiple connection strings (e.g., auth-service)
+customer: "Server=...;Database=customer;..."
+employee: "Server=...;Database=employee;..."
+```
+
+**JWT Secrets:**
+```yaml
+key: "your-jwt-signing-key"
+issuer: "maliev.com"
+audience: "maliev-services"
+expiry-hours: "24"
+```
+
+**LINE Bot Configuration:**
+```yaml
+LINE_CHANNEL_SECRET: "..."
+LINE_CHANNEL_ACCESS_TOKEN: "..."
+GEMINI_API_KEY: "..."
+GEMINI_MODEL: "gemini-2.5-flash"
+GOOGLE_APPLICATION_CREDENTIALS_BASE64: "..."
+REDIS_HOST: "redis-service"
+```
+
+#### Adding New Service Secrets
+
+To add secrets for a new service, follow these templates (found in `secret-templates.yaml`):
+
+**1. Single Database Service:**
+```yaml
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: {environment}-{service-name}-db
+  namespace: maliev-{environment}
+spec:
+  secretStoreRef:
+    name: gcp-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: {service-name}-db-conn
+  data:
+  - secretKey: connection-string
+    remoteRef:
+      key: maliev-{environment}-{service-name}-db-conn
+```
+
+**2. API Configuration Service:**
+```yaml
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: {environment}-{service-name}-api
+  namespace: maliev-{environment}
+spec:
+  secretStoreRef:
+    name: gcp-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: {service-name}-api-secrets
+  dataFrom:
+  - extract:
+      key: maliev-{environment}-{service-name}-api-config
+```
+
+**Steps to Add a New Secret:**
+1. Choose the appropriate template from `secret-templates.yaml`
+2. Replace all `{placeholders}` with actual values
+3. Create the corresponding secret in Google Secret Manager
+4. Add the configured ExternalSecret to the environment `secrets.yaml` file
+5. Commit and let ArgoCD sync the changes
+
+Your responsibility is to ensure that secrets with the names specified in `remoteRef.key` exist in your Google Secret Manager project.
 
 ---
 

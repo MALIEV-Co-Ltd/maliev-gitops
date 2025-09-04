@@ -15,6 +15,7 @@ This repository is the **single source of truth** for all application and infras
   - [1. Managing DNS Records](#1-managing-dns-records)
   - [2. Health Probe (Liveness & Readiness) Tuning](#2-health-probe-liveness--readiness-tuning)
   - [3. Onboarding a New Service](#3-onboarding-a-new-service)
+  - [4. Secret Management](#4-secret-management)
 
 ---
 
@@ -229,3 +230,19 @@ To deploy this monitoring stack to your cluster, run the following Helm commands
    export POD_NAME=$(kubectl --namespace monitoring get pod -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=prometheus" -oname)
    kubectl --namespace monitoring port-forward $POD_NAME 3000
    ```
+
+### 4. Secret Management
+
+This repository uses the External Secrets Operator to manage secrets securely across all environments. For detailed information about secret management, including naming conventions, templates, and troubleshooting, see:
+
+- **[HOW_TO_USE.md - Secret Management Section](HOW_TO_USE.md#understanding-secretsyaml-and-secret-management)** - Practical guide for day-to-day secret operations
+- **[secret-management-analysis.md](secret-management-analysis.md)** - Comprehensive analysis and implementation strategy  
+- **[secret-templates.yaml](secret-templates.yaml)** - Reusable templates for adding new service secrets
+
+**Quick Reference:**
+- All secrets are stored in Google Secret Manager and synced to Kubernetes
+- Standardized naming: `maliev-{environment}-{scope}-{type}`
+- Templates available for common patterns (database, API, shared infrastructure)
+- Critical secrets already implemented: LINE Bot, JWT, database connections
+
+For immediate help with GitHub Actions failures related to missing environment variables, see the analysis document.
