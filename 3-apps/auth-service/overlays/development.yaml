@@ -31,3 +31,26 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 3
           failureThreshold: 3
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: ConnectionStrings__CustomerIdentityDbContext
+          valueFrom:
+            secretKeyRef:
+              name: auth-service-db-conn
+              key: customer
+        - name: ConnectionStrings__EmployeeIdentityDbContext
+          valueFrom:
+            secretKeyRef:
+              name: auth-service-db-conn
+              key: employee
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string
+        - name: Jwt__Key
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secret
+              key: key

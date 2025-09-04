@@ -23,7 +23,7 @@ spec:
       containers:
       - image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-line-chatbot-service
         imagePullPolicy: Always
-        name: line-chatbot-container
+        name: maliev-line-chatbot-service-container
         ports:
         - containerPort: 8080
           protocol: TCP

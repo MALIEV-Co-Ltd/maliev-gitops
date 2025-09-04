@@ -5,8 +5,7 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        cloud.google.com/gke-nodepool: web-pool
+      
       containers:
       - name: maliev-web
         livenessProbe:
@@ -25,3 +24,6 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
+        envFrom:
+        - secretRef:
+            name: line-bot-secrets

@@ -18,10 +18,12 @@ spec:
       labels:
         app: maliev-employeeservice
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
       - name: maliev-employeeservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.employeeservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-employeeservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,27 +31,7 @@ spec:
           httpGet:
             path: /employees/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /employees/readiness
             port: 8080
-        env:
-        - name: ConnectionStrings__EmployeeIdentityDbContext
-          valueFrom:
-            secretKeyRef:
-              name: employee-identity-db-conn
-              key: connection-string
-        - name: ConnectionStrings__EmployeeDbContext
-          valueFrom:
-            secretKeyRef:
-              name: employee-db-conn
-              key: connection-string
-        - name: ConnectionStrings__LogDbContext
-          valueFrom:
-            secretKeyRef:
-              name: log-db-conn
-              key: connection-string

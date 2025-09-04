@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-purchaseorderservice-api
+  name: maliev-purchaseorderservice
   labels:
-    app: maliev-purchaseorderservice-api
+    app: maliev-purchaseorderservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,18 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-purchaseorderservice-api
+      app: maliev-purchaseorderservice
   template:
     metadata:
       labels:
-        app: maliev-purchaseorderservice-api
+        app: maliev-purchaseorderservice
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-purchaseorderservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.purchaseorderservice
+      - name: maliev-purchaseorderservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-purchaseorderservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -33,18 +35,3 @@ spec:
           httpGet:
             path: /purchaseorders/readiness
             port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        env:
-        - name: ConnectionStrings__PurchaseOrderDbContext
-          valueFrom:
-            secretKeyRef:
-              name: purchaseorder-db-conn
-              key: connection-string
-        - name: ConnectionStrings__LogDbContext
-          valueFrom:
-            secretKeyRef:
-              name: log-db-conn
-              key: connection-string

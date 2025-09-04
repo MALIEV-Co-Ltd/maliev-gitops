@@ -18,10 +18,12 @@ spec:
       labels:
         app: maliev-orderstatusservice
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
       - name: maliev-orderstatusservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.orderstatusservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-orderstatusservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,22 +31,7 @@ spec:
           httpGet:
             path: /orderstatuses/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /orderstatuses/readiness
             port: 8080
-        env:
-        - name: ConnectionStrings__OrderStatusDbContext
-          valueFrom:
-            secretKeyRef:
-              name: orderstatus-db-conn
-              key: connection-string
-        - name: ConnectionStrings__LogDbContext
-          valueFrom:
-            secretKeyRef:
-              name: log-db-conn
-              key: connection-stringonnection-string

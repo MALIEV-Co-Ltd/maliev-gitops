@@ -18,10 +18,12 @@ spec:
       labels:
         app: maliev-customerservice
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
       - name: maliev-customerservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.customerservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-customerservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -33,23 +35,3 @@ spec:
           httpGet:
             path: /customers/readiness
             port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        env:
-        - name: ConnectionStrings__CustomerIdentityDbContext
-          valueFrom:
-            secretKeyRef:
-              name: customer-identity-db-conn
-              key: connection-string
-        - name: ConnectionStrings__CustomerDbContext
-          valueFrom:
-            secretKeyRef:
-              name: customer-db-conn
-              key: connection-string
-        - name: ConnectionStrings__LogDbContext
-          valueFrom:
-            secretKeyRef:
-              name: log-db-conn
-              key: connection-string

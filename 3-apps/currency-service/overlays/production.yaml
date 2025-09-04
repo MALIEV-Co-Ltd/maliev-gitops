@@ -5,8 +5,7 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        cloud.google.com/gke-nodepool: backend-pool
+      
       containers:
       - name: maliev-currencyservice
         livenessProbe:
@@ -25,3 +24,16 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ConnectionStrings__CurrencyDbContext
+          valueFrom:
+            secretKeyRef:
+              name: currency-db-conn
+              key: connection-string
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string

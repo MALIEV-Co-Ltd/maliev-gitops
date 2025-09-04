@@ -5,8 +5,7 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        cloud.google.com/gke-nodepool: backend-pool
+      
       containers:
       - name: maliev-orderstatusservice
         livenessProbe:
@@ -25,3 +24,16 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Staging"
+        - name: ConnectionStrings__OrderStatusDbContext
+          valueFrom:
+            secretKeyRef:
+              name: orderstatus-db-conn
+              key: connection-string
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string

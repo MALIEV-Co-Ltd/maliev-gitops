@@ -24,3 +24,16 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 3
           failureThreshold: 3
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: ConnectionStrings__InvoiceDbContext
+          valueFrom:
+            secretKeyRef:
+              name: invoice-db-conn
+              key: connection-string
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string

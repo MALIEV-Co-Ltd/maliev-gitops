@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-emailservice-api
+  name: maliev-emailservice
   labels:
-    app: maliev-emailservice-api
+    app: maliev-emailservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,18 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-emailservice-api
+      app: maliev-emailservice
   template:
     metadata:
       labels:
-        app: maliev-emailservice-api
+        app: maliev-emailservice
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-emailservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.emailservice
+      - name: maliev-emailservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-emailservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,32 +31,7 @@ spec:
           httpGet:
             path: /emails/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /emails/readiness
             port: 8080
-        env:
-        - name: ConnectionStrings__CustomerIdentityDbContext
-          valueFrom:
-            secretKeyRef:
-              name: customer-identity-db-conn
-              key: connection-string
-        - name: ConnectionStrings__CustomerDbContext
-          valueFrom:
-            secretKeyRef:
-              name: customer-db-conn
-              key: connection-string
-        - name: ConnectionStrings__LogDbContext
-          valueFrom:
-            secretKeyRef:
-              name: log-db-conn
-              key: connection-string
-        - name: Cors__AllowedOrigins
-          valueFrom:
-            configMapKeyRef:
-              name: email-service-config
-              key: cors-allowed-origins

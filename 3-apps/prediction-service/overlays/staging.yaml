@@ -5,8 +5,7 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        cloud.google.com/gke-nodepool: backend-pool
+      
       containers:
       - name: maliev-predictionservice
         livenessProbe:
@@ -25,3 +24,21 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Staging"
+        - name: ConnectionStrings__HangfireDatabase
+          valueFrom:
+            secretKeyRef:
+              name: hangfire-db-conn
+              key: connection-string
+        - name: ConnectionStrings__MachineLearningDataDbContext
+          valueFrom:
+            secretKeyRef:
+              name: ml-data-db-conn
+              key: connection-string
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string

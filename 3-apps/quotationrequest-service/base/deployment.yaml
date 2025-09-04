@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-quotationrequestservice-api
+  name: maliev-quotationrequestservice
   labels:
-    app: maliev-quotationrequestservice-api
+    app: maliev-quotationrequestservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,18 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-quotationrequestservice-api
+      app: maliev-quotationrequestservice
   template:
     metadata:
       labels:
-        app: maliev-quotationrequestservice-api
+        app: maliev-quotationrequestservice
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-quotationrequestservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.quotationrequestservice
+      - name: maliev-quotationrequestservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-quotationrequestservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -33,18 +35,3 @@ spec:
           httpGet:
             path: /quotationrequests/readiness
             port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        env:
-        - name: ConnectionStrings__QuotationRequestDbContext
-          valueFrom:
-            secretKeyRef:
-              name: quotationrequest-db-conn
-              key: connection-string
-        - name: ConnectionStrings__LogDbContext
-          valueFrom:
-            secretKeyRef:
-              name: log-db-conn
-              key: connection-string

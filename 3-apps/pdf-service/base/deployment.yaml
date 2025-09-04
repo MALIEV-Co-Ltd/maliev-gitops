@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-pdfservice-api
+  name: maliev-pdfservice
   labels:
-    app: maliev-pdfservice-api
+    app: maliev-pdfservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,18 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-pdfservice-api
+      app: maliev-pdfservice
   template:
     metadata:
       labels:
-        app: maliev-pdfservice-api
+        app: maliev-pdfservice
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-pdfservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.pdfservice
+      - name: maliev-pdfservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-pdfservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,17 +31,7 @@ spec:
           httpGet:
             path: /pdfs/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /pdfs/readiness
             port: 8080
-        env:
-        - name: ConnectionStrings__LogDbContext
-          valueFrom:
-            secretKeyRef:
-              name: log-db-conn
-              key: connection-string

@@ -24,3 +24,21 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 3
           failureThreshold: 3
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: ConnectionStrings__EmployeeIdentityDbContext
+          valueFrom:
+            secretKeyRef:
+              name: employee-identity-db-conn
+              key: connection-string
+        - name: ConnectionStrings__DataProtectionKeysEmployeeDbContext
+          valueFrom:
+            secretKeyRef:
+              name: data-protection-keys-employee-db-conn
+              key: connection-string
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string

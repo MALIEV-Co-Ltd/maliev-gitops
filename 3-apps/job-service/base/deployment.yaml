@@ -18,10 +18,12 @@ spec:
       labels:
         app: maliev-jobservice
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
       - name: maliev-jobservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.jobservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-jobservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -33,18 +35,3 @@ spec:
           httpGet:
             path: /jobs/readiness
             port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        env:
-        - name: ConnectionStrings__JobsDbContext
-          valueFrom:
-            secretKeyRef:
-              name: jobs-db-conn
-              key: connection-string
-        - name: ConnectionStrings__LogDbContext
-          valueFrom:
-            secretKeyRef:
-              name: log-db-conn
-              key: connection-stringonnection-string

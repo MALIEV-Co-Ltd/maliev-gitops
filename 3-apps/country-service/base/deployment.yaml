@@ -18,10 +18,12 @@ spec:
       labels:
         app: maliev-countryservice-api
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
       - name: maliev-countryservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.countryservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-countryservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,10 +31,6 @@ spec:
           httpGet:
             path: /countries/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /countries/readiness

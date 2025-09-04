@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-invoiceservice-api
+  name: maliev-invoiceservice
   labels:
-    app: maliev-invoiceservice-api
+    app: maliev-invoiceservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,16 +12,18 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-invoiceservice-api
+      app: maliev-invoiceservice
   template:
     metadata:
       labels:
-        app: maliev-invoiceservice-api
+        app: maliev-invoiceservice
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-invoiceservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev.invoiceservice
+      - name: maliev-invoiceservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-invoiceservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -29,22 +31,7 @@ spec:
           httpGet:
             path: /invoices/liveness
             port: 8080
-          initialDelaySeconds: 45
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /invoices/readiness
             port: 8080
-        env:
-        - name: ConnectionStrings__InvoiceDbContext
-          valueFrom:
-            secretKeyRef:
-              name: invoice-db-conn
-              key: connection-string
-        - name: ConnectionStrings__LogDbContext
-          valueFrom:
-            secretKeyRef:
-              name: log-db-conn
-              key: connection-string
