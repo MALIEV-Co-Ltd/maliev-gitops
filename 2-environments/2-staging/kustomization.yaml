@@ -38,7 +38,7 @@ bases:
 # - ../../3-apps/web/base
 - ../../3-apps/line-chatbot-service/base
 
-patchesStrategicMerge:
+patches:
 # - ../../3-apps/auth-service/overlays/staging.yaml
 # - ../../3-apps/country-service/overlays/staging.yaml
 # - ../../3-apps/currency-service/overlays/staging.yaml

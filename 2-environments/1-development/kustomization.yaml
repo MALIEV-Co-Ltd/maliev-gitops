@@ -39,7 +39,7 @@ resources:
 # - ../../3-apps/web/base
 - ../../3-apps/line-chatbot-service/base
 
-patchesStrategicMerge:
+patches:
 # - ../../3-apps/auth-service/overlays/development.yaml
 # - ../../3-apps/country-service/overlays/development.yaml
 # - ../../3-apps/currency-service/overlays/development.yaml
