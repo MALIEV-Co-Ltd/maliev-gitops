@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: job-service-dev
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: job-service
+    app.kubernetes.io/part-of: maliev
+    app.kubernetes.io/environment: development
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    targetRevision: develop
+    path: 3-apps/job-service/overlays/development
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: maliev-dev
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
