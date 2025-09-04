@@ -16,7 +16,7 @@ spec:
     namespace: maliev-staging
   syncPolicy:
     automated:
-      prune: true # Set to true when you are confident
+      prune: true
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
