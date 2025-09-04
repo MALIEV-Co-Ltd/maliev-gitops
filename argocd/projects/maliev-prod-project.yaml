@@ -8,7 +8,7 @@ spec:
   sourceRepos:
   - '*'
   destinations:
-  - namespace: maliev-production
+  - namespace: maliev-prod
     server: https://kubernetes.default.svc
   clusterResourceWhitelist:
   - group: '*'

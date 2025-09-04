@@ -12,7 +12,7 @@ metadata:
 spec:
   project: maliev-prod
   source:
-    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: v1.0.0
     path: 3-apps/job-service/overlays/production
   destination:

@@ -12,7 +12,7 @@ metadata:
 spec:
   project: maliev-staging
   source:
-    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: main
     path: 3-apps/payment-service/overlays/staging
   destination:

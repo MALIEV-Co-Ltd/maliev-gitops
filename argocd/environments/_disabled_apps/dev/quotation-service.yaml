@@ -12,7 +12,7 @@ metadata:
 spec:
   project: maliev-dev
   source:
-    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: develop
     path: 3-apps/quotation-service/overlays/development
   destination:
