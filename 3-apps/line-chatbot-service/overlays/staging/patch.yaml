@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: line-chatbot-deployment
+  name: line-chatbot-service
 spec:
   replicas: 1
   template:
     spec:
       containers:
-      - name: maliev-line-chatbot-service-container
+      - name: line-chatbot-service-container
         resources:
           requests:
             cpu: 100m

@@ -1,14 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-line-chatbot-service-deployment
+  name: line-chatbot-service
 spec:
   template:
     spec:
-      nodeSelector:
-        cloud.google.com/gke-nodepool: backend-pool
       containers:
-      - name: line-chatbot-container
+      - name: line-chatbot-service-container
         livenessProbe:
           httpGet:
             path: /health

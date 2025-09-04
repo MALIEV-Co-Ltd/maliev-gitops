@@ -2,57 +2,39 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: maliev-line-chatbot-service
-  name: maliev-line-chatbot-service-deployment
-  
+    app: line-chatbot-service
+  name: line-chatbot-service
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      run: maliev-line-chatbot-service
   strategy:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app: line-chatbot-service
   template:
     metadata:
       labels:
-        run: maliev-line-chatbot-service
+        app: line-chatbot-service
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: backend-pool
+      terminationGracePeriodSeconds: 30
       containers:
-      - image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-line-chatbot-service
+      - name: line-chatbot-service-container
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-line-chatbot-service
         imagePullPolicy: Always
-        name: maliev-line-chatbot-service-container
         ports:
         - containerPort: 8080
-          protocol: TCP
         livenessProbe:
           httpGet:
             path: /health
             port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 30
-          periodSeconds: 15
-          timeoutSeconds: 5
-          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /health
             port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 20
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
         envFrom:
         - secretRef:
             name: line-chatbot-secrets
-      terminationGracePeriodSeconds: 30

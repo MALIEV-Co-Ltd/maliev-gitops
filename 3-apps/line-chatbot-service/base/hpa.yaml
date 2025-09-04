@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: maliev-line-chatbot-service-hpa
+  name: line-chatbot-service-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: line-chatbot-deployment
+    name: line-chatbot-service
   minReplicas: 1
   maxReplicas: 3
   metrics:
