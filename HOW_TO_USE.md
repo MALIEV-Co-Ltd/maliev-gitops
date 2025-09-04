@@ -3,7 +3,11 @@
 **Table of Contents**
 
 - [Understanding the Infrastructure (`1-cluster-infra`)](#understanding-the-infrastructure-1-cluster-infra)
-- [Understanding `secrets.yaml`](#understanding-secretsyaml)
+- [Understanding `secrets.yaml` and Secret Management](#understanding-secretsyaml-and-secret-management)
+- [Setting up Deploy Keys for Microservice Repositories](#setting-up-deploy-keys-for-microservice-repositories)
+- [Managing Cluster Issuers](#managing-cluster-issuers)
+- [Correcting Image Registry Paths](#correcting-image-registry-paths)
+- [Renaming Service Resources](#renaming-service-resources)
 - [Prerequisites](#prerequisites)
 - [Task 1: Deploying a New Version of an Existing Service](#task-1-deploying-a-new-version-of-an-existing-service)
 - [Task 2: Adding or Changing a Configuration Variable](#task-2-adding-or-changing-a-configuration-variable)
@@ -138,6 +142,196 @@ spec:
 5. Commit and let ArgoCD sync the changes
 
 Your responsibility is to ensure that secrets with the names specified in `remoteRef.key` exist in your Google Secret Manager project.
+
+---
+
+### Understanding `secrets.yaml` and Secret Management
+
+The `secrets.yaml` files in each environment use the External Secrets Operator to securely sync secrets from Google Secret Manager into Kubernetes `Secret` objects, which are then mounted into your application pods as environment variables.
+
+#### Current Secret Management Architecture
+
+**✅ Implemented Secrets:**
+- **LINE Bot Configuration**: `line-bot-secrets` (contains LINE_CHANNEL_SECRET, GEMINI_API_KEY, etc.)
+- **JWT Secrets**: `jwt-secret` for authentication services
+- **Database Connections**: `log-db-conn` (shared), `auth-service-db-conn`, `country-db-conn`
+
+**📋 Secret Naming Standards:**
+We follow a standardized naming convention for consistency across all environments:
+
+**Format**: `{environment}-{scope}-{type}`
+- **Environment**: `dev`, `staging`, `prod`
+- **Scope**: `shared` (multiple services) or `{service-name}` (specific service)  
+- **Type**: `db-conn`, `jwt`, `api`, `config`, `cert`
+
+**Google Secret Manager Key Format**: `maliev-{environment}-{scope}-{type}`
+
+**Examples:**
+- `maliev-dev-shared-jwt` → Creates `jwt-secret` in dev environment
+- `maliev-prod-auth-service-customer-db-conn` → Creates connection for auth service
+- `maliev-staging-shared-log-db-conn` → Creates shared log database connection
+
+#### Secret Content Structure
+
+**Database Connection Secrets:**
+```yaml
+# Single connection string
+connection-string: "Server=...;Database=...;User Id=...;Password=...;"
+
+# Multiple connection strings (e.g., auth-service)
+customer: "Server=...;Database=customer;..."
+employee: "Server=...;Database=employee;..."
+```
+
+**JWT Secrets:**
+```yaml
+key: "your-jwt-signing-key"
+issuer: "maliev.com"
+audience: "maliev-services"
+expiry-hours: "24"
+```
+
+**LINE Bot Configuration:**
+```yaml
+LINE_CHANNEL_SECRET: "..."
+LINE_CHANNEL_ACCESS_TOKEN: "..."
+GEMINI_API_KEY: "..."
+GEMINI_MODEL: "gemini-2.5-flash"
+GOOGLE_APPLICATION_CREDENTIALS_BASE64: "..."
+REDIS_HOST: "redis-service"
+```
+
+#### Adding New Service Secrets
+
+To add secrets for a new service, follow these templates (found in `secret-templates.yaml`):
+
+**1. Single Database Service:**
+```yaml
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: {environment}-{service-name}-db
+  namespace: maliev-{environment}
+spec:
+  secretStoreRef:
+    name: gcp-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: {service-name}-db-conn
+  data:
+  - secretKey: connection-string
+    remoteRef:
+      key: maliev-{environment}-{service-name}-db-conn
+```
+
+**2. API Configuration Service:**
+```yaml
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: {environment}-{service-name}-api
+  namespace: maliev-{environment}
+spec:
+  secretStoreRef:
+    name: gcp-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: {service-name}-api-secrets
+  dataFrom:
+  - extract:
+      key: maliev-{environment}-{service-name}-api-config
+```
+
+**Steps to Add a New Secret:**
+1. Choose the appropriate template from `secret-templates.yaml`
+2. Replace all `{placeholders}` with actual values
+3. Create the corresponding secret in Google Secret Manager
+4. Add the configured ExternalSecret to the environment `secrets.yaml` file
+5. Commit and let ArgoCD sync the changes
+
+Your responsibility is to ensure that secrets with the names specified in `remoteRef.key` exist in your Google Secret Manager project.
+
+---
+
+## Setting up Deploy Keys for Microservice Repositories
+
+To allow Argo CD to access your individual microservice repositories (e.g., `Maliev.LineChatbotService`), you will use SSH Deploy Keys. A Deploy Key is an SSH key that grants access to a **single GitHub repository**.
+
+**Important Considerations:**
+*   **Repository-Specific:** Each microservice repository will need its own unique Deploy Key.
+*   **Read-Only Access:** For GitOps, Argo CD typically only needs read access to your code repositories. Granting read-only access is more secure.
+*   **No Passphrase for Automation:** Do NOT set a passphrase for Deploy Keys used by automated systems like Argo CD, as it cannot provide the passphrase.
+
+### Step 1: Generate a new SSH key pair for the Deploy Key
+
+Generate a new SSH key pair specifically for this Deploy Key. Do not reuse your personal SSH key. Replace `your_repo_name` with the actual repository name (e.g., `Maliev.LineChatbotService`).
+
+```bash
+ssh-keygen -t rsa -b 4096 -C "your_repo_name-deploy-key" -f ~/.ssh/id_rsa_your_repo_name_deploy_key
+```
+
+*   When prompted for a passphrase, **press Enter twice** to leave it empty.
+
+This command will create two files in your `~/.ssh/` directory:
+*   `id_rsa_your_repo_name_deploy_key` (your **private key**)
+*   `id_rsa_your_repo_name_deploy_key.pub` (your **public key**)
+
+### Step 2: Add the Public Key to your GitHub Repository
+
+1.  **Copy your public key to your clipboard.**
+    *   **On Windows (Git Bash):**
+        ```bash
+        cat ~/.ssh/id_rsa_your_repo_name_deploy_key.pub | clip
+        ```
+    *   **On macOS:**
+        ```bash
+        pbcopy < ~/.ssh/id_rsa_your_repo_name_deploy_key.pub
+        ```
+    *   **On Linux:**
+        ```bash
+        xclip -sel clip < ~/.ssh/id_rsa_your_repo_name_deploy_key.pub
+        ```
+    Alternatively, open the `.pub` file in a text editor and copy its entire content.
+
+2.  **Go to your GitHub repository:**
+    *   Navigate to the specific repository (e.g., `MALIEV-Co-Ltd/Maliev.LineChatbotService`).
+    *   Click on **Settings**.
+    *   In the left sidebar, click **Deploy keys**.
+    *   Click the **Add deploy key** button.
+
+3.  **Configure the Deploy Key:**
+    *   Give your key a descriptive **Title** (e.g., "Argo CD for Maliev.LineChatbotService").
+    *   Paste your copied public key into the **Key** field.
+    *   **Ensure "Allow write access" is NOT checked.** This provides read-only access, which is more secure for Argo CD.
+    *   Click **Add key**.
+
+### Step 3: Add the Private Key to Argo CD Repository Settings
+
+1.  **Copy the entire content of your private key file.**
+    When running this command, the entire private key content will be copied into the clipboard.
+    *   **On Windows (Git Bash):**
+        ```bash
+        cat ~/.ssh/id_rsa_your_repo_name_deploy_key | clip
+        ```
+    *   **On macOS:**
+        ```bash
+        pbcopy < ~/.ssh/id_rsa_your_repo_name_deploy_key
+        ```
+    *   **On Linux:**
+        ```bash
+        xclip -sel clip < ~/.ssh/id_rsa_your_repo_name_deploy_key
+        ```
+
+2.  **Add the private key to Argo CD:**
+    *   Log in to your Argo CD UI.
+    *   Go to **Settings > Repositories**.
+    *   Click **CONNECT REPO**.
+    *   Choose **Git**.
+    *   For **Repository URL**, enter the SSH URL of your microservice repository (e.g., `git@github.com:MALIEV-Co-Ltd/Maliev.LineChatbotService.git`).
+    *   For **SSH Private Key**, paste the entire content of your private key file.
+    *   Click **CONNECT**.
+
+Repeat these steps for each microservice repository that Argo CD needs to access.
 
 ---
 
