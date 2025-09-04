@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/environment: staging
 spec:
-  project: maliev-staging
+  project: default
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: main
