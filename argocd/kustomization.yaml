@@ -1,0 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- line-chatbot-service-dev.yaml
+- line-chatbot-service-staging.yaml
+- line-chatbot-service-prod.yaml

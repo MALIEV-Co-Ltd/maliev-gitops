@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: line-chatbot-service-dev
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    targetRevision: develop
+    path: 3-apps/line-chatbot-service/overlays/development
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: maliev-dev
+  syncPolicy:
+    automated:
+      prune: false # Set to true when you are confident
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

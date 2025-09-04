@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-authservice
+spec:
+  template:
+    spec:
+      containers:
+      - name: maliev-authservice
+        livenessProbe:
+          httpGet:
+            path: /auth/liveness
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /auth/readiness
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ConnectionStrings__CustomerIdentityDbContext
+          valueFrom:
+            secretKeyRef:
+              name: auth-service-db-conn
+              key: customer
+        - name: ConnectionStrings__EmployeeIdentityDbContext
+          valueFrom:
+            secretKeyRef:
+              name: auth-service-db-conn
+              key: employee
+        - name: ConnectionStrings__LogDbContext
+          valueFrom:
+            secretKeyRef:
+              name: log-db-conn
+              key: connection-string
+        - name: Jwt__Key
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secret
+              key: key

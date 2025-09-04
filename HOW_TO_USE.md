@@ -13,6 +13,18 @@
 
 This guide provides practical, step-by-step instructions for common operational tasks. It has been updated to reflect the detailed configurations of all microservices and infrastructure components.
 
+### Understanding the App of Apps Structure
+
+This repository now uses the **App of Apps** pattern to manage applications in Argo CD. This is a more scalable and manageable approach for a large number of microservices.
+
+Here's how it works:
+
+1.  **`argocd/` directory**: This new directory at the root of the repository contains all the Argo CD `Application` manifests.
+2.  **`root-app.yaml`**: This is the single, top-level application that you apply to your cluster. It is configured to find and deploy all other `Application` manifests within the `argocd/` directory.
+3.  **Application Manifests**: For each service (like `line-chatbot-service`), there is a corresponding `Application` manifest in the `argocd/` directory (e.g., `line-chatbot-service.yaml`). This manifest defines how the service is deployed across all environments (development, staging, production).
+
+This structure means that to add, remove, or modify a service's deployment, you will be editing the `Application` manifests in the `argocd/` directory, rather than the `kustomization.yaml` files in the `2-environments/` directories.
+
 ### Understanding the Infrastructure (`1-cluster-infra`)
 
 This directory contains the YAML manifests for the core, shared services that your applications depend on. These are automatically deployed with each environment.
@@ -68,7 +80,7 @@ Ensure that any new services or manual modifications adhere to this new naming c
 
 Before you start, ensure you have:
 1.  An approved GitOps controller (like Argo CD or Flux) installed and running in the Kubernetes cluster.
-2.  The GitOps controller configured to watch the paths in this repository (e.g., `2-environments/1-development` and `2-environments/3-production`).
+2.  The GitOps controller configured to watch this repository by applying the `root-app.yaml` manifest from the `argocd` directory. This is the only manual `apply` step required.
 3.  CI pipelines for your microservice repositories configured to automatically create Pull Requests against this repo.
 
 ### CI/CD Service Account and PAT
@@ -94,31 +106,44 @@ To enable your CI/CD pipelines (e.g., GitHub Actions) to interact with your Goog
 
 ## Task 1: Deploying a New Version of an Existing Service
 
-This is the most common workflow. The goal is to update the running application to a new container image version.
+This workflow describes how to promote a release through your environments using the new branching strategy.
 
-1.  **Automated PR Creation**: Your service's CI/CD pipeline should do this for you. After it successfully builds and pushes a new image (e.g., `gcr.io/maliev-project/maliev-authservice.api:v2.5.2`), it should automatically create a Pull Request here.
+### Step 1: Continuous Deployment to Development
 
-2.  **Review the Pull Request**: The PR will contain a very simple change. For example, to deploy `v2.5.2` of the auth service to production, the change will be in `2-environments/3-production/kustomization.yaml`:
+Your CI/CD pipeline for each microservice should be configured to:
+1.  Trigger on every merge to the **`develop`** branch.
+2.  Build a new container image.
+3.  Automatically create a Pull Request in this `maliev-gitops` repository that updates the `image` tag in the service's **`-dev.yaml`** application manifest (e.g., `argocd/auth-service-dev.yaml`).
+
+Once you merge that PR, the `development` environment will be updated with the latest code from the `develop` branch.
+
+### Step 2: Promoting a Release to Staging
+
+1.  **Create a Release Branch**: In your microservice's repository, create a `release` branch from `develop` (e.g., `release/v1.1.0`).
+2.  **Update the Staging Application**: In this `maliev-gitops` repository, create a Pull Request that changes the `targetRevision` in the service's **`-staging.yaml`** application manifest to point to your new release branch.
 
     ```diff
-    ...    
-    images:
-    - name: gcr.io/maliev-project/maliev-authservice.api
-    -  newTag: "v2.5.1"
-    +  newTag: "v2.5.2"
-    - name: gcr.io/maliev-project/maliev-countryservice.api
-      newTag: "v1.3.0"
-    ...
+    # In argocd/your-service-staging.yaml
+    spec:
+      source:
+    -   targetRevision: develop
+    +   targetRevision: release/v1.1.0
     ```
+3.  **Merge and Verify**: Merge the PR. Argo CD will now deploy the stable release candidate to your `staging` environment for final testing.
 
-3.  **Approve and Merge**: Review the change to ensure the version is correct. Once you merge the PR into the `main` branch, the GitOps controller will detect the update.
+### Step 3: Releasing to Production
 
-4.  **Verify the Deployment**: The GitOps controller will now automatically start a rolling update of the service in the cluster. You can watch this happen using its UI (e.g., Argo CD) or via `kubectl`:
+1.  **Merge and Tag**: Once staging is approved, in your microservice's repository, merge the `release` branch into `main` and create a Git tag (e.g., `v1.1.0`).
+2.  **Update the Production Application**: In this `maliev-gitops` repository, create a Pull Request that changes the `targetRevision` in the service's **`-prod.yaml`** application manifest to point to the new version tag.
 
-    ```bash
-    # Watch the pods in the production namespace
-    kubectl get pods -n maliev-production -w
+    ```diff
+    # In argocd/your-service-prod.yaml
+    spec:
+      source:
+    -   targetRevision: v1.0.0
+    +   targetRevision: v1.1.0
     ```
+3.  **Merge and Celebrate**: Merge the PR. Argo CD will deploy the new version to production. Remember to also merge your release branch back into `develop`.
 
 ---
 
@@ -204,28 +229,17 @@ Let's say you've created `new-cool-service`.
     *   `deployment.yaml`: Defines the application deployment (e.g., container image, replicas, probes).
     *   `service.yaml`: Defines the Kubernetes Service to expose your application.
     *   `hpa.yaml` (Optional): Defines a Horizontal Pod Autoscaler for automatic scaling.
-    *   Any other necessary manifests for dependencies (e.g., `redis-deployment.yaml`, `redis-service.yaml` if your service uses Redis).
 
-    Also, create empty overlay files (`development.yaml`, `staging.yaml`, `production.yaml`) in the `overlays` directory. These will be used for environment-specific configurations like resource limits or node selectors.
-    
+    Also, create the overlay component directories and files (e.g., `overlays/development/kustomization.yaml` and `overlays/development/patch.yaml`).
 
-3.  **Update Environment Kustomizations**: This is the most important step. You must edit the `kustomization.yaml` for **each environment** where you want to deploy the service.
+3.  **Create an Application Manifest**: In the `argocd` directory, create a new `Application` manifest for your service, for example `argocd/new-cool-service.yaml`. This manifest will define how your service is deployed to each environment. You can use one of the existing service application manifests as a template.
 
-    For `2-environments/3-production/kustomization.yaml`, you would add the new service in three places:
+4.  **Update the Root Kustomization**: Add a reference to your new application manifest in the `argocd/kustomization.yaml` file.
 
     ```yaml
-    bases:
-    # ... existing bases
-    - ../../3-apps/new-cool-service/base
-
-    patches:
-    # ... existing patches
-    - ../../3-apps/new-cool-service/overlays/production.yaml
-
-    images:
-    # ... existing images
-    - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/new.cool.service
-      newTag: "v1.0.0"
+    resources:
+    # ... existing resources
+    - new-cool-service.yaml
     ```
 
-4.  **Commit and PR**: Commit these changes and open a PR. Once merged, the GitOps controller will deploy the new service for the first time.
+5.  **Commit and PR**: Commit these changes and open a PR. Once merged, the GitOps controller will deploy the new service for the first time.

@@ -21,6 +21,7 @@ This repository is the **single source of truth** for all application and infras
 ## Core Concepts
 
 * **GitOps**: The practice of using this Git repository as the declarative source of truth. Changes are made via Pull Request and an automated controller in the cluster synchronizes the state. We recommend free, open-source, CNCF-graduated tools like **Argo CD** or **Flux CD** for this.
+* **App of Apps Pattern**: The scalable, industry-standard GitOps practice for managing a large number of applications. Instead of manually creating a deployment manifest for each service in each environment, we use a single "root" Argo CD application that manages other Argo CD applications. This provides a centralized overview and simplifies the process of adding new services and promoting them between environments.
 * **GitHub Actions**: The CI/CD tool used to build, test, and containerize the C# microservices. The workflow files reside in each service's own repository.
 * **Kustomize**: The tool used to manage configuration variants for different environments without duplicating YAML files.
 
@@ -28,32 +29,17 @@ This repository is the **single source of truth** for all application and infras
 
 ## The End-to-End Workflow: From Dev to Production
 
-This workflow describes the path of a single code change from a developer's machine to a live customer.
+This workflow describes the path of a single code change from a developer's machine to a live customer, using a standard Git branching model.
 
-1. **Local Development:** A developer writes a new feature or bug fix in a C# service and tests it locally.
+1.  **Feature Development**: A developer creates a `feature` branch from the `develop` branch in a service's repository (e.g., `Maliev.AuthService`).
 
-2.  **Code Review & Merge:** The developer opens a Pull Request in the service's own repository (e.g., `Maliev.AuthService`). It is reviewed and merged into the `main` branch.
+2.  **Code Review & Merge to `develop`**: The developer opens a Pull Request to merge their feature into the `develop` branch. Once merged, the CI pipeline triggers.
 
-3. **Automated Deployment to `development` Environment:**
-   
-   * The GitHub Action in the service's repository triggers automatically.
-   * It builds a new container image (e.g., `maliev.authservice.api:a1b2c3d`).
-   * It then automatically opens a Pull Request in **this `maliev-gitops` repository** to update the `development` environment with this new image tag.
-   * Your team merges this PR.
-   * **Result:** The latest change is now running in the `dev` environment (`dev.api.maliev.com`), where developers can test its integration with the latest versions of all other services.
+3.  **Automated Deployment to `development` Environment**: The CI pipeline for the `develop` branch builds a new container image and automatically opens a Pull Request in this `maliev-gitops` repository. This PR updates the image tag in the service's `-dev.yaml` manifest (e.g., `argocd/auth-service-dev.yaml`). Once you merge this PR, the latest code is deployed to the `development` environment.
 
-4. **Manual Promotion to `staging` Environment:**
-   
-   * After developers confirm the feature works as expected in `dev`, it is declared a "release candidate."
-   * A developer **manually creates a new Pull Request** in this `maliev-gitops` repository.
-   * This new PR changes the image tag for the service in the **`staging` environment's** `kustomization.yaml` file to the specific version tested in `dev` (e.g., `a1b2c3d`).
-   * **Result:** The exact, known-good version is now in the `staging` environment (`staging.api.maliev.com`) for formal QA and User Acceptance Testing (UAT).
+4.  **Preparing a Release for `staging`**: When you are ready to test a release, you create a `release/v1.1.0` branch from `develop` in the service's repository. You then open a PR in this `maliev-gitops` repo to change the `targetRevision` in the service's `-staging.yaml` manifest to point to this new `release/v1.1.0` branch. This deploys a stable release candidate to the `staging` environment for QA and UAT.
 
-5. **Manual Promotion to `production` Environment:**
-   
-   * After the change passes all testing in `staging`, it is approved for release.
-   * A developer **manually creates another Pull Request** in `maliev-gitops` to promote the exact same version (`a1b2c3d`) to the **`production` environment**.
-   * **Result:** The change is now live for all customers on `api.maliev.com`.
+5.  **Promoting a Release to `production`**: After the release is approved in `staging`, you merge the `release/v1.1.0` branch into `main` and create a `v1.1.0` Git tag in the service's repository. You then open a final PR in `maliev-gitops` to update the `targetRevision` in the service's `-prod.yaml` manifest to the new `v1.1.0` tag. This deploys the specific, tested version to your production customers.
 
 ---
 
@@ -77,7 +63,7 @@ For each of your C# microservice repositories, perform the following steps. For 
 
 ### B. Setting up the GitOps Controller (In Kubernetes)
 
-You need a GitOps controller in your cluster to watch this repository. Here is an example of how to do this with **Argo CD**.
+You need a GitOps controller in your cluster to watch this repository. Here is how to do this with **Argo CD** using the **App of Apps** pattern.
 
 **Important Note for Cloud Shell Users:** If you encounter `Kubernetes cluster unreachable` errors when running `helm` or `kubectl` commands in Google Cloud Shell, you likely need to configure your `kubectl` context. Run the following command, replacing the placeholders with your cluster details:
 
@@ -87,30 +73,13 @@ gcloud container clusters get-credentials <cluster-name> --zone <cluster-zone> -
 
 1. **Install Argo CD**: Follow the official Argo CD documentation to install it in your cluster.
 
-2. **Create an `Application` Manifest**: To tell Argo CD to manage your production environment, you would apply a manifest like this to your cluster. Save this as `argocd-app.yaml` and apply it with `kubectl apply -f argocd-app.yaml`.
-   
-   ```yaml
-   apiVersion: argoproj.io/v1alpha1
-   kind: Application
-   metadata:
-     name: maliev-production-environment
-     namespace: argocd
-   spec:
-     project: default
-     source:
-       repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
-       targetRevision: main
-       path: 2-environments/3-production
-     destination:
-       server: 'https://kubernetes.default.svc'
-       namespace: maliev-production
-     syncPolicy:
-       automated:
-         prune: false
-         selfHeal: true
-       syncOptions:
-       - CreateNamespace=true
+2. **Apply the Root Application**: The only manifest you need to apply manually is the `root-app.yaml` located in the `argocd` directory of this repository. This `Application` is the entry point for the App of Apps pattern. It will automatically deploy and manage all other applications for all environments.
+
+   ```bash
+   kubectl apply -f maliev-gitops/argocd/root-app.yaml
    ```
+
+   Once applied, you can view the `root` application in the Argo CD UI. It will, in turn, show you the applications it manages for each of your environments.
 
 ### C. Creating an Argo CD User (Recommended)
 
@@ -204,8 +173,9 @@ The key parameter to tune for each service is **`initialDelaySeconds`**. You sho
 ### 3. Onboarding a New Service
 
 1. **Create App Directory**: In `3-apps/`, create a new folder for your service with `base` and `overlays` subdirectories.
-2. **Add Manifests**: Create the `deployment.yaml`, `service.yaml`, etc., in the `base` directory.
-3. **Update Environment Kustomizations**: Edit the `kustomization.yaml` for each environment and add your new service to the `bases`, `patches`, and `images` sections.
+2. **Add Manifests**: Create the `deployment.yaml`, `service.yaml`, etc., in the `base` directory. Also create the overlay component directories and files (e.g., `overlays/development/kustomization.yaml`).
+3. **Create an Application Manifest**: In the `argocd` directory, create a new `Application` manifest for your service (e.g., `argocd/my-new-service.yaml`). This manifest will define how your service is deployed to each environment.
+4. **Update the Root Kustomization**: Add a reference to your new application manifest in the `argocd/kustomization.yaml` file. Once you commit and push this change, Argo CD will automatically deploy your new service.
 
 ### 4. Deploying Monitoring Stack (Prometheus & Grafana)
 
