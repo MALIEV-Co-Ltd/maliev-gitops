@@ -13,7 +13,7 @@ spec:
     path: argocd/environments/dev/apps
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: argocd
+    namespace: maliev-dev
   syncPolicy:
     automated:
       prune: true # Set to true when you are confident
