@@ -96,17 +96,17 @@ To enable your CI/CD pipelines (e.g., GitHub Actions) to interact with your Goog
 
 This is the most common workflow. The goal is to update the running application to a new container image version.
 
-1.  **Automated PR Creation**: Your service's CI/CD pipeline should do this for you. After it successfully builds and pushes a new image (e.g., `gcr.io/maliev-project/maliev.authservice.api:v2.5.2`), it should automatically create a Pull Request here.
+1.  **Automated PR Creation**: Your service's CI/CD pipeline should do this for you. After it successfully builds and pushes a new image (e.g., `gcr.io/maliev-project/maliev-authservice.api:v2.5.2`), it should automatically create a Pull Request here.
 
 2.  **Review the Pull Request**: The PR will contain a very simple change. For example, to deploy `v2.5.2` of the auth service to production, the change will be in `2-environments/3-production/kustomization.yaml`:
 
     ```diff
     ...    
     images:
-    - name: gcr.io/maliev-project/maliev.authservice.api
+    - name: gcr.io/maliev-project/maliev-authservice.api
     -  newTag: "v2.5.1"
     +  newTag: "v2.5.2"
-    - name: gcr.io/maliev-project/maliev.countryservice.api
+    - name: gcr.io/maliev-project/maliev-countryservice.api
       newTag: "v1.3.0"
     ...
     ```
