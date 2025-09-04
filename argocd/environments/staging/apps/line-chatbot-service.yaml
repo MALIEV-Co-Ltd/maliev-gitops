@@ -10,7 +10,7 @@ metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
-  project: maliev-staging
+  project: default
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: HEAD
@@ -20,7 +20,7 @@ spec:
     namespace: maliev-staging
   syncPolicy:
     automated:
-      prune: false # Set to true when you are confident
+      prune: true
       selfHeal: true
     syncOptions:
     - CreateNamespace=true

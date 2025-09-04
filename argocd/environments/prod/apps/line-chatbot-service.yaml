@@ -10,7 +10,7 @@ metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
-  project: maliev-prod
+  project: default
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: HEAD
@@ -20,7 +20,7 @@ spec:
     namespace: maliev-production
   syncPolicy:
     automated:
-      prune: false
+      prune: true
       selfHeal: true
     syncOptions:
     - CreateNamespace=true

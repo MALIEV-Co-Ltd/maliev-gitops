@@ -10,7 +10,7 @@ metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
-  project: maliev-dev
+  project: default
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: main
