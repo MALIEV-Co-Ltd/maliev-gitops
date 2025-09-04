@@ -205,7 +205,7 @@ The key parameter to tune for each service is **`initialDelaySeconds`**. You sho
 
 1. **Create App Directory**: In `3-apps/`, create a new folder for your service with `base` and `overlays` subdirectories.
 2. **Add Manifests**: Create the `deployment.yaml`, `service.yaml`, etc., in the `base` directory.
-3. **Update Environment Kustomizations**: Edit the `kustomization.yaml` for each environment and add your new service to the `bases`, `patchesStrategicMerge`, and `images` sections.
+3. **Update Environment Kustomizations**: Edit the `kustomization.yaml` for each environment and add your new service to the `bases`, `patches`, and `images` sections.
 
 ### 4. Deploying Monitoring Stack (Prometheus & Grafana)
 

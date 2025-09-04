@@ -218,7 +218,7 @@ Let's say you've created `new-cool-service`.
     # ... existing bases
     - ../../3-apps/new-cool-service/base
 
-    patchesStrategicMerge:
+    patches:
     # ... existing patches
     - ../../3-apps/new-cool-service/overlays/production.yaml
 
