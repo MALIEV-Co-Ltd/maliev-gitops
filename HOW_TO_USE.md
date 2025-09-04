@@ -44,7 +44,7 @@ The `secrets.yaml` files in each environment use the External Secrets Operator t
 #### Current Secret Management Architecture
 
 **✅ Implemented Secrets:**
-- **LINE Bot Configuration**: `line-bot-secrets` (contains LINE_CHANNEL_SECRET, GEMINI_API_KEY, etc.)
+- **LINE Bot Configuration**: `line-chatbot-secrets` (contains LINE_CHANNEL_SECRET, GEMINI_API_KEY, etc.)
 - **JWT Secrets**: `jwt-secret` for authentication services
 - **Database Connections**: `log-db-conn` (shared), `auth-service-db-conn`, `country-db-conn`
 
@@ -152,7 +152,7 @@ The `secrets.yaml` files in each environment use the External Secrets Operator t
 #### Current Secret Management Architecture
 
 **✅ Implemented Secrets:**
-- **LINE Bot Configuration**: `line-bot-secrets` (contains LINE_CHANNEL_SECRET, GEMINI_API_KEY, etc.)
+- **LINE Bot Configuration**: `line-chatbot-secrets` (contains LINE_CHANNEL_SECRET, GEMINI_API_KEY, etc.)
 - **JWT Secrets**: `jwt-secret` for authentication services
 - **Database Connections**: `log-db-conn` (shared), `auth-service-db-conn`, `country-db-conn`
 

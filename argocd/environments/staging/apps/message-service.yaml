@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: message-service-staging
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: message-service
+    app.kubernetes.io/part-of: maliev
+    app.kubernetes.io/environment: staging
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: maliev-staging
+  source:
+    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    targetRevision: main
+    path: 3-apps/message-service/overlays/staging
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: maliev-staging
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

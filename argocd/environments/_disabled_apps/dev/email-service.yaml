@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: email-service-dev
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: email-service
+    app.kubernetes.io/part-of: maliev
+    app.kubernetes.io/environment: development
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: maliev-dev
+  source:
+    repoURL: 'git@github.com:MALIEV-Co-Ltd/maliev-gitops.git'
+    targetRevision: develop
+    path: 3-apps/email-service/overlays/development
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: maliev-dev
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

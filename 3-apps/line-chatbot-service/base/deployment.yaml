@@ -54,5 +54,5 @@ spec:
             cpu: "500m"
         envFrom:
         - secretRef:
-            name: line-bot-secrets
+            name: line-chatbot-secrets
       terminationGracePeriodSeconds: 30
