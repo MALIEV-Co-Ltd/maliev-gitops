@@ -9,7 +9,7 @@ spec:
   project: maliev-dev
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
-    targetRevision: develop
+    targetRevision: main
     path: argocd/environments/dev/apps
   destination:
     server: 'https://kubernetes.default.svc'
