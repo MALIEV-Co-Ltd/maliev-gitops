@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/environment: production
 spec:
-  project: default
+  project: maliev-prod
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: main
