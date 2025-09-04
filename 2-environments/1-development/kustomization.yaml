@@ -64,7 +64,7 @@ components:
 # - ../../3-apps/supplier-service/overlays/development
 # - ../../3-apps/upload-service/overlays/development
 # - ../../3-apps/web/overlays/development
-- ../../3-apps/line-chatbot-service/overlays/development
+- ../../3-apps/line-chatbot-service/overlays/development.yaml
 
 images:
 # - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-authservice
