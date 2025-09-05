@@ -9,3 +9,4 @@ resources:
 - environments/prod/maliev-prod-apps.yaml
 - cluster-infra/cert-manager-app.yaml
 - cluster-infra/cloudnative-pg-app.yaml
+- cluster-infra/external-secrets-app.yaml
