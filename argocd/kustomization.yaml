@@ -7,3 +7,5 @@ resources:
 - environments/dev/maliev-dev-apps.yaml
 - environments/staging/maliev-staging-apps.yaml
 - environments/prod/maliev-prod-apps.yaml
+- cluster-infra/cert-manager-app.yaml
+- cluster-infra/cloudnative-pg-app.yaml

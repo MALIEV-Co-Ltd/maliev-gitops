@@ -7,7 +7,6 @@ resources:
 - ingress.yaml
 - configmap.yaml
 - secrets.yaml
-- ../../1-cluster-infra/02-cert-manager
 - ../../3-apps/_common
 - ../_database/base
 
