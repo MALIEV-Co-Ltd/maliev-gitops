@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: line-chatbot-service
-  name: line-chatbot-service
+    app: maliev-line-chatbot-service
+  name: maliev-line-chatbot-service
 spec:
   strategy:
     rollingUpdate:
@@ -12,18 +12,18 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: line-chatbot-service
+      app: maliev-line-chatbot-service
   template:
     metadata:
       labels:
-        app: line-chatbot-service
+        app: maliev-line-chatbot-service
     spec:
       nodeSelector:
         cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
-      - name: line-chatbot-service-container
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/line-chatbot-service
+      - name: maliev-line-chatbot-service-container
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-line-chatbot-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -37,4 +37,4 @@ spec:
             port: 8080
         envFrom:
         - secretRef:
-            name: line-chatbot-secrets
+            name: maliev-line-chatbot-secrets

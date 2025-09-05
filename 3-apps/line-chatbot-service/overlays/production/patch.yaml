@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: line-chatbot-service
+  name: maliev-line-chatbot-service
 spec:
   template:
     spec:
       containers:
-      - name: line-chatbot-service-container
+      - name: maliev-line-chatbot-service-container
         livenessProbe:
           httpGet:
             path: /health

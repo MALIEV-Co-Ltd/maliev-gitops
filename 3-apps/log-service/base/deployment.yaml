@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-loggerservice
+  name: maliev-logservice
   labels:
-    app: maliev-loggerservice
+    app: maliev-logservice
 spec:
   strategy:
     type: RollingUpdate
@@ -12,18 +12,18 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-loggerservice
+      app: maliev-logservice
   template:
     metadata:
       labels:
-        app: maliev-loggerservice
+        app: maliev-logservice
     spec:
       nodeSelector:
         cloud.google.com/gke-nodepool: backend-pool
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-loggerservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-loggerservice
+      - name: maliev-logservice
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-logservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

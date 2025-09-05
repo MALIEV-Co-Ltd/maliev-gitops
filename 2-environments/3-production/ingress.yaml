@@ -185,7 +185,7 @@ spec:
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-loggerservice
+  #           name: maliev-logservice
   #           port:
   #             number: 80
   #     - path: /quotationrequests

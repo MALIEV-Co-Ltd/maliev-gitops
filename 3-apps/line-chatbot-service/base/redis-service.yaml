@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: line-chatbot-service-redis
+  name: maliev-line-chatbot-service-redis
   
 spec:
   type: ClusterIP
   selector:
-    app: line-chatbot-service-redis
+    app: maliev-line-chatbot-service-redis
   ports:
   - protocol: TCP
     port: 6379

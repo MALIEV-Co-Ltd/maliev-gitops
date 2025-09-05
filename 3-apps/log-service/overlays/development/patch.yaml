@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-logger-service-deployment
+  name: maliev-log-service-deployment
 spec:
   template:
     spec:
       containers:
-      - name: logger-service-container
+      - name: log-service-container
         resources:
           requests:
             cpu: 100m

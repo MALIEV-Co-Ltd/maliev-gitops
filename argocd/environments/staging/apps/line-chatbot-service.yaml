@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: line-chatbot-service-staging
+  name: maliev-line-chatbot-service-staging
   namespace: argocd
   labels:
-    app.kubernetes.io/name: line-chatbot-service
+    app.kubernetes.io/name: maliev-line-chatbot-service
     app.kubernetes.io/part-of: maliev
     app.kubernetes.io/environment: staging
   finalizers:
