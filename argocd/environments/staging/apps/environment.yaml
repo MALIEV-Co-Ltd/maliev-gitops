@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maliev-staging-environment
+  namespace: argocd
+  labels:
+    app.kubernetes.io/environment: staging
+spec:
+  project: maliev-staging
+  source:
+    repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
+    targetRevision: main
+    path: 2-environments/2-staging
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: maliev-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
