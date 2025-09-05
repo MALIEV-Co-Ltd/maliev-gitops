@@ -1,0 +1,24 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-cluster
+spec:
+  instances: 3
+  primaryUpdateStrategy: unsupervised
+
+  storage:
+    size: 10Gi
+    storageClass: default
+
+  bootstrap:
+    initdb:
+      database: app_db
+      owner: app_user
+      secret:
+        name: postgres-app-credentials
+  
+  superuserSecret:
+    name: postgres-superuser-credentials
+
+  monitoring:
+    enablePodMonitor: true

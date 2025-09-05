@@ -1,13 +1,18 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: maliev-production
+namespace: maliev-prod
 
 resources:
 - namespace.yaml
+- ingress.yaml
 - configmap.yaml
 - secrets.yaml
-- ingress.yaml
-- ../../1-cluster-infra/06-cloudnative-pg
-# - ../../1-cluster-infra/06-sql-server
 - ../../1-cluster-infra/02-cert-manager
 - ../../3-apps/_common
+- ../_database/base
+
+patches:
+  - path: db-patch.yaml
+    target:
+      kind: Cluster
+      name: postgres-cluster

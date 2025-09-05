@@ -4,10 +4,15 @@ namespace: maliev-dev
 
 resources:
 - namespace.yaml
+- ingress.yaml
 - configmap.yaml
 - secrets.yaml
-- ingress.yaml
-# - ../../1-cluster-infra/06-cloudnative-pg
-# - ../../1-cluster-infra/06-sql-server
 - ../../1-cluster-infra/02-cert-manager
 - ../../3-apps/_common
+- ../_database/base
+
+patches:
+  - path: db-patch.yaml
+    target:
+      kind: Cluster
+      name: postgres-cluster
