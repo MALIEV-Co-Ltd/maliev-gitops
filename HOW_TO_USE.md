@@ -462,7 +462,7 @@ First, decide if the value is sensitive.
     kind: ExternalSecret
     metadata:
       name: prod-redis-secret
-      namespace: maliev-production
+      namespace: maliev-prod
     spec:
       secretStoreRef: { ... }
       target:

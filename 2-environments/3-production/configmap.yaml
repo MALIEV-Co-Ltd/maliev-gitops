@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: environment-config
-  namespace: maliev-production
+  namespace: maliev-prod
 data:
   Logging__LogLevel__Default: "Warning"
   AllowedHosts: "*"
