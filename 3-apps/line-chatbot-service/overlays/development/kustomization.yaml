@@ -12,3 +12,7 @@ resources:
 
 patches:
 - path: patch.yaml
+images:
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/line-chatbot-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/line-chatbot-service
+  newTag: 81e5feefdbfcb09079871db2009a44a790234e3d
