@@ -22,7 +22,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: maliev-authservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-authservice:latest
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-authservice
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
