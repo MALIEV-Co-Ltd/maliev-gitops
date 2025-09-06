@@ -13,7 +13,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
-    targetRevision: 19c3387b90f6719cab3459c3a2e6b14c46de5d7f
+    targetRevision: main
     path: 3-apps/auth-service/overlays/development
   destination:
     server: 'https://kubernetes.default.svc'

@@ -5,8 +5,6 @@ images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-authservice
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-authservice
   newTag: 260563012848e5c04753351da893becc8a987cf4
-- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-authservice
-  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-authservice
 
 namespace: maliev-dev
 
