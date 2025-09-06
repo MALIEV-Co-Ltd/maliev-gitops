@@ -26,15 +26,15 @@ spec:
         image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-line-chatbot-service
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 8000
         livenessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 8000
         readinessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 8000
         envFrom:
         - secretRef:
             name: maliev-line-chatbot-secrets

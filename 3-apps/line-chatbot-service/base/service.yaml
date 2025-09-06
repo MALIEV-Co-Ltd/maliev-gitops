@@ -8,9 +8,9 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 8000
     name: http
   selector:
-    run: maliev-line-chatbot-service
+    app: maliev-line-chatbot-service
   sessionAffinity: None
   type: NodePort
