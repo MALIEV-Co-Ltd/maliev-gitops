@@ -4,3 +4,5 @@ resources:
 - deployment.yaml
 - service.yaml
 - hpa.yaml
+- ../../_common
+- auth-service-secrets.yaml

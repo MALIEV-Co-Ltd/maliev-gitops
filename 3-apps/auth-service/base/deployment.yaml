@@ -34,4 +34,9 @@ spec:
           httpGet:
             path: /auth/readiness
             port: 8080
+        envFrom:
+        - secretRef:
+            name: maliev-shared-secrets
+        - secretRef:
+            name: auth-service-secrets
         

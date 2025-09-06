@@ -13,3 +13,5 @@ resources:
 
 patches:
 - path: development.yaml
+- path: shared-secret-patch.yaml
+- path: auth-secrets-patch.yaml
