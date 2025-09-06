@@ -18,8 +18,7 @@ spec:
       labels:
         app: maliev-intranet
     spec:
-      nodeSelector:
-        cloud.google.com/gke-nodepool: web-pool
+      
       terminationGracePeriodSeconds: 30
       containers:
       - name: maliev-intranet

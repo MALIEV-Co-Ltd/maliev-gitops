@@ -18,8 +18,7 @@ spec:
       labels:
         app: maliev-logservice
     spec:
-      nodeSelector:
-        cloud.google.com/gke-nodepool: backend-pool
+      
       terminationGracePeriodSeconds: 30
       containers:
       - name: maliev-logservice
