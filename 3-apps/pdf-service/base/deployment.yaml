@@ -5,6 +5,7 @@ metadata:
   labels:
     app: maliev-pdfservice
 spec:
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
     rollingUpdate:

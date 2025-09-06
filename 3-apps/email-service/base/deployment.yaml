@@ -5,6 +5,7 @@ metadata:
   labels:
     app: maliev-emailservice
 spec:
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
     rollingUpdate:

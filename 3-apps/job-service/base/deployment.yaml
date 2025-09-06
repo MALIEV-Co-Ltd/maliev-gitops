@@ -5,6 +5,7 @@ metadata:
   labels:
     app: maliev-jobservice
 spec:
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
     rollingUpdate:

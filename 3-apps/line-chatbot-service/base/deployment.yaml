@@ -5,6 +5,7 @@ metadata:
     app: maliev-line-chatbot-service
   name: maliev-line-chatbot-service
 spec:
+  revisionHistoryLimit: 3
   strategy:
     rollingUpdate:
       maxSurge: 1
