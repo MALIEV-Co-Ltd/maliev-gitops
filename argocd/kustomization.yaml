@@ -10,3 +10,4 @@ resources:
 - cluster-infra/cert-manager-app.yaml
 - cluster-infra/cloudnative-pg-app.yaml
 - cluster-infra/external-secrets-app.yaml
+- cluster-infra/external-secrets-config-app.yaml
