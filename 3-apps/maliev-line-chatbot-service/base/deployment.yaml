@@ -37,4 +37,6 @@ spec:
             port: 8000
         envFrom:
         - secretRef:
-            name: maliev-line-chatbot-secrets
+            name: maliev-shared-secrets
+        - secretRef:
+            name: maliev-line-chatbot-service-secrets

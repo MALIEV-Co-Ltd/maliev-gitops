@@ -35,3 +35,8 @@ spec:
           httpGet:
             path: /emails/readiness
             port: 8080
+        envFrom:
+        - secretRef:
+            name: maliev-shared-secrets
+        - secretRef:
+            name: maliev-email-service-secrets

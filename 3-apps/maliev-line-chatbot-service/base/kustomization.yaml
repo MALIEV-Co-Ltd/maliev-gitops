@@ -4,3 +4,4 @@ resources:
   - redis-service.yaml
   - service.yaml
   - hpa.yaml
+  - ../../_common

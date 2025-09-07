@@ -12,6 +12,7 @@ resources:
 - ../../base
 
 patches:
-- path: development.yaml
-- path: shared-secret-patch.yaml
-- path: auth-secrets-patch.yaml
+- path: resource-limits-patch.yaml
+- path: health-check-patch.yaml
+- path: shared-secrets-patch.yaml
+- path: service-secrets-patch.yaml
