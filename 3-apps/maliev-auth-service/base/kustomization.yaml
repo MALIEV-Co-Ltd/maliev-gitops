@@ -5,4 +5,4 @@ resources:
 - service.yaml
 - hpa.yaml
 - ../../_common
-- auth-service-secrets.yaml
+- maliev-auth-service-secrets.yaml

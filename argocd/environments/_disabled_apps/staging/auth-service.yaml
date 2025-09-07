@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: auth-service-staging
+  name: maliev-auth-service-staging
   namespace: argocd
   labels:
-    app.kubernetes.io/name: auth-service
+    app.kubernetes.io/name: maliev-auth-service
     app.kubernetes.io/part-of: maliev
     app.kubernetes.io/environment: staging
   finalizers:
@@ -14,7 +14,7 @@ spec:
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: main
-    path: 3-apps/auth-service/overlays/staging
+    path: 3-apps/maliev-auth-service/overlays/staging
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: maliev-staging

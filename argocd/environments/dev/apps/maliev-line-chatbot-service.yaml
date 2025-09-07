@@ -14,7 +14,7 @@ spec:
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: main
-    path: 3-apps/line-chatbot-service/overlays/development
+    path: 3-apps/maliev-line-chatbot-service/overlays/development
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: maliev-dev

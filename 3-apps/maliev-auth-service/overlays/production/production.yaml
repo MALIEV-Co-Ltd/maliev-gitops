@@ -29,12 +29,12 @@ spec:
         - name: ConnectionStrings__CustomerIdentityDbContext
           valueFrom:
             secretKeyRef:
-              name: auth-service-db-conn
+              name: maliev-auth-service-db-conn
               key: customer
         - name: ConnectionStrings__EmployeeIdentityDbContext
           valueFrom:
             secretKeyRef:
-              name: auth-service-db-conn
+              name: maliev-auth-service-db-conn
               key: employee
         - name: ConnectionStrings__LogDbContext
           valueFrom:

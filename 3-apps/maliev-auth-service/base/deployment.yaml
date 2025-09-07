@@ -39,5 +39,5 @@ spec:
         - secretRef:
             name: maliev-shared-secrets
         - secretRef:
-            name: auth-service-secrets
+            name: maliev-auth-service-secrets
         

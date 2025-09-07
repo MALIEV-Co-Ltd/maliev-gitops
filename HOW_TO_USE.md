@@ -7,7 +7,7 @@
 - [Setting up Deploy Keys for Microservice Repositories](#setting-up-deploy-keys-for-microservice-repositories)
 - [Managing Cluster Issuers](#managing-cluster-issuers)
 - [Correcting Image Registry Paths](#correcting-image-registry-paths)
-- [Renaming Service Resources](#renaming-service-resources)
+- [Service Naming Convention](#service-naming-convention)
 - [Prerequisites](#prerequisites)
 - [Task 1: Deploying a New Version of an Existing Service](#task-1-deploying-a-new-version-of-an-existing-service)
 - [Task 2: Adding or Changing a Configuration Variable](#task-2-adding-or-changing-a-configuration-variable)
@@ -25,9 +25,9 @@ Here's how it works:
 
 1.  **`argocd/` directory**: This new directory at the root of the repository contains all the Argo CD `Application` manifests.
 2.  **`root-app.yaml`**: This is the single, top-level application that you apply to your cluster. It is configured to find and deploy all other `Application` manifests within the `argocd/` directory.
-3.  **Application Manifests**: For each service (like `line-chatbot-service`), there is a corresponding `Application` manifest in the `argocd/` directory (e.g., `line-chatbot-service.yaml`). This manifest defines how the service is deployed across all environments (development, staging, production).
+3.  **Application Manifests**: For each service (like `maliev-line-chatbot-service`), there is a corresponding `Application` manifest in the `argocd/environments/<env>/apps` directory (e.g., `maliev-line-chatbot-service.yaml`). This manifest defines how the service is deployed across all environments (development, staging, production).
 
-This structure means that to add, remove, or modify a service's deployment, you will be editing the `Application` manifests in the `argocd/` directory, rather than the `kustomization.yaml` files in the `2-environments/` directories.
+This structure means that to add, remove, or modify a service's deployment, you will be editing the `Application` manifests in the `argocd/environments/<env>/apps` directory, rather than the `kustomization.yaml` files in the `2-environments/` directories.
 
 ### Understanding the Infrastructure (`1-cluster-infra`)
 
@@ -44,23 +44,23 @@ The `secrets.yaml` files in each environment use the External Secrets Operator t
 #### Current Secret Management Architecture
 
 **✅ Implemented Secrets:**
-- **LINE Bot Configuration**: `line-chatbot-secrets` (contains LINE_CHANNEL_SECRET, GEMINI_API_KEY, etc.)
-- **JWT Secrets**: `jwt-secret` for authentication services
-- **Database Connections**: `log-db-conn` (shared), `auth-service-db-conn`, `country-db-conn`
+- **LINE Bot Configuration**: `maliev-line-chatbot-service-secrets` (contains LINE_CHANNEL_SECRET, GEMINI_API_KEY, etc.)
+- **JWT Secrets**: `maliev-jwt-secret` for authentication services
+- **Database Connections**: `maliev-log-db-conn` (shared), `maliev-auth-service-db-conn`, `maliev-country-service-db-conn`
 
 **📋 Secret Naming Standards:**
 We follow a standardized naming convention for consistency across all environments:
 
-**Format**: `{environment}-{scope}-{type}`
+**Format**: `maliev-{environment}-{scope}-{type}`
 - **Environment**: `dev`, `staging`, `prod`
-- **Scope**: `shared` (multiple services) or `{service-name}` (specific service)  
+- **Scope**: `shared` (multiple services) or `maliev-{service-name}` (specific service)  
 - **Type**: `db-conn`, `jwt`, `api`, `config`, `cert`
 
 **Google Secret Manager Key Format**: `maliev-{environment}-{scope}-{type}`
 
 **Examples:**
-- `maliev-dev-shared-jwt` → Creates `jwt-secret` in dev environment
-- `maliev-prod-auth-service-customer-db-conn` → Creates connection for auth service
+- `maliev-dev-shared-jwt` → Creates `maliev-jwt-secret` in dev environment
+- `maliev-prod-maliev-auth-service-customer-db-conn` → Creates connection for auth service
 - `maliev-staging-shared-log-db-conn` → Creates shared log database connection
 
 #### Secret Content Structure
@@ -70,7 +70,7 @@ We follow a standardized naming convention for consistency across all environmen
 # Single connection string
 connection-string: "Server=...;Database=...;User Id=...;Password=...;"
 
-# Multiple connection strings (e.g., auth-service)
+# Multiple connection strings (e.g., maliev-auth-service)
 customer: "Server=...;Database=customer;..."
 employee: "Server=...;Database=employee;..."
 ```
@@ -99,39 +99,39 @@ To add secrets for a new service, follow these templates (found in `secret-templ
 
 **1. Single Database Service:**
 ```yaml
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: {environment}-{service-name}-db
+  name: {environment}-maliev-{service-name}-db
   namespace: maliev-{environment}
 spec:
   secretStoreRef:
     name: gcp-secret-store
     kind: ClusterSecretStore
   target:
-    name: {service-name}-db-conn
+    name: maliev-{service-name}-db-conn
   data:
   - secretKey: connection-string
     remoteRef:
-      key: maliev-{environment}-{service-name}-db-conn
+      key: maliev-{environment}-maliev-{service-name}-db-conn
 ```
 
 **2. API Configuration Service:**
 ```yaml
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: {environment}-{service-name}-api
+  name: {environment}-maliev-{service-name}-api
   namespace: maliev-{environment}
 spec:
   secretStoreRef:
     name: gcp-secret-store
     kind: ClusterSecretStore
   target:
-    name: {service-name}-api-secrets
+    name: maliev-{service-name}-api-secrets
   dataFrom:
   - extract:
-      key: maliev-{environment}-{service-name}-api-config
+      key: maliev-{environment}-maliev-{service-name}-api-config
 ```
 
 **Steps to Add a New Secret:**
@@ -145,115 +145,7 @@ Your responsibility is to ensure that secrets with the names specified in `remot
 
 ---
 
-### Understanding `secrets.yaml` and Secret Management
-
-The `secrets.yaml` files in each environment use the External Secrets Operator to securely sync secrets from Google Secret Manager into Kubernetes `Secret` objects, which are then mounted into your application pods as environment variables.
-
-#### Current Secret Management Architecture
-
-**✅ Implemented Secrets:**
-- **LINE Bot Configuration**: `line-chatbot-secrets` (contains LINE_CHANNEL_SECRET, GEMINI_API_KEY, etc.)
-- **JWT Secrets**: `jwt-secret` for authentication services
-- **Database Connections**: `log-db-conn` (shared), `auth-service-db-conn`, `country-db-conn`
-
-**📋 Secret Naming Standards:**
-We follow a standardized naming convention for consistency across all environments:
-
-**Format**: `{environment}-{scope}-{type}`
-- **Environment**: `dev`, `staging`, `prod`
-- **Scope**: `shared` (multiple services) or `{service-name}` (specific service)  
-- **Type**: `db-conn`, `jwt`, `api`, `config`, `cert`
-
-**Google Secret Manager Key Format**: `maliev-{environment}-{scope}-{type}`
-
-**Examples:**
-- `maliev-dev-shared-jwt` → Creates `jwt-secret` in dev environment
-- `maliev-prod-auth-service-customer-db-conn` → Creates connection for auth service
-- `maliev-staging-shared-log-db-conn` → Creates shared log database connection
-
-#### Secret Content Structure
-
-**Database Connection Secrets:**
-```yaml
-# Single connection string
-connection-string: "Server=...;Database=...;User Id=...;Password=...;"
-
-# Multiple connection strings (e.g., auth-service)
-customer: "Server=...;Database=customer;..."
-employee: "Server=...;Database=employee;..."
-```
-
-**JWT Secrets:**
-```yaml
-key: "your-jwt-signing-key"
-issuer: "maliev.com"
-audience: "maliev-services"
-expiry-hours: "24"
-```
-
-**LINE Bot Configuration:**
-```yaml
-LINE_CHANNEL_SECRET: "..."
-LINE_CHANNEL_ACCESS_TOKEN: "..."
-GEMINI_API_KEY: "..."
-GEMINI_MODEL: "gemini-2.5-flash"
-GOOGLE_APPLICATION_CREDENTIALS_BASE64: "..."
-REDIS_HOST: "redis-service"
-```
-
-#### Adding New Service Secrets
-
-To add secrets for a new service, follow these templates (found in `secret-templates.yaml`):
-
-**1. Single Database Service:**
-```yaml
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: {environment}-{service-name}-db
-  namespace: maliev-{environment}
-spec:
-  secretStoreRef:
-    name: gcp-secret-store
-    kind: ClusterSecretStore
-  target:
-    name: {service-name}-db-conn
-  data:
-  - secretKey: connection-string
-    remoteRef:
-      key: maliev-{environment}-{service-name}-db-conn
-```
-
-**2. API Configuration Service:**
-```yaml
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: {environment}-{service-name}-api
-  namespace: maliev-{environment}
-spec:
-  secretStoreRef:
-    name: gcp-secret-store
-    kind: ClusterSecretStore
-  target:
-    name: {service-name}-api-secrets
-  dataFrom:
-  - extract:
-      key: maliev-{environment}-{service-name}-api-config
-```
-
-**Steps to Add a New Secret:**
-1. Choose the appropriate template from `secret-templates.yaml`
-2. Replace all `{placeholders}` with actual values
-3. Create the corresponding secret in Google Secret Manager
-4. Add the configured ExternalSecret to the environment `secrets.yaml` file
-5. Commit and let ArgoCD sync the changes
-
-Your responsibility is to ensure that secrets with the names specified in `remoteRef.key` exist in your Google Secret Manager project.
-
----
-
-## Setting up Deploy Keys for Microservice Repositories
+### Setting up Deploy Keys for Microservice Repositories
 
 To allow Argo CD to access your individual microservice repositories (e.g., `Maliev.LineChatbotService`), you will use SSH Deploy Keys. A Deploy Key is an SSH key that grants access to a **single GitHub repository**.
 
@@ -356,17 +248,20 @@ It is a best practice to use environment-specific repositories within your artif
 
 Ensure your CI/CD pipelines are configured to push images to the correct environment-specific repository.
 
-### Renaming Service Resources
+### Service Naming Convention
 
-For consistency and brevity, the `.api` suffix has been removed from the names of services in their Kubernetes manifests. For example, `maliev-authservice-api` has been renamed to `maliev-authservice`.
+For consistency and clarity, all services are named with the `maliev-` prefix. For example, the `auth-service` is named `maliev-auth-service`.
 
-This change affects:
-*   `metadata.name` of Deployments, Services, and HPAs.
-*   `spec.selector.matchLabels.app` and `spec.template.metadata.labels.app` in Deployments.
-*   `spec.scaleTargetRef.name` in HPAs.
-*   `backend.service.name` in Ingress rules.
+This naming convention is applied to:
+*   The directory name in `3-apps/`.
+*   The application manifest file name in `argocd/environments/<env>/apps/`.
+*   The `metadata.name` of the Argo CD Application.
+*   The `metadata.name` of Deployments, Services, and HPAs.
+*   The `spec.selector.matchLabels.app` and `spec.template.metadata.labels.app` in Deployments.
+*   The `spec.scaleTargetRef.name` in HPAs.
+*   The `backend.service.name` in Ingress rules.
 
-Ensure that any new services or manual modifications adhere to this new naming convention.
+Ensure that any new services or manual modifications adhere to this naming convention.
 
 ---
 
@@ -407,17 +302,17 @@ This workflow describes how to promote a release through your environments using
 Your CI/CD pipeline for each microservice should be configured to:
 1.  Trigger on every merge to the **`develop`** branch.
 2.  Build a new container image.
-3.  Automatically create a Pull Request in this `maliev-gitops` repository that updates the `image` tag in the service's **`-dev.yaml`** application manifest (e.g., `argocd/auth-service-dev.yaml`).
+3.  Automatically create a Pull Request in this `maliev-gitops` repository that updates the `image` tag in the service's application manifest (e.g., `argocd/environments/dev/apps/maliev-auth-service.yaml`).
 
 Once you merge that PR, the `development` environment will be updated with the latest code from the `develop` branch.
 
 ### Step 2: Promoting a Release to Staging
 
 1.  **Create a Release Branch**: In your microservice's repository, create a `release` branch from `develop` (e.g., `release/v1.1.0`).
-2.  **Update the Staging Application**: In this `maliev-gitops` repository, create a Pull Request that changes the `targetRevision` in the service's **`-staging.yaml`** application manifest to point to your new release branch.
+2.  **Update the Staging Application**: In this `maliev-gitops` repository, create a Pull Request that changes the `targetRevision` in the service's staging application manifest to point to your new release branch.
 
     ```diff
-    # In argocd/your-service-staging.yaml
+    # In argocd/environments/staging/apps/maliev-your-service.yaml
     spec:
       source:
     -   targetRevision: develop
@@ -428,10 +323,10 @@ Once you merge that PR, the `development` environment will be updated with the l
 ### Step 3: Releasing to Production
 
 1.  **Merge and Tag**: Once staging is approved, in your microservice's repository, merge the `release` branch into `main` and create a Git tag (e.g., `v1.1.0`).
-2.  **Update the Production Application**: In this `maliev-gitops` repository, create a Pull Request that changes the `targetRevision` in the service's **`-prod.yaml`** application manifest to point to the new version tag.
+2.  **Update the Production Application**: In this `maliev-gitops` repository, create a Pull Request that changes the `targetRevision` in the service's production application manifest to point to the new version tag.
 
     ```diff
-    # In argocd/your-service-prod.yaml
+    # In argocd/environments/prod/apps/maliev-your-service.yaml
     spec:
       source:
     -   targetRevision: v1.0.0
@@ -443,7 +338,7 @@ Once you merge that PR, the `development` environment will be updated with the l
 
 ## Task 2: Adding or Changing a Configuration Variable
 
-Let's say you need to add a new setting, `Redis__ConnectionString`, to the `auth-service`.
+Let's say you need to add a new setting, `Redis__ConnectionString`, to the `maliev-auth-service`.
 
 ### Step 1: Is it a Secret?
 
@@ -458,7 +353,7 @@ First, decide if the value is sensitive.
 2.  **Update `secrets.yaml`**: Edit the `ExternalSecret` definition for the production environment in `2-environments/3-production/secrets.yaml`. Add a new entry to fetch the value you just created.
 
     ```yaml
-    apiVersion: external-secrets.io/v1beta1
+    apiVersion: external-secrets.io/v1
     kind: ExternalSecret
     metadata:
       name: prod-redis-secret
@@ -473,7 +368,7 @@ First, decide if the value is sensitive.
           key: prod-redis-connection-string # The key in Google Secret Manager
     ```
 
-3.  **Update `deployment.yaml`**: Edit the base deployment file in `3-apps/auth-service/base/deployment.yaml`. Add the new environment variable, pointing to the Kubernetes secret that will be created by the operator.
+3.  **Update `deployment.yaml`**: Edit the base deployment file in `3-apps/maliev-auth-service/base/deployment.yaml`. Add the new environment variable, pointing to the Kubernetes secret that will be created by the operator.
 
     ```yaml
           env:
@@ -495,11 +390,11 @@ First, decide if the value is sensitive.
     metadata:
       name: environment-config
     data:
-      Some__Other__Url: "http://..."
+      Some__Other__Url: "http://.../"
       New__Setting: "some-value"
     ```
 
-2.  **Update `deployment.yaml`**: Edit `3-apps/auth-service/base/deployment.yaml` to mount the new value.
+2.  **Update `deployment.yaml`**: Edit `3-apps/maliev-auth-service/base/deployment.yaml` to mount the new value.
 
     ```yaml
           env:
@@ -515,25 +410,17 @@ First, decide if the value is sensitive.
 
 ## Task 3: Adding a Brand New Service
 
-Let's say you've created `new-cool-service`.
+Let's say you've created `maliev-new-cool-service`.
 
-1.  **Create App Directory**: In `3-apps/`, create the folder `new-cool-service` with the standard `base` and `overlays` subdirectories.
+1.  **Create App Directory**: In `3-apps/`, create the folder `maliev-new-cool-service` with the standard `base` and `overlays` subdirectories.
 
-2.  **Add Manifests**: Create the core Kubernetes manifests in the `3-apps/new-cool-service/base/` directory. This typically includes:
+2.  **Add Manifests**: Create the core Kubernetes manifests in the `3-apps/maliev-new-cool-service/base/` directory. This typically includes:
     *   `deployment.yaml`: Defines the application deployment (e.g., container image, replicas, probes).
     *   `service.yaml`: Defines the Kubernetes Service to expose your application.
     *   `hpa.yaml` (Optional): Defines a Horizontal Pod Autoscaler for automatic scaling.
 
     Also, create the overlay component directories and files (e.g., `overlays/development/kustomization.yaml` and `overlays/development/patch.yaml`).
 
-3.  **Create an Application Manifest**: In the `argocd` directory, create a new `Application` manifest for your service, for example `argocd/new-cool-service.yaml`. This manifest will define how your service is deployed to each environment. You can use one of the existing service application manifests as a template.
+3.  **Create an Application Manifest**: In the `argocd/environments/<env>/apps` directory, create a new `Application` manifest for your service with the name `maliev-new-cool-service.yaml`. This manifest will define how your service is deployed to each environment. You can use one of the existing service application manifests as a template.
 
-4.  **Update the Root Kustomization**: Add a reference to your new application manifest in the `argocd/kustomization.yaml` file.
-
-    ```yaml
-    resources:
-    # ... existing resources
-    - new-cool-service.yaml
-    ```
-
-5.  **Commit and PR**: Commit these changes and open a PR. Once merged, the GitOps controller will deploy the new service for the first time.
+4.  **Automatic Deployment**: Argo CD will automatically detect the new application manifest in the `argocd/environments/<env>/apps` directory and deploy your new service.
