@@ -9,6 +9,6 @@ Start-Sleep -Seconds 5
 
 # Open the Argo CD UI in the default browser
 Write-Host "Opening Argo CD UI at https://localhost:8080"
-Start-Process "https://localhost:8080"
+Start-Process "chrome.exe" "--ignore-certificate-errors https://localhost:8080"
 
 Write-Host "To stop the port-forwarding, close the new PowerShell window that was opened."
