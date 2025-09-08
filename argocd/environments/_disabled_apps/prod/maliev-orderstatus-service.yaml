@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maliev-orderstatus-service-prod
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: maliev-orderstatus-service
+    app.kubernetes.io/part-of: maliev
+    app.kubernetes.io/environment: production
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
+    targetRevision: v1.0.0
+    path: 3-apps/maliev-orderstatus-service/overlays/production
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: maliev-prod
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
