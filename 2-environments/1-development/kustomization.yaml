@@ -16,3 +16,7 @@ patches:
     target:
       kind: Cluster
       name: postgres-cluster
+  - path: shared-secrets-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: shared-secrets
