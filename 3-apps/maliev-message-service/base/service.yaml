@@ -5,7 +5,7 @@ metadata:
   labels:
     app: maliev-message-service
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: maliev-message-service
   ports:

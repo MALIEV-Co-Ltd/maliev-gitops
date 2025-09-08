@@ -5,7 +5,7 @@ metadata:
   labels:
     app: maliev-currency-service
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: maliev-currency-service
   ports:

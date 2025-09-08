@@ -5,7 +5,7 @@ metadata:
   labels:
     app: maliev-customer-service
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: maliev-customer-service
   ports:
