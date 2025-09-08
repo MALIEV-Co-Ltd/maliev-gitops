@@ -9,14 +9,10 @@ resources:
 - secrets.yaml
 - ../../3-apps/_common
 - ../_database/base
-
+- shared-secrets.yaml
 
 patches:
   - path: db-patch.yaml
     target:
       kind: Cluster
       name: postgres-cluster
-  - path: shared-secrets-patch.yaml
-    target:
-      kind: ExternalSecret
-      name: shared-secrets
