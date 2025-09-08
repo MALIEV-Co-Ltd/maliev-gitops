@@ -17,6 +17,8 @@ spec:
       secret:
         name: postgres-app-credentials
   
+  enableSuperuserAccess: true
+  
   superuserSecret:
     name: postgres-superuser-credentials
 
