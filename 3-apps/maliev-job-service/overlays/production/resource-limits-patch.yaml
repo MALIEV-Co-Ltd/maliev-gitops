@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-jobservice
+  name: maliev-job-service
 spec:
   template:
     spec:
       containers:
-      - name: maliev-jobservice
+      - name: maliev-job-service
         resources:
           requests:
             cpu: 100m

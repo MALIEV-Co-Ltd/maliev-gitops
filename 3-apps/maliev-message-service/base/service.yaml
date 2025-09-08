@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: maliev-messageservice
+  name: maliev-message-service
   labels:
-    app: maliev-messageservice
+    app: maliev-message-service
 spec:
   type: ClusterIP
   selector:
-    app: maliev-messageservice
+    app: maliev-message-service
   ports:
   - port: 80
     targetPort: 8080

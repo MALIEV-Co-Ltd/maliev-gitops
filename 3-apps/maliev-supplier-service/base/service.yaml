@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: maliev-supplierservice
+  name: maliev-supplier-service
   labels:
-    app: maliev-supplierservice
+    app: maliev-supplier-service
 spec:
   type: ClusterIP
   selector:
-    app: maliev-supplierservice
+    app: maliev-supplier-service
   ports:
   - port: 80
     targetPort: 8080

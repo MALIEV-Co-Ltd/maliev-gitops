@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-predictionservice
+  name: maliev-prediction-service
   labels:
-    app: maliev-predictionservice
+    app: maliev-prediction-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-predictionservice
+      app: maliev-prediction-service
   template:
     metadata:
       labels:
-        app: maliev-predictionservice
+        app: maliev-prediction-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-predictionservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-predictionservice
+      - name: maliev-prediction-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-prediction-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-paymentservice
+  name: maliev-payment-service
   labels:
-    app: maliev-paymentservice
+    app: maliev-payment-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-paymentservice
+      app: maliev-payment-service
   template:
     metadata:
       labels:
-        app: maliev-paymentservice
+        app: maliev-payment-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-paymentservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-paymentservice
+      - name: maliev-payment-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-payment-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

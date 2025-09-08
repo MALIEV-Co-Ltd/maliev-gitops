@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-emailservice
+  name: maliev-email-service
 spec:
   template:
     spec:
       containers:
-      - name: maliev-emailservice
+      - name: maliev-email-service
         resources:
           requests:
             cpu: 100m

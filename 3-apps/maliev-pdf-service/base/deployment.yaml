@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-pdfservice
+  name: maliev-pdf-service
   labels:
-    app: maliev-pdfservice
+    app: maliev-pdf-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-pdfservice
+      app: maliev-pdf-service
   template:
     metadata:
       labels:
-        app: maliev-pdfservice
+        app: maliev-pdf-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-pdfservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-pdfservice
+      - name: maliev-pdf-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-pdf-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

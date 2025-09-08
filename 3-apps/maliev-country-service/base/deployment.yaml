@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-countryservice-api
+  name: maliev-country-service
   labels:
-    app: maliev-countryservice-api
+    app: maliev-country-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-countryservice-api
+      app: maliev-country-service
   template:
     metadata:
       labels:
-        app: maliev-countryservice-api
+        app: maliev-country-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-countryservice-api
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-countryservice
+      - name: maliev-country-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-country-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

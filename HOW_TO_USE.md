@@ -121,17 +121,17 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: {environment}-maliev-{service-name}-api
+  name: {environment}-maliev-{service-name}-service
   namespace: maliev-{environment}
 spec:
   secretStoreRef:
     name: gcp-secret-store
     kind: ClusterSecretStore
   target:
-    name: maliev-{service-name}-api-secrets
+    name: maliev-{service-name}-service-secrets
   dataFrom:
   - extract:
-      key: maliev-{environment}-maliev-{service-name}-api-config
+      key: maliev-{environment}-maliev-{service-name}-service-config
 ```
 
 **Steps to Add a New Secret:**

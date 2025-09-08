@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-currencyservice
+  name: maliev-currency-service
   labels:
-    app: maliev-currencyservice
+    app: maliev-currency-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-currencyservice
+      app: maliev-currency-service
   template:
     metadata:
       labels:
-        app: maliev-currencyservice
+        app: maliev-currency-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-currencyservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-currencyservice
+      - name: maliev-currency-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-currency-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

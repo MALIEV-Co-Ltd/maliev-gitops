@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-authservice
+  name: maliev-auth-service
   labels:
-    app: maliev-authservice
+    app: maliev-auth-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-authservice
+      app: maliev-auth-service
   template:
     metadata:
       labels:
-        app: maliev-authservice
+        app: maliev-auth-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-authservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-authservice
+      - name: maliev-auth-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-auth-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: maliev-paymentservice-hpa
+  name: maliev-payment-service-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: maliev-paymentservice-api
+    name: maliev-payment-service
   minReplicas: 1
   maxReplicas: 3
   metrics:

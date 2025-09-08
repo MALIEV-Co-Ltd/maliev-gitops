@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-supplierservice
+  name: maliev-supplier-service
 spec:
   template:
     spec:
       containers:
-      - name: maliev-supplierservice
+      - name: maliev-supplier-service
         resources:
           requests:
             cpu: 100m

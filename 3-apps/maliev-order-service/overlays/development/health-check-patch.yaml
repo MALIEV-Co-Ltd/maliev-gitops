@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-orderservice
+  name: maliev-order-service
 spec:
   template:
     spec:
       containers:
-      - name: maliev-orderservice
+      - name: maliev-order-service
         livenessProbe:
           initialDelaySeconds: 10
           periodSeconds: 5

@@ -2,8 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 images:
-- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-orderstatusservice
-  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-orderstatusservice
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-orderstatus-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-orderstatus-service
 
 namespace: maliev-dev
 

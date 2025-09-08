@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-purchaseorderservice
+  name: maliev-purchaseorder-service
   labels:
-    app: maliev-purchaseorderservice
+    app: maliev-purchaseorder-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-purchaseorderservice
+      app: maliev-purchaseorder-service
   template:
     metadata:
       labels:
-        app: maliev-purchaseorderservice
+        app: maliev-purchaseorder-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-purchaseorderservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-purchaseorderservice
+      - name: maliev-purchaseorder-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-purchaseorder-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

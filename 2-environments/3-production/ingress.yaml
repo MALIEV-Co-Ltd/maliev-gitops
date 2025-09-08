@@ -52,154 +52,154 @@ spec:
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-authservice-api
+  #           name: maliev-auth-service
   #           port:
   #             number: 80
   #     - path: /countries
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-countryservice
+  #           name: maliev-country-service
   #           port:
   #             number: 80
   #     - path: /currencies
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-currencyservice
+  #           name: maliev-currency-service
   #           port:
   #             number: 80
   #     - path: /customers
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-customerservice
+  #           name: maliev-customer-service
   #           port:
   #             number: 80
   #     - path: /materials
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-materialservice
+  #           name: maliev-material-service
   #           port:
   #             number: 80
   #     - path: /suppliers
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-supplierservice
+  #           name: maliev-supplier-service
   #           port:
   #             number: 80
   #     - path: /orderstatuses
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-orderstatusservice
+  #           name: maliev-orderstatus-service
   #           port:
   #             number: 80
   #     - path: /uploads
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-uploadservice
+  #           name: maliev-upload-service
   #           port:
   #             number: 80
   #     - path: /orders
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-orderservice
+  #           name: maliev-order-service
   #           port:
   #             number: 80
   #     - path: /emails
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-emailservice
+  #           name: maliev-email-service
   #           port:
   #             number: 80
   #     - path: /quotations
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-quotationservice
+  #           name: maliev-quotation-service
   #           port:
   #             number: 80
   #     - path: /employees
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-employeeservice
+  #           name: maliev-employee-service
   #           port:
   #             number: 80
   #     - path: /payments
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-paymentservice
+  #           name: maliev-payment-service
   #           port:
   #             number: 80
   #     - path: /pdfs
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-pdfservice
+  #           name: maliev-pdf-service
   #           port:
   #             number: 80
   #     - path: /jobs
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-jobservice
+  #           name: maliev-job-service
   #           port:
   #             number: 80
   #     - path: /invoices
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-invoiceservice
+  #           name: maliev-invoice-service
   #           port:
   #             number: 80
   #     - path: /messages
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-messageservice
+  #           name: maliev-message-service
   #           port:
   #             number: 80
   #     - path: /purchaseorders
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-purchaseorderservice
+  #           name: maliev-purchaseorder-service
   #           port:
   #             number: 80
   #     - path: /receipts
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-receiptservice
+  #           name: maliev-receipt-service
   #           port:
   #             number: 80
   #     - path: /logs
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-logservice
+  #           name: maliev-log-service
   #           port:
   #             number: 80
   #     - path: /quotationrequests
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-quotationrequestservice
+  #           name: maliev-quotationrequest-service
   #           port:
   #             number: 80
   #     - path: /predictions
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-predictionservice
+  #           name: maliev-prediction-service
   #           port:
   #             number: 80
   # - host: intranet.maliev.com

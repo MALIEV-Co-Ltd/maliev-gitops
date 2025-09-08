@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-customerservice
+  name: maliev-customer-service
   labels:
-    app: maliev-customerservice
+    app: maliev-customer-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-customerservice
+      app: maliev-customer-service
   template:
     metadata:
       labels:
-        app: maliev-customerservice
+        app: maliev-customer-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-customerservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-customerservice
+      - name: maliev-customer-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-customer-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

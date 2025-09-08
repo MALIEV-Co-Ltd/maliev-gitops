@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-quotationrequestservice
+  name: maliev-quotationrequest-service
 spec:
   template:
     spec:
       containers:
-      - name: maliev-quotationrequestservice
+      - name: maliev-quotationrequest-service
         livenessProbe:
           initialDelaySeconds: 10
           periodSeconds: 5

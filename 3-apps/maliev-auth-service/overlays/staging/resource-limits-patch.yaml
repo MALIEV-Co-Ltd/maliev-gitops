@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-authservice
+  name: maliev-auth-service
 spec:
   template:
     spec:
       containers:
-      - name: maliev-authservice
+      - name: maliev-auth-service
         resources:
           requests:
             cpu: 200m

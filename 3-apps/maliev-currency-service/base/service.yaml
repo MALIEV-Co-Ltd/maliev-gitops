@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: maliev-currencyservice
+  name: maliev-currency-service
   labels:
-    app: maliev-currencyservice
+    app: maliev-currency-service
 spec:
   type: ClusterIP
   selector:
-    app: maliev-currencyservice
+    app: maliev-currency-service
   ports:
   - port: 80
     targetPort: 8080

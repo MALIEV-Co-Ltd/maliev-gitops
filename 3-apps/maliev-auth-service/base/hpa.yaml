@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: maliev-authservice-hpa
+  name: maliev-auth-service-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: maliev-authservice
+    name: maliev-auth-service
   minReplicas: 1
   maxReplicas: 3
   metrics:

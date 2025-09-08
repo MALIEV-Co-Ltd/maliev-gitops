@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-logservice
+  name: maliev-log-service
   labels:
-    app: maliev-logservice
+    app: maliev-log-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-logservice
+      app: maliev-log-service
   template:
     metadata:
       labels:
-        app: maliev-logservice
+        app: maliev-log-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-logservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-logservice
+      - name: maliev-log-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-log-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

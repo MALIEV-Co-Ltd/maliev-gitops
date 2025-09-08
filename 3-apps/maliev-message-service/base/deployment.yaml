@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-messageservice
+  name: maliev-message-service
   labels:
-    app: maliev-messageservice
+    app: maliev-message-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-messageservice
+      app: maliev-message-service
   template:
     metadata:
       labels:
-        app: maliev-messageservice
+        app: maliev-message-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-messageservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-messageservice
+      - name: maliev-message-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-message-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

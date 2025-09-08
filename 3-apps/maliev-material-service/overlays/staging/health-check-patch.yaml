@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-materialservice
+  name: maliev-material-service
 spec:
   template:
     spec:
       containers:
-      - name: maliev-materialservice
+      - name: maliev-material-service
         livenessProbe:
           initialDelaySeconds: 10
           periodSeconds: 5

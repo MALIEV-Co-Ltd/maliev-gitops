@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-materialservice
+  name: maliev-material-service
   labels:
-    app: maliev-materialservice
+    app: maliev-material-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,17 +13,17 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-materialservice
+      app: maliev-material-service
   template:
     metadata:
       labels:
-        app: maliev-materialservice
+        app: maliev-material-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-materialservice
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-materialservice
+      - name: maliev-material-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-material-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
