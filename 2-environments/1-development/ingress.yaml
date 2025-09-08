@@ -57,13 +57,13 @@ spec:
   #           name: maliev-currencyservice
   #           port:
   #             number: 80
-  #     - path: /customers
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-customerservice
-  #           port:
-  #             number: 80
+      - path: /customers
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-customerservice
+            port:
+              number: 80
   #     - path: /emails
   #       pathType: Prefix
   #       backend:
@@ -71,13 +71,13 @@ spec:
   #           name: maliev-emailservice
   #           port:
   #             number: 80
-  #     - path: /employees
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-employeeservice
-  #           port:
-  #             number: 80
+      - path: /employees
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-employeeservice
+            port:
+              number: 80
   #     - path: /invoices
   #       pathType: Prefix
   #       backend:
