@@ -20,7 +20,7 @@ spec:
     namespace: maliev-dev
   syncPolicy:
     automated:
-      prune: false
+      prune: true
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
