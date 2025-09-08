@@ -33,16 +33,16 @@ spec:
   #           name: maliev-web
   #           port:
   #             number: 80
-  # - host: dev.api.maliev.com
-  #   http:
-  #     paths:
-  #     - path: /auth
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-authservice
-  #           port:
-  #             number: 80
+  - host: dev.api.maliev.com
+    http:
+      paths:
+      - path: /auth
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-authservice
+            port:
+              number: 80
   #     - path: /countries
   #       pathType: Prefix
   #       backend:
