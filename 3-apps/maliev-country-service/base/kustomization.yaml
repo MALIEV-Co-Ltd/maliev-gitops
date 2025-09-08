@@ -5,3 +5,4 @@ resources:
 - service.yaml
 - hpa.yaml
 - ../../_common
+- service-secrets.yaml
