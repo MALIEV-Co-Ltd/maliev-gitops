@@ -13,7 +13,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
-    targetRevision: develop
+    targetRevision: main
     path: 3-apps/order-service/overlays/development
   destination:
     server: 'https://kubernetes.default.svc'
