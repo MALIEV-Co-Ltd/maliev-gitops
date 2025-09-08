@@ -8,4 +8,4 @@ labels:
     app.kubernetes.io/part-of: maliev
 
 resources:
-- shared-secrets.yaml
+[]
