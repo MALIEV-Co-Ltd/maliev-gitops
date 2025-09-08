@@ -42,7 +42,7 @@ spec:
           service:
             name: maliev-auth-service
             port:
-              number: 80
+              number: 8080
   #     - path: /countries
   #       pathType: Prefix
   #       backend:
@@ -63,7 +63,7 @@ spec:
           service:
             name: maliev-customer-service
             port:
-              number: 80
+              number: 8080
   #     - path: /emails
   #       pathType: Prefix
   #       backend:
@@ -77,7 +77,7 @@ spec:
           service:
             name: maliev-employee-service
             port:
-              number: 80
+              number: 8080
   #     - path: /invoices
   #       pathType: Prefix
   #       backend:
