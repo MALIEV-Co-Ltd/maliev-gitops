@@ -7,7 +7,6 @@ resources:
 - ingress.yaml
 - configmap.yaml
 - secrets.yaml
-- external-secrets.yaml
 - ../../3-apps/_common
 - ../_database/base
 
