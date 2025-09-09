@@ -9,8 +9,7 @@ metadata:
     kubernetes.io/ingress.global-static-ip-name: maliev-ip
     cert-manager.io/cluster-issuer: letsencrypt-staging
     cert-manager.io/issue-temporary-certificate: "true"
-    # Temporarily disabled to allow separate challenge ingress
-    # acme.cert-manager.io/http01-edit-in-place: "true"
+    acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   tls:
   - hosts:
@@ -20,14 +19,13 @@ spec:
   - host: dev.api.maliev.com
     http:
       paths:
-      # Temporarily disabled for TLS cert creation
-      # - path: /auth
-      #   pathType: Prefix
-      #   backend:
-      #     service:
-      #       name: maliev-auth-service
-      #       port:
-      #         number: 8080
+      - path: /auth
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-auth-service
+            port:
+              number: 8080
       - path: /customers
         pathType: Prefix
         backend:
