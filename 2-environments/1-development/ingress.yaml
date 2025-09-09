@@ -32,7 +32,7 @@ spec:
   #         service:
   #           name: maliev-web
   #           port:
-  #             number: 80
+  #             number: 8080
   - host: dev.api.maliev.com
     http:
       paths:
@@ -42,154 +42,154 @@ spec:
           service:
             name: maliev-auth-service
             port:
-              number: 80
+              number: 8080
   #     - path: /countries
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-country-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /currencies
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-currency-service
   #           port:
-  #             number: 80
+  #             number: 8080
       - path: /customers
         pathType: Prefix
         backend:
           service:
             name: maliev-customer-service
             port:
-              number: 80
+              number: 808080
   #     - path: /emails
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-email-service
   #           port:
-  #             number: 80
+  #             number: 8080
       - path: /employees
         pathType: Prefix
         backend:
           service:
             name: maliev-employee-service
             port:
-              number: 80
+              number: 808080
   #     - path: /invoices
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-invoice-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /jobs
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-job-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /logs
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-log-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /materials
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-material-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /messages
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-message-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /orders
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-order-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /orderstatuses
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-orderstatus-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /payments
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-payment-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /pdfs
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-pdf-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /predictions
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-prediction-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /purchaseorders
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-purchaseorder-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /quotationrequests
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-quotationrequest-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /quotations
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-quotation-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /receipts
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-receipt-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /suppliers
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-supplier-service
   #           port:
-  #             number: 80
+  #             number: 8080
   #     - path: /uploads
   #       pathType: Prefix
   #       backend:
   #         service:
   #           name: maliev-upload-service
   #           port:
-  #             number: 80
+  #             number: 8080
   # - host: dev.intranet.maliev.com
   #   http:
   #     paths:
@@ -199,7 +199,7 @@ spec:
   #         service:
   #           name: maliev-intranet
   #           port:
-  #             number: 80
+  #             number: 8080
   # - host: dev.maliev.com
   #   http:
   #     paths:
@@ -209,7 +209,7 @@ spec:
   #         service:
   #           name: maliev-web
   #           port:
-  #             number: 80
+  #             number: 8080
   - host: dev.line-chatbot.maliev.com
     http:
       paths:
