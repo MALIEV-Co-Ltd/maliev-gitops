@@ -7,21 +7,14 @@ metadata:
     kubernetes.io/ingress.class: gce
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: maliev-ip
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    # Temporarily disable to break chicken-egg cycle  
+    # cert-manager.io/cluster-issuer: letsencrypt-staging
 spec:
-  tls:
-  # # - hosts:
-  # #   - dev.www.maliev.com
-  # #   secretName: dev-www-maliev-com-tls
-  - hosts:
-    - dev.api.maliev.com
-    secretName: dev-api-maliev-com-tls
-  # # - hosts:
-  # #   - dev.intranet.maliev.com
-  # #   secretName: dev-intranet-maliev-com-tls
-  # # - hosts:
-  # #   - dev.line-chatbot.maliev.com
-  # #   secretName: dev-line-chatbot-maliev-com-tls
+  # Temporarily disable TLS to get Load Balancer working first
+  # tls:
+  # - hosts:
+  #   - dev.api.maliev.com  
+  #   secretName: dev-api-maliev-com-tls
   rules:
   # - host: dev.www.maliev.com
   #   http:
