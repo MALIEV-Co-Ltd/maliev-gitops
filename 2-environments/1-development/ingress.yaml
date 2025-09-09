@@ -6,25 +6,13 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: gce
     kubernetes.io/ingress.allow-http: "true"
-    # Temporarily remove to break chicken-egg cycle - will add back after HTTP works
-    # kubernetes.io/ingress.global-static-ip-name: maliev-www-ip
-    # Temporarily disable cert-manager
-    # cert-manager.io/cluster-issuer: letsencrypt-staging
+    kubernetes.io/ingress.global-static-ip-name: maliev-www-ip
+    cert-manager.io/cluster-issuer: letsencrypt-staging
 spec:
-  # Temporarily disable TLS to test basic routing
-  # tls:
-  # # - hosts:
-  # #   - dev.www.maliev.com
-  # #   secretName: dev-www-maliev-com-tls
-  # - hosts:
-  #   - dev.api.maliev.com
-  #   secretName: dev-api-maliev-com-tls
-  # # - hosts:
-  # #   - dev.intranet.maliev.com
-  # #   secretName: dev-intranet-maliev-com-tls
-  # # - hosts:
-  # #   - dev.line-chatbot.maliev.com
-  # #   secretName: dev-line-chatbot-maliev-com-tls
+  tls:
+  - hosts:
+    - dev.api.maliev.com
+    secretName: dev-api-maliev-com-tls
   rules:
   # - host: dev.www.maliev.com
   #   http:
