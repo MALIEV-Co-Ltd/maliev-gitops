@@ -6,7 +6,8 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: gce
     kubernetes.io/ingress.allow-http: "true"
-    kubernetes.io/ingress.global-static-ip-name: maliev-www-ip
+    # Temporarily remove to break chicken-egg cycle - will add back after HTTP works
+    # kubernetes.io/ingress.global-static-ip-name: maliev-www-ip
     # Temporarily disable cert-manager
     # cert-manager.io/cluster-issuer: letsencrypt-staging
 spec:
