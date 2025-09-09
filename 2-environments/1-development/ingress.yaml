@@ -10,18 +10,18 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-staging
 spec:
   tls:
-  - hosts:
-    - dev.www.maliev.com
-    secretName: dev-www-maliev-com-tls
+  # - hosts:
+  #   - dev.www.maliev.com
+  #   secretName: dev-www-maliev-com-tls
   - hosts:
     - dev.api.maliev.com
     secretName: dev-api-maliev-com-tls
-  - hosts:
-    - dev.intranet.maliev.com
-    secretName: dev-intranet-maliev-com-tls
-  - hosts:
-    - dev.line-chatbot.maliev.com
-    secretName: dev-line-chatbot-maliev-com-tls
+  # - hosts:
+  #   - dev.intranet.maliev.com
+  #   secretName: dev-intranet-maliev-com-tls
+  # - hosts:
+  #   - dev.line-chatbot.maliev.com
+  #   secretName: dev-line-chatbot-maliev-com-tls
   rules:
   # - host: dev.www.maliev.com
   #   http:
@@ -63,7 +63,7 @@ spec:
           service:
             name: maliev-customer-service
             port:
-              number: 808080
+              number: 8080
   #     - path: /emails
   #       pathType: Prefix
   #       backend:
@@ -77,7 +77,7 @@ spec:
           service:
             name: maliev-employee-service
             port:
-              number: 808080
+              number: 8080
   #     - path: /invoices
   #       pathType: Prefix
   #       backend:
@@ -210,13 +210,13 @@ spec:
   #           name: maliev-web
   #           port:
   #             number: 8080
-  - host: dev.line-chatbot.maliev.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: maliev-line-chatbot-service
-            port:
-              number: 80
+  # - host: dev.line-chatbot.maliev.com
+  #   http:
+  #     paths:
+  #     - path: /
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: maliev-line-chatbot-service
+  #           port:
+  #             number: 80
