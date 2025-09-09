@@ -16,3 +16,4 @@ patches:
 - path: health-check-patch.yaml
 - path: logging-config-patch.yaml
 - path: service-secrets-patch.yaml
+- path: ssl-config-patch.yaml
