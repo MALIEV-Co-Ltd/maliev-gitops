@@ -7,7 +7,6 @@ metadata:
     kubernetes.io/ingress.class: gce
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: maliev-ip
-    # Temporarily disable to break chicken-egg cycle  
     # cert-manager.io/cluster-issuer: letsencrypt-staging
 spec:
   # Temporarily disable TLS to get Load Balancer working first
