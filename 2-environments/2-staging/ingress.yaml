@@ -9,20 +9,20 @@ metadata:
     kubernetes.io/ingress.global-static-ip-name: maliev-www-ip
     cert-manager.io/cluster-issuer: letsencrypt-staging
 spec:
-  tls:
-  - hosts:
-    - staging.www.maliev.com
-    secretName: staging-www-maliev-com-tls
-  - hosts:
-    - staging.api.maliev.com
-    secretName: staging-api-maliev-com-tls
-  - hosts:
-    - staging.intranet.maliev.com
-    secretName: staging-intranet-maliev-com-tls
-  - hosts:
-    - staging.line-chatbot.maliev.com
-    secretName: staging-line-chatbot-maliev-com-tls
-  rules:
+  # tls:
+  # - hosts:
+  #   - staging.www.maliev.com
+  #   secretName: staging-www-maliev-com-tls
+  # - hosts:
+  #   - staging.api.maliev.com
+  #   secretName: staging-api-maliev-com-tls
+  # - hosts:
+  #   - staging.intranet.maliev.com
+  #   secretName: staging-intranet-maliev-com-tls
+  # - hosts:
+  #   - staging.line-chatbot.maliev.com
+  #   secretName: staging-line-chatbot-maliev-com-tls
+  # rules:
   # - host: staging.www.maliev.com
   #   http:
   #     paths:
@@ -210,13 +210,13 @@ spec:
   #           name: maliev-web
   #           port:
   #             number: 8080
-  - host: staging.line-chatbot.maliev.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: maliev-line-chatbot-service
-            port:
-              number: 80
+  # - host: staging.line-chatbot.maliev.com
+  #   http:
+  #     paths:
+  #     - path: /
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: maliev-line-chatbot-service
+  #           port:
+  #             number: 80
