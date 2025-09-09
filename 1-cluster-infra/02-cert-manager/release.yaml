@@ -24,7 +24,7 @@ spec:
         - 'intranet.maliev.com'
       http01:
         ingress:
-          name: gce-ingress-maliev
+          class: gce
 
 ---
 
@@ -48,7 +48,7 @@ spec:
         - 'dev.line-chatbot.maliev.com'
       http01:
         ingress:
-          name: gce-ingress-maliev-development
+          class: gce
     - selector:
         dnsNames:
         - 'staging.www.maliev.com'
@@ -58,4 +58,4 @@ spec:
         - 'staging.line-chatbot.maliev.com'
       http01:
         ingress:
-          name: gce-ingress-maliev-staging
+          class: gce

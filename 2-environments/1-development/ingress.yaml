@@ -8,6 +8,8 @@ metadata:
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: maliev-ip
     cert-manager.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/issue-temporary-certificate: "true"
+    acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   tls:
   - hosts:
