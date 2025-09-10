@@ -40,3 +40,10 @@ spec:
             name: maliev-employee-service
             port:
               number: 8080
+      - path: /countries
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-country-service
+            port:
+              number: 8080
