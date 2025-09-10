@@ -16,4 +16,3 @@ spec:
       target:
         type: Utilization
         averageUtilization: 80
-ation: 80
