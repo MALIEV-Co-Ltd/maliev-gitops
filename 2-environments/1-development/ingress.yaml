@@ -47,3 +47,10 @@ spec:
             name: maliev-country-service
             port:
               number: 8080
+      - path: /currencies
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-currency-service
+            port:
+              number: 8080
