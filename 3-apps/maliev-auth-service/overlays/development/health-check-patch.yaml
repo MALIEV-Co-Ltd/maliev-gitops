@@ -17,7 +17,7 @@ spec:
           failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /auth/liveness
+            path: /auth/readiness
             port: 8080
           initialDelaySeconds: 20
           periodSeconds: 5
