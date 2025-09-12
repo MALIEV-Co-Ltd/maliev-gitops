@@ -149,11 +149,11 @@ spec:
   #           name: maliev-pdf-service
   #           port:
   #             number: 8080
-  #     - path: /jobs
+  #     - path: /careers
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-job-service
+  #           name: maliev-career-service
   #           port:
   #             number: 8080
   #     - path: /invoices

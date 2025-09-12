@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: job-service-hpa
+  name: career-service-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: maliev-job-service
+    name: maliev-career-service
   minReplicas: 1
   maxReplicas: 3
   metrics:

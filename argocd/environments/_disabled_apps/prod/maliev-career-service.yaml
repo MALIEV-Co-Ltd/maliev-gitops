@@ -1,23 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: maliev-job-service-dev
+  name: maliev-career-service-prod
   namespace: argocd
   labels:
-    app.kubernetes.io/name: maliev-job-service
+    app.kubernetes.io/name: maliev-career-service
     app.kubernetes.io/part-of: maliev
-    app.kubernetes.io/environment: development
+    app.kubernetes.io/environment: production
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
-    targetRevision: main
-    path: 3-apps/maliev-job-service/overlays/development
+    targetRevision: v1.0.0
+    path: 3-apps/maliev-career-service/overlays/production
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: maliev-dev
+    namespace: maliev-prod
   syncPolicy:
     automated:
       prune: true

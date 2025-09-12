@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-job-service
+  name: maliev-career-service
   labels:
-    app: maliev-job-service
+    app: maliev-career-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,25 +13,25 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-job-service
+      app: maliev-career-service
   template:
     metadata:
       labels:
-        app: maliev-job-service
+        app: maliev-career-service
     spec:
       
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-job-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-job-service
+      - name: maliev-career-service
+        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-career-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
         livenessProbe:
           httpGet:
-            path: /jobs/liveness
+            path: /careers/liveness
             port: 8080
         readinessProbe:
           httpGet:
-            path: /jobs/readiness
+            path: /careers/readiness
             port: 8080
