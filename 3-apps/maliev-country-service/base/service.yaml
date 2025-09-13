@@ -4,6 +4,7 @@ metadata:
   name: maliev-country-service
   labels:
     app: maliev-country-service
+    monitor: "true"
 spec:
   type: NodePort
   selector:

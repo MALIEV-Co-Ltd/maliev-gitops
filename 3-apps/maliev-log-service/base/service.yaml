@@ -4,6 +4,7 @@ metadata:
   name: maliev-log-service
   labels:
     app: maliev-log-service
+    monitor: "true"
 spec:
   type: NodePort
   selector:

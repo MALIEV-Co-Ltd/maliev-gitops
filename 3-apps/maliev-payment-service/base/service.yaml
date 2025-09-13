@@ -4,6 +4,7 @@ metadata:
   name: maliev-payment-service
   labels:
     app: maliev-payment-service
+    monitor: "true"
 spec:
   type: NodePort
   selector:

@@ -4,6 +4,7 @@ metadata:
   name: maliev-quotationrequest-service
   labels:
     app: maliev-quotationrequest-service
+    monitor: "true"
 spec:
   type: NodePort
   selector:

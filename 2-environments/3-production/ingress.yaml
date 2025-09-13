@@ -163,11 +163,11 @@ spec:
   #           name: maliev-invoice-service
   #           port:
   #             number: 8080
-  #     - path: /messages
+  #     - path: /contacts
   #       pathType: Prefix
   #       backend:
   #         service:
-  #           name: maliev-message-service
+  #           name: maliev-contact-service
   #           port:
   #             number: 8080
   #     - path: /purchaseorders

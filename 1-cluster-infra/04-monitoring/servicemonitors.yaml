@@ -39,7 +39,7 @@ spec:
     interval: 30s
     targetPort: 8080
   - port: http
-    path: /messages/metrics
+    path: /contacts/metrics
     interval: 30s
     targetPort: 8080
   - port: http

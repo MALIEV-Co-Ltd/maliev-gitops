@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-message-service
+  name: maliev-contact-service
 spec:
   template:
     spec:
       containers:
-      - name: maliev-message-service
+      - name: maliev-contact-service
         livenessProbe:
           initialDelaySeconds: 10
           periodSeconds: 5

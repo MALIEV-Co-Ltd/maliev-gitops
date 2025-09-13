@@ -4,6 +4,7 @@ metadata:
   name: maliev-upload-service
   labels:
     app: maliev-upload-service
+    monitor: "true"
 spec:
   type: NodePort
   selector:

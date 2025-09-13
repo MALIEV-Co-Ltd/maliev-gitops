@@ -4,6 +4,7 @@ metadata:
   name: maliev-employee-service
   labels:
     app: maliev-employee-service
+    monitor: "true"
 spec:
   type: NodePort
   selector:

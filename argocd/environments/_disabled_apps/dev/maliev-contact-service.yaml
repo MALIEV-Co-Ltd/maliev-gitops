@@ -1,12 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: message-service-staging
+  name: maliev-contact-service-dev
   namespace: argocd
   labels:
-    app.kubernetes.io/name: message-service
+    app.kubernetes.io/name: maliev-contact-service
     app.kubernetes.io/part-of: maliev
-    app.kubernetes.io/environment: staging
+    app.kubernetes.io/environment: development
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
@@ -14,10 +14,10 @@ spec:
   source:
     repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
     targetRevision: main
-    path: 3-apps/message-service/overlays/staging
+    path: 3-apps/maliev-contact-service/overlays/development
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: maliev-staging
+    namespace: maliev-dev
   syncPolicy:
     automated:
       prune: true

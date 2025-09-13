@@ -5,6 +5,7 @@ metadata:
   namespace: maliev
   labels:
     run: maliev-line-chatbot-service
+    monitor: "true"
 spec:
   ports:
   - port: 80

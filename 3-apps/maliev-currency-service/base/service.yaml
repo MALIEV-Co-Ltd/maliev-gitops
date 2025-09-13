@@ -4,6 +4,7 @@ metadata:
   name: maliev-currency-service
   labels:
     app: maliev-currency-service
+    monitor: "true"
 spec:
   type: NodePort
   selector:

@@ -4,6 +4,7 @@ metadata:
   name: maliev-prediction-service
   labels:
     app: maliev-prediction-service
+    monitor: "true"
 spec:
   type: NodePort
   selector:

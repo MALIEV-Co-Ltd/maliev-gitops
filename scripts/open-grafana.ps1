@@ -71,51 +71,72 @@ function Write-ColoredOutput {
 }
 
 function Test-Prerequisites {
-    Write-ColoredOutput "🔍 Checking prerequisites..." $Blue
+    Write-ColoredOutput "Checking prerequisites..." $Blue
 
     # Check if kubectl is available
     try {
-        $null = kubectl version --client --short 2>$null
-        Write-ColoredOutput "✅ kubectl is available" $Green
+        $kubectlVersion = & kubectl version --client 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-ColoredOutput "kubectl is available" $Green
+        } else {
+            throw "kubectl command failed"
+        }
     }
     catch {
-        Write-ColoredOutput "❌ kubectl is not available. Please install kubectl first." $Red
+        Write-ColoredOutput "kubectl is not available. Please install kubectl first." $Red
         exit 1
     }
 
     # Check if we can connect to cluster
     try {
-        $null = kubectl cluster-info --request-timeout=5s 2>$null
-        Write-ColoredOutput "✅ Connected to Kubernetes cluster" $Green
+        $clusterInfo = & kubectl cluster-info --request-timeout=5s 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-ColoredOutput "Connected to Kubernetes cluster" $Green
+        } else {
+            throw "Cannot connect to cluster"
+        }
     }
     catch {
-        Write-ColoredOutput "❌ Cannot connect to Kubernetes cluster. Please check your kubeconfig." $Red
+        Write-ColoredOutput "Cannot connect to Kubernetes cluster. Please check your kubeconfig." $Red
         exit 1
     }
 
     # Check if monitoring namespace exists
-    $monitoringExists = kubectl get namespace monitoring --no-headers --ignore-not-found 2>$null
-    if (-not $monitoringExists) {
-        Write-ColoredOutput "❌ Monitoring namespace not found. Please deploy Prometheus-Grafana first." $Red
+    try {
+        $monitoringExists = & kubectl get namespace monitoring --no-headers --ignore-not-found 2>&1
+        if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($monitoringExists)) {
+            Write-ColoredOutput "Monitoring namespace not found. Please deploy Prometheus-Grafana first." $Red
+            exit 1
+        }
+        Write-ColoredOutput "Monitoring namespace exists" $Green
+    }
+    catch {
+        Write-ColoredOutput "Error checking monitoring namespace: $_" $Red
         exit 1
     }
-    Write-ColoredOutput "✅ Monitoring namespace exists" $Green
 }
 
 function Get-GrafanaCredentials {
-    Write-ColoredOutput "🔑 Retrieving Grafana credentials..." $Blue
+    Write-ColoredOutput "Retrieving Grafana credentials..." $Blue
 
     try {
-        $username = kubectl get secret -n monitoring prometheus-grafana -o jsonpath="{.data.admin-user}" | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
-        $password = kubectl get secret -n monitoring prometheus-grafana -o jsonpath="{.data.admin-password}" | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
+        $usernameBase64 = & kubectl get secret -n monitoring prometheus-grafana -o jsonpath="{.data.admin-user}" 2>&1
+        $passwordBase64 = & kubectl get secret -n monitoring prometheus-grafana -o jsonpath="{.data.admin-password}" 2>&1
 
-        return @{
-            Username = $username
-            Password = $password
+        if ($LASTEXITCODE -eq 0 -and $usernameBase64 -and $passwordBase64) {
+            $username = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($usernameBase64))
+            $password = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($passwordBase64))
+
+            return @{
+                Username = $username
+                Password = $password
+            }
+        } else {
+            throw "Failed to retrieve credentials"
         }
     }
     catch {
-        Write-ColoredOutput "⚠️  Could not retrieve credentials. Using defaults." $Yellow
+        Write-ColoredOutput "Could not retrieve credentials. Using defaults." $Yellow
         return @{
             Username = "admin"
             Password = "prom-operator"
@@ -132,12 +153,12 @@ function Start-PortForwarding {
         [string]$DisplayName
     )
 
-    Write-ColoredOutput "🔄 Starting port forwarding for ${DisplayName}..." $Blue
+    Write-ColoredOutput "Starting port forwarding for ${DisplayName}..." $Blue
 
     # Check if port is already in use
     $portInUse = Get-NetTCPConnection -LocalPort $LocalPort -State Listen -ErrorAction SilentlyContinue
     if ($portInUse) {
-        Write-ColoredOutput "⚠️  Port $LocalPort is already in use. Attempting to kill existing process..." $Yellow
+        Write-ColoredOutput "WARNING: Port $LocalPort is already in use. Attempting to kill existing process..." $Yellow
         $process = Get-Process -Id $portInUse.OwningProcess -ErrorAction SilentlyContinue
         if ($process) {
             Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
@@ -148,7 +169,7 @@ function Start-PortForwarding {
     # Start port forwarding
     $job = Start-Job -ScriptBlock {
         param($ServiceName, $Namespace, $LocalPort, $ServicePort)
-        kubectl port-forward -n $Namespace svc/$ServiceName "${LocalPort}:${ServicePort}"
+        & kubectl port-forward -n $Namespace svc/$ServiceName "${LocalPort}:${ServicePort}"
     } -ArgumentList $ServiceName, $Namespace, $LocalPort, $ServicePort
 
     # Wait for port forwarding to be ready
@@ -160,7 +181,7 @@ function Start-PortForwarding {
         try {
             $response = Invoke-WebRequest -Uri "http://localhost:$LocalPort" -Method Head -TimeoutSec 2 -ErrorAction SilentlyContinue
             if ($response) {
-                Write-ColoredOutput "✅ ${DisplayName} port forwarding is ready on localhost:$LocalPort" $Green
+                Write-ColoredOutput "SUCCESS: ${DisplayName} port forwarding is ready on localhost:$LocalPort" $Green
                 return $job
             }
         }
@@ -169,7 +190,7 @@ function Start-PortForwarding {
         }
     } while ($elapsed -lt $timeout)
 
-    Write-ColoredOutput "⚠️  ${DisplayName} port forwarding might not be ready yet, but continuing..." $Yellow
+    Write-ColoredOutput "${DisplayName} port forwarding might not be ready yet, but continuing..." $Yellow
     return $job
 }
 
@@ -180,7 +201,7 @@ function Open-Browser {
         return
     }
 
-    Write-ColoredOutput "🌐 Opening browser..." $Blue
+    Write-ColoredOutput "Opening browser..." $Blue
 
     try {
         if ($IsWindows -or $env:OS -eq "Windows_NT") {
@@ -193,36 +214,36 @@ function Open-Browser {
             open $Url
         }
         else {
-            Write-ColoredOutput "⚠️  Cannot detect OS. Please open $Url manually." $Yellow
+            Write-ColoredOutput "Cannot detect OS. Please open $Url manually." $Yellow
         }
     }
     catch {
-        Write-ColoredOutput "⚠️  Could not open browser automatically. Please open $Url manually." $Yellow
+        Write-ColoredOutput "Could not open browser automatically. Please open $Url manually." $Yellow
     }
 }
 
 function Show-Instructions {
     param($Credentials)
 
-    Write-ColoredOutput "`n🎯 Access Information:" $Blue
-    Write-ColoredOutput "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" $Blue
-    Write-ColoredOutput "📊 Grafana Dashboard:  http://localhost:$GrafanaPort" $Green
-    Write-ColoredOutput "📈 Prometheus:         http://localhost:$PrometheusPort" $Green
-    Write-ColoredOutput "`n🔐 Login Credentials:" $Blue
+    Write-ColoredOutput "Access Information:" $Blue
+    Write-ColoredOutput "============================================================================" $Blue
+    Write-ColoredOutput "Grafana Dashboard:  http://localhost:$GrafanaPort" $Green
+    Write-ColoredOutput "Prometheus:         http://localhost:$PrometheusPort" $Green
+    Write-ColoredOutput "Login Credentials:" $Blue
     Write-ColoredOutput "Username: $($Credentials.Username)" $Yellow
     Write-ColoredOutput "Password: $($Credentials.Password)" $Yellow
-    Write-ColoredOutput "`n📚 Quick Start:" $Blue
+    Write-ColoredOutput "Quick Start:" $Blue
     Write-ColoredOutput "1. Login to Grafana with the credentials above" $Reset
-    Write-ColoredOutput "2. Go to Dashboards → Browse" $Reset
+    Write-ColoredOutput "2. Go to Dashboards -> Browse" $Reset
     Write-ColoredOutput "3. Import dashboard ID 315 for Kubernetes monitoring" $Reset
     Write-ColoredOutput "4. Create custom dashboards for Maliev services" $Reset
-    Write-ColoredOutput "`n⚠️  Press Ctrl+C to stop port forwarding and exit" $Yellow
-    Write-ColoredOutput "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" $Blue
+    Write-ColoredOutput "Press Ctrl+C to stop port forwarding and exit" $Yellow
+    Write-ColoredOutput "============================================================================" $Blue
 }
 
 # Main execution
 try {
-    Write-ColoredOutput "`n🚀 Maliev Grafana Access Script" $Blue
+    Write-ColoredOutput "Maliev Grafana Access Script" $Blue
     Write-ColoredOutput "Environment: $Environment" $Yellow
 
     Test-Prerequisites
@@ -245,26 +266,26 @@ try {
 
             # Check if jobs are still running
             if ($grafanaJob.State -eq "Failed") {
-                Write-ColoredOutput "❌ Grafana port forwarding failed!" $Red
+                Write-ColoredOutput "Grafana port forwarding failed!" $Red
                 break
             }
             if ($prometheusJob.State -eq "Failed") {
-                Write-ColoredOutput "❌ Prometheus port forwarding failed!" $Red
+                Write-ColoredOutput "Prometheus port forwarding failed!" $Red
                 break
             }
         }
     }
     catch [System.Management.Automation.PipelineStoppedException] {
-        Write-ColoredOutput "`n🛑 Stopping port forwarding..." $Yellow
+        Write-ColoredOutput "Stopping port forwarding..." $Yellow
     }
 }
 catch {
-    Write-ColoredOutput "❌ An error occurred: $_" $Red
+    Write-ColoredOutput "An error occurred: $_" $Red
     exit 1
 }
 finally {
     # Clean up jobs
     if ($grafanaJob) { Stop-Job $grafanaJob -ErrorAction SilentlyContinue; Remove-Job $grafanaJob -ErrorAction SilentlyContinue }
     if ($prometheusJob) { Stop-Job $prometheusJob -ErrorAction SilentlyContinue; Remove-Job $prometheusJob -ErrorAction SilentlyContinue }
-    Write-ColoredOutput "🏁 Port forwarding stopped. Goodbye!" $Green
+    Write-ColoredOutput "Port forwarding stopped. Goodbye!" $Green
 }
