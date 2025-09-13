@@ -4,6 +4,7 @@ metadata:
   name: maliev-auth-service
   labels:
     app: maliev-auth-service
+    monitor: "true"
 spec:
   type: NodePort
   selector:
