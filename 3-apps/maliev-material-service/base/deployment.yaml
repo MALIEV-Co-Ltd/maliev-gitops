@@ -35,3 +35,6 @@ spec:
           httpGet:
             path: /materials/readiness
             port: 8080
+        envFrom:
+        - secretRef:
+            name: maliev-material-service-secrets
