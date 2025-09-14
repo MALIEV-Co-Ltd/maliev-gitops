@@ -49,41 +49,43 @@ param(
     [int]$PrometheusPort = 9090,
 
     [Parameter()]
-    [switch]$SkipBrowser
+    [switch]$SkipBrowser,
+	
+	[Parameter()]
+	[string]$GrafanaUser = "admin",
+	
+	[Parameter()]
+    [string]$GrafanaPassword
 )
 
 # Set error action preference
 $ErrorActionPreference = "Stop"
 
-# Colors for output
-$Green = "`e[32m"
-$Yellow = "`e[33m"
-$Red = "`e[31m"
-$Blue = "`e[34m"
-$Reset = "`e[0m"
-
 function Write-ColoredOutput {
     param(
         [string]$Message,
-        [string]$Color = $Reset
+        [ConsoleColor]$Color = 'White'
     )
-    Write-Host "${Color}${Message}${Reset}"
+    $oldColor = $Host.UI.RawUI.ForegroundColor
+    $Host.UI.RawUI.ForegroundColor = $Color
+    Write-Host $Message
+    $Host.UI.RawUI.ForegroundColor = $oldColor
 }
 
 function Test-Prerequisites {
-    Write-ColoredOutput "Checking prerequisites..." $Blue
+    Write-ColoredOutput "Checking prerequisites..." Blue
 
     # Check if kubectl is available
     try {
         $kubectlVersion = & kubectl version --client 2>&1
         if ($LASTEXITCODE -eq 0) {
-            Write-ColoredOutput "kubectl is available" $Green
+            Write-ColoredOutput "kubectl is available" Green
         } else {
             throw "kubectl command failed"
         }
     }
     catch {
-        Write-ColoredOutput "kubectl is not available. Please install kubectl first." $Red
+        Write-ColoredOutput "kubectl is not available. Please install kubectl first." Red
         exit 1
     }
 
@@ -91,13 +93,13 @@ function Test-Prerequisites {
     try {
         $clusterInfo = & kubectl cluster-info --request-timeout=5s 2>&1
         if ($LASTEXITCODE -eq 0) {
-            Write-ColoredOutput "Connected to Kubernetes cluster" $Green
+            Write-ColoredOutput "Connected to Kubernetes cluster" Green
         } else {
             throw "Cannot connect to cluster"
         }
     }
     catch {
-        Write-ColoredOutput "Cannot connect to Kubernetes cluster. Please check your kubeconfig." $Red
+        Write-ColoredOutput "Cannot connect to Kubernetes cluster. Please check your kubeconfig." Red
         exit 1
     }
 
@@ -105,42 +107,35 @@ function Test-Prerequisites {
     try {
         $monitoringExists = & kubectl get namespace monitoring --no-headers --ignore-not-found 2>&1
         if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($monitoringExists)) {
-            Write-ColoredOutput "Monitoring namespace not found. Please deploy Prometheus-Grafana first." $Red
+            Write-ColoredOutput "Monitoring namespace not found. Please deploy Prometheus-Grafana first." Red
             exit 1
         }
-        Write-ColoredOutput "Monitoring namespace exists" $Green
+        Write-ColoredOutput "Monitoring namespace exists" Green
     }
     catch {
-        Write-ColoredOutput "Error checking monitoring namespace: $_" $Red
+        Write-ColoredOutput "Error checking monitoring namespace: $_" Red
         exit 1
     }
 }
 
 function Get-GrafanaCredentials {
-    Write-ColoredOutput "Retrieving Grafana credentials..." $Blue
+    if ($GrafanaUser -and $GrafanaPassword) {
+        return @{
+            Username = $GrafanaUser
+            Password = $GrafanaPassword
+        }
+    }
 
+    # fallback to secret lookup if user did not provide
     try {
         $usernameBase64 = & kubectl get secret -n monitoring prometheus-grafana -o jsonpath="{.data.admin-user}" 2>&1
         $passwordBase64 = & kubectl get secret -n monitoring prometheus-grafana -o jsonpath="{.data.admin-password}" 2>&1
-
-        if ($LASTEXITCODE -eq 0 -and $usernameBase64 -and $passwordBase64) {
-            $username = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($usernameBase64))
-            $password = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($passwordBase64))
-
-            return @{
-                Username = $username
-                Password = $password
-            }
-        } else {
-            throw "Failed to retrieve credentials"
-        }
+        $username = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($usernameBase64))
+        $password = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($passwordBase64))
+        return @{ Username = $username; Password = $password }
     }
     catch {
-        Write-ColoredOutput "Could not retrieve credentials. Using defaults." $Yellow
-        return @{
-            Username = "admin"
-            Password = "prom-operator"
-        }
+        throw "No Grafana credentials supplied and none could be retrieved."
     }
 }
 
@@ -153,12 +148,12 @@ function Start-PortForwarding {
         [string]$DisplayName
     )
 
-    Write-ColoredOutput "Starting port forwarding for ${DisplayName}..." $Blue
+    Write-ColoredOutput "Starting port forwarding for ${DisplayName}..." Blue
 
     # Check if port is already in use
     $portInUse = Get-NetTCPConnection -LocalPort $LocalPort -State Listen -ErrorAction SilentlyContinue
     if ($portInUse) {
-        Write-ColoredOutput "WARNING: Port $LocalPort is already in use. Attempting to kill existing process..." $Yellow
+        Write-ColoredOutput "WARNING: Port $LocalPort is already in use. Attempting to kill existing process..." Yellow
         $process = Get-Process -Id $portInUse.OwningProcess -ErrorAction SilentlyContinue
         if ($process) {
             Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
@@ -181,7 +176,7 @@ function Start-PortForwarding {
         try {
             $response = Invoke-WebRequest -Uri "http://localhost:$LocalPort" -Method Head -TimeoutSec 2 -ErrorAction SilentlyContinue
             if ($response) {
-                Write-ColoredOutput "SUCCESS: ${DisplayName} port forwarding is ready on localhost:$LocalPort" $Green
+                Write-ColoredOutput "SUCCESS: ${DisplayName} port forwarding is ready on localhost:$LocalPort" Green
                 return $job
             }
         }
@@ -190,7 +185,7 @@ function Start-PortForwarding {
         }
     } while ($elapsed -lt $timeout)
 
-    Write-ColoredOutput "${DisplayName} port forwarding might not be ready yet, but continuing..." $Yellow
+    Write-ColoredOutput "${DisplayName} port forwarding might not be ready yet, but continuing..." Yellow
     return $job
 }
 
@@ -201,7 +196,7 @@ function Open-Browser {
         return
     }
 
-    Write-ColoredOutput "Opening browser..." $Blue
+    Write-ColoredOutput "Opening browser..." Blue
 
     try {
         if ($IsWindows -or $env:OS -eq "Windows_NT") {
@@ -214,37 +209,37 @@ function Open-Browser {
             open $Url
         }
         else {
-            Write-ColoredOutput "Cannot detect OS. Please open $Url manually." $Yellow
+            Write-ColoredOutput "Cannot detect OS. Please open $Url manually." Yellow
         }
     }
     catch {
-        Write-ColoredOutput "Could not open browser automatically. Please open $Url manually." $Yellow
+        Write-ColoredOutput "Could not open browser automatically. Please open $Url manually." Yellow
     }
 }
 
 function Show-Instructions {
     param($Credentials)
 
-    Write-ColoredOutput "Access Information:" $Blue
-    Write-ColoredOutput "============================================================================" $Blue
-    Write-ColoredOutput "Grafana Dashboard:  http://localhost:$GrafanaPort" $Green
-    Write-ColoredOutput "Prometheus:         http://localhost:$PrometheusPort" $Green
-    Write-ColoredOutput "Login Credentials:" $Blue
-    Write-ColoredOutput "Username: $($Credentials.Username)" $Yellow
-    Write-ColoredOutput "Password: $($Credentials.Password)" $Yellow
-    Write-ColoredOutput "Quick Start:" $Blue
-    Write-ColoredOutput "1. Login to Grafana with the credentials above" $Reset
-    Write-ColoredOutput "2. Go to Dashboards -> Browse" $Reset
-    Write-ColoredOutput "3. Import dashboard ID 315 for Kubernetes monitoring" $Reset
-    Write-ColoredOutput "4. Create custom dashboards for Maliev services" $Reset
-    Write-ColoredOutput "Press Ctrl+C to stop port forwarding and exit" $Yellow
-    Write-ColoredOutput "============================================================================" $Blue
+    Write-ColoredOutput "Access Information:" Blue
+    Write-ColoredOutput "============================================================================" Blue
+    Write-ColoredOutput "Grafana Dashboard:  http://localhost:$GrafanaPort" Green
+    Write-ColoredOutput "Prometheus:         http://localhost:$PrometheusPort" Green
+    Write-ColoredOutput "Login Credentials:" Blue
+    Write-ColoredOutput "Username: $($Credentials.Username)" Yellow
+    Write-ColoredOutput "Password: $($Credentials.Password)" Yellow
+    Write-ColoredOutput "Quick Start:" Blue
+    Write-ColoredOutput "1. Login to Grafana with the credentials above" White
+    Write-ColoredOutput "2. Go to Dashboards -> Browse" White
+    Write-ColoredOutput "3. Import dashboard ID 315 for Kubernetes monitoring" White
+    Write-ColoredOutput "4. Create custom dashboards for Maliev services" White
+    Write-ColoredOutput "Press Ctrl+C to stop port forwarding and exit" Yellow
+    Write-ColoredOutput "============================================================================" Blue
 }
 
 # Main execution
 try {
-    Write-ColoredOutput "Maliev Grafana Access Script" $Blue
-    Write-ColoredOutput "Environment: $Environment" $Yellow
+    Write-ColoredOutput "Maliev Grafana Access Script" Blue
+    Write-ColoredOutput "Environment: $Environment" Yellow
 
     Test-Prerequisites
     $credentials = Get-GrafanaCredentials
@@ -266,26 +261,26 @@ try {
 
             # Check if jobs are still running
             if ($grafanaJob.State -eq "Failed") {
-                Write-ColoredOutput "Grafana port forwarding failed!" $Red
+                Write-ColoredOutput "Grafana port forwarding failed!" Red
                 break
             }
             if ($prometheusJob.State -eq "Failed") {
-                Write-ColoredOutput "Prometheus port forwarding failed!" $Red
+                Write-ColoredOutput "Prometheus port forwarding failed!" Red
                 break
             }
         }
     }
     catch [System.Management.Automation.PipelineStoppedException] {
-        Write-ColoredOutput "Stopping port forwarding..." $Yellow
+        Write-ColoredOutput "Stopping port forwarding..." Yellow
     }
 }
 catch {
-    Write-ColoredOutput "An error occurred: $_" $Red
+    Write-ColoredOutput "An error occurred: $_" Red
     exit 1
 }
 finally {
     # Clean up jobs
     if ($grafanaJob) { Stop-Job $grafanaJob -ErrorAction SilentlyContinue; Remove-Job $grafanaJob -ErrorAction SilentlyContinue }
     if ($prometheusJob) { Stop-Job $prometheusJob -ErrorAction SilentlyContinue; Remove-Job $prometheusJob -ErrorAction SilentlyContinue }
-    Write-ColoredOutput "Port forwarding stopped. Goodbye!" $Green
+    Write-ColoredOutput "Port forwarding stopped. Goodbye!" Green
 }
