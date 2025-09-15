@@ -68,3 +68,10 @@ spec:
             name: maliev-upload-service
             port:
               number: 8080
+      - path: /careers
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-career-service
+            port:
+              number: 8080
