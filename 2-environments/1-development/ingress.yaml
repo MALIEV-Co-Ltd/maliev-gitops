@@ -61,3 +61,10 @@ spec:
             name: maliev-material-service
             port:
               number: 8080
+      - path: /uploads
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-upload-service
+            port:
+              number: 8080
