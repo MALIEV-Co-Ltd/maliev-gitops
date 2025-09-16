@@ -1,0 +1,56 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-cluster
+spec:
+  # Connection stability and resource optimization for 5-10 concurrent users
+  postgresql:
+    parameters:
+      # TCP keepalive settings to prevent connection drops during port forwarding
+      tcp_keepalives_idle: "60"      # Start keepalive after 60 seconds of inactivity
+      tcp_keepalives_interval: "10"   # Send keepalive every 10 seconds
+      tcp_keepalives_count: "3"      # Drop connection after 3 failed keepalives
+
+      # Connection management optimized for small scale
+      max_connections: "25"          # Sufficient for 5-10 users + connections from services
+      shared_buffers: "64MB"         # Reasonable for small workload
+      effective_cache_size: "256MB"  # Conservative cache size
+
+      # Connection timeout settings
+      statement_timeout: "300000"    # 5 minutes (300 seconds)
+      idle_in_transaction_session_timeout: "300000"  # 5 minutes
+
+      # Logging for troubleshooting connection issues
+      log_connections: "on"
+      log_disconnections: "on"
+      log_line_prefix: "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h "
+
+      # Optimize for stability over performance
+      checkpoint_completion_target: "0.9"
+      wal_buffers: "16MB"
+
+  # Resource limits appropriate for small scale deployment
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "200m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+  # Monitoring and health check optimization
+  monitoring:
+    enablePodMonitor: true
+    customQueries:
+      - name: "pg_connections"
+        help: "Number of active connections"
+        query: "SELECT count(*) as active_connections FROM pg_stat_activity WHERE state = 'active'"
+        metrics:
+          - active_connections:
+              usage: "GAUGE"
+              description: "Number of active connections"
+
+  # Health check configuration for faster detection of issues
+  livenessProbeTimeout: 30
+  readinessProbeTimeout: 30
+  startupProbeTimeout: 60
