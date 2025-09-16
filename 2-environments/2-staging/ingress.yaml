@@ -26,6 +26,20 @@ spec:
             name: maliev-auth-service
             port:
               number: 8080
+      - path: /customers
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-customer-service
+            port:
+              number: 8080
+      - path: /employees
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-employee-service
+            port:
+              number: 8080
       - path: /countries
         pathType: Prefix
         backend:
