@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-prediction-service
+spec:
+  template:
+    spec:
+      containers:
+      - name: maliev-prediction-service
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Staging"
