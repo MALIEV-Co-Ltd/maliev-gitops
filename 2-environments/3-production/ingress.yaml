@@ -11,32 +11,32 @@ metadata:
     cert-manager.io/issue-temporary-certificate: "true"
     acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
-  tls:
-  - hosts:
-    - api.maliev.com
-    secretName: api-maliev-com-tls
-  rules:
-  - host: api.maliev.com
-    http:
-      paths:
-      - path: /auth
-        pathType: Prefix
-        backend:
-          service:
-            name: maliev-auth-service
-            port:
-              number: 8080
-      - path: /countries
-        pathType: Prefix
-        backend:
-          service:
-            name: maliev-country-service
-            port:
-              number: 8080
-      - path: /currencies
-        pathType: Prefix
-        backend:
-          service:
-            name: maliev-currency-service
-            port:
-              number: 8080
+  # tls:
+  # - hosts:
+  #   - api.maliev.com
+  #   secretName: api-maliev-com-tls
+  # rules:
+  # - host: api.maliev.com
+  #   http:
+  #     paths:
+  #     - path: /auth
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: maliev-auth-service
+  #           port:
+  #             number: 8080
+  #     - path: /countries
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: maliev-country-service
+  #           port:
+  #             number: 8080
+  #     - path: /currencies
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: maliev-currency-service
+  #           port:
+  #             number: 8080
