@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-quotation-service
+spec:
+  template:
+    spec:
+      containers:
+      - name: maliev-quotation-service
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"

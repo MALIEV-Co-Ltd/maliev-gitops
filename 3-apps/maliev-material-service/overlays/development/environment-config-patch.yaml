@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-material-service
+spec:
+  template:
+    spec:
+      containers:
+      - name: maliev-material-service
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
