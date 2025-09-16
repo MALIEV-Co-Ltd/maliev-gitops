@@ -7,221 +7,36 @@ metadata:
     kubernetes.io/ingress.class: gce
     kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.global-static-ip-name: maliev-ip
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     cert-manager.io/issue-temporary-certificate: "true"
     acme.cert-manager.io/http01-edit-in-place: "true"
-    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
-  # tls:
-  # - hosts:
-  #   - www.maliev.com
-  #   secretName: www-maliev-com-tls
-  # - hosts:
-  #   - maliev.com
-  #   secretName: maliev-com-tls
-  # - hosts:
-  #   - api.maliev.com
-  #   secretName: api-maliev-com-tls
-  # - hosts:
-  #   - intranet.maliev.com
-  #   secretName: intranet-maliev-com-tls
-  # - hosts:
-  #   - line-chatbot.maliev.com
-  #   secretName: line-chatbot-maliev-com-tls
-  # rules:
-  # - host: www.maliev.com
-  #   http:
-  #     paths:
-  #     - path: /
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-web
-  #           port:
-  #             number: 8080
-  # - host: maliev.com
-  #   http:
-  #     paths:
-  #     - path: /
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-web
-  #           port:
-  #             number: 8080
-  # - host: api.maliev.com
-  #   http:
-  #     paths:
-  #     - path: /auth
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-auth-service
-  #           port:
-  #             number: 8080
-  #     - path: /countries
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-country-service
-  #           port:
-  #             number: 8080
-  #     - path: /currencies
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-currency-service
-  #           port:
-  #             number: 8080
-  #     - path: /customers
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-customer-service
-  #           port:
-  #             number: 8080
-  #     - path: /materials
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-material-service
-  #           port:
-  #             number: 8080
-  #     - path: /suppliers
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-supplier-service
-  #           port:
-  #             number: 8080
-  #     - path: /orderstatuses
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-orderstatus-service
-  #           port:
-  #             number: 8080
-  #     - path: /uploads
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-upload-service
-  #           port:
-  #             number: 8080
-  #     - path: /orders
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-order-service
-  #           port:
-  #             number: 8080
-  #     - path: /emails
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-email-service
-  #           port:
-  #             number: 8080
-  #     - path: /quotations
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-quotation-service
-  #           port:
-  #             number: 8080
-  #     - path: /employees
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-employee-service
-  #           port:
-  #             number: 8080
-  #     - path: /payments
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-payment-service
-  #           port:
-  #             number: 8080
-  #     - path: /pdfs
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-pdf-service
-  #           port:
-  #             number: 8080
-  #     - path: /careers
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-career-service
-  #           port:
-  #             number: 8080
-  #     - path: /invoices
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-invoice-service
-  #           port:
-  #             number: 8080
-  #     - path: /contacts
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-contact-service
-  #           port:
-  #             number: 8080
-  #     - path: /purchaseorders
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-purchaseorder-service
-  #           port:
-  #             number: 8080
-  #     - path: /receipts
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-receipt-service
-  #           port:
-  #             number: 8080
-  #     - path: /logs
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-log-service
-  #           port:
-  #             number: 8080
-  #     - path: /quotationrequests
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-quotationrequest-service
-  #           port:
-  #             number: 8080
-  #     - path: /predictions
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-prediction-service
-  #           port:
-  #             number: 8080
-  # - host: intranet.maliev.com
-  #   http:
-  #     paths:
-  #     - path: /
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-intranet
-  #           port:
-  #             number: 8080
-  # - host: line-chatbot.maliev.com
-  #   http:
-  #     paths:
-  #     - path: /
-  #       pathType: Prefix
-  #       backend:
-  #         service:
-  #           name: maliev-line-chatbot-service
-  #           port:
-  #             number: 80
+  tls:
+  - hosts:
+    - api.maliev.com
+    secretName: api-maliev-com-tls
+  rules:
+  - host: api.maliev.com
+    http:
+      paths:
+      - path: /auth
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-auth-service
+            port:
+              number: 8080
+      - path: /countries
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-country-service
+            port:
+              number: 8080
+      - path: /currencies
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-currency-service
+            port:
+              number: 8080
