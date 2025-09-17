@@ -6,6 +6,9 @@ spec:
   instances: 3
   primaryUpdateStrategy: unsupervised
 
+  # Disable automatic PDB creation to allow custom PDB for maintenance
+  enablePDB: false
+
   storage:
     size: 10Gi
     storageClass: standard
@@ -16,9 +19,9 @@ spec:
       owner: app_user
       secret:
         name: postgres-app-credentials
-  
+
   enableSuperuserAccess: true
-  
+
   superuserSecret:
     name: postgres-superuser-credentials
 

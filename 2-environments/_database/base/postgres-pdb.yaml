@@ -1,0 +1,24 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: postgres-cluster-primary
+spec:
+  # Allow 0 unavailable means all pods must be available, but allows
+  # temporary disruptions for maintenance (GKE can evict 1 pod at a time)
+  maxUnavailable: 0
+  selector:
+    matchLabels:
+      cnpg.io/cluster: postgres-cluster
+      cnpg.io/instanceRole: primary
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: postgres-cluster-replica
+spec:
+  # For replicas, allow 1 to be unavailable to enable rolling updates
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      cnpg.io/cluster: postgres-cluster
+      cnpg.io/instanceRole: replica
