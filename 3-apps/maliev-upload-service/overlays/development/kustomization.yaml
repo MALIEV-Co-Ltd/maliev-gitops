@@ -5,6 +5,9 @@ images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-upload-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-upload-service
   newTag: b6b342583de62ea9c421ff07209915b8b75eb257
+- name: maliev-upload-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-upload-service
+  newTag: a571a9d72baa759369148edc8456ddac17623958
 
 namespace: maliev-dev
 
