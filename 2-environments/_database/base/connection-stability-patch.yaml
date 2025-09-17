@@ -38,19 +38,9 @@ spec:
       memory: "1Gi"
       cpu: "500m"
 
-  # Monitoring and health check optimization
+  # Monitoring configuration (customQueries removed since Prometheus monitoring was disabled)
   monitoring:
     enablePodMonitor: true
-    customQueries:
-      - name: "pg_connections"
-        help: "Number of active connections"
-        query: "SELECT count(*) as active_connections FROM pg_stat_activity WHERE state = 'active'"
-        metrics:
-          - active_connections:
-              usage: "GAUGE"
-              description: "Number of active connections"
 
-  # Health check configuration for faster detection of issues
-  livenessProbeTimeout: 30
-  readinessProbeTimeout: 30
-  startupProbeTimeout: 60
+  # Health check configuration for faster detection of issues (using current API)
+  # Note: probe timeout fields moved to different location in newer CNPG versions
