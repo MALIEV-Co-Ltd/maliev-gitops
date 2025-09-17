@@ -3,9 +3,9 @@ kind: PodDisruptionBudget
 metadata:
   name: postgres-cluster-primary
 spec:
-  # Allow 0 unavailable means all pods must be available, but allows
-  # temporary disruptions for maintenance (GKE can evict 1 pod at a time)
-  maxUnavailable: 0
+  # Allow 1 unavailable for maintenance operations since we have only 1 primary
+  # This allows temporary disruptions while maintaining high availability
+  maxUnavailable: 1
   selector:
     matchLabels:
       cnpg.io/cluster: postgres-cluster
