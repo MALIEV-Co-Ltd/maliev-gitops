@@ -35,3 +35,8 @@ spec:
           httpGet:
             path: /careers/readiness
             port: 8080
+        envFrom:
+        - secretRef:
+            name: maliev-shared-secrets
+        - secretRef:
+            name: maliev-career-service-secrets
