@@ -23,6 +23,11 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: maliev-upload-service
+        envFrom:
+        - secretRef:
+            name: maliev-shared-secrets
+        - secretRef:
+            name: maliev-upload-service-secrets
         image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-upload-service
         imagePullPolicy: Always
         ports:
