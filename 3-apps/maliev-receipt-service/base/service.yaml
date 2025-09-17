@@ -4,7 +4,6 @@ metadata:
   name: maliev-receipt-service
   labels:
     app: maliev-receipt-service
-    monitor: "true"
 spec:
   type: NodePort
   selector:

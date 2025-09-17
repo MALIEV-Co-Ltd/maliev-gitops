@@ -4,7 +4,6 @@ metadata:
   name: maliev-career-service
   labels:
     app: maliev-career-service
-    monitor: "true"
 spec:
   type: NodePort
   selector:

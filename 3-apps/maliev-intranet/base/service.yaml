@@ -4,7 +4,6 @@ metadata:
   name: maliev-intranet
   labels:
     app: maliev-intranet
-    monitor: "true"
 spec:
   type: NodePort
   selector:

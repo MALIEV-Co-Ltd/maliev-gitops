@@ -4,7 +4,6 @@ metadata:
   name: maliev-email-service
   labels:
     app: maliev-email-service
-    monitor: "true"
 spec:
   type: NodePort
   selector:

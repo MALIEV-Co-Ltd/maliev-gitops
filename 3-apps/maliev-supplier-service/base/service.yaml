@@ -4,7 +4,6 @@ metadata:
   name: maliev-supplier-service
   labels:
     app: maliev-supplier-service
-    monitor: "true"
 spec:
   type: NodePort
   selector:

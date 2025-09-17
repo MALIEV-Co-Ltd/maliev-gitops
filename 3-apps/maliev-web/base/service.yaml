@@ -4,7 +4,6 @@ metadata:
   name: maliev-web
   labels:
     app: maliev-web
-    monitor: "true"
 spec:
   type: NodePort
   selector:

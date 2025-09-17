@@ -4,7 +4,6 @@ metadata:
   name: maliev-contact-service
   labels:
     app: maliev-contact-service
-    monitor: "true"
 spec:
   type: NodePort
   selector:

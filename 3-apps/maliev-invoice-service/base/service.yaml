@@ -4,7 +4,6 @@ metadata:
   name: maliev-invoice-service
   labels:
     app: maliev-invoice-service
-    monitor: "true"
 spec:
   type: NodePort
   selector:

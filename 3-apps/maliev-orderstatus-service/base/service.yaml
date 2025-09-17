@@ -4,7 +4,6 @@ metadata:
   name: maliev-orderstatus-service
   labels:
     app: maliev-orderstatus-service
-    monitor: "true"
 spec:
   type: NodePort
   selector:

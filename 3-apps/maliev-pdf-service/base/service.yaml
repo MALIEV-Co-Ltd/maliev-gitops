@@ -4,7 +4,6 @@ metadata:
   name: maliev-pdf-service
   labels:
     app: maliev-pdf-service
-    monitor: "true"
 spec:
   type: NodePort
   selector:

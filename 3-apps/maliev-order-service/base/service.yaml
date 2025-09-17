@@ -4,7 +4,6 @@ metadata:
   name: maliev-order-service
   labels:
     app: maliev-order-service
-    monitor: "true"
 spec:
   type: NodePort
   selector:
