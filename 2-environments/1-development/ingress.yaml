@@ -82,3 +82,10 @@ spec:
             name: maliev-contact-service
             port:
               number: 8080
+      - path: /purchaseorders
+        pathType: Prefix
+        backend:
+          service:
+            name: maliev-purchaseorder-service
+            port:
+              number: 8080
