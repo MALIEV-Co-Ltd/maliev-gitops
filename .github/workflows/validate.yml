@@ -25,7 +25,7 @@ jobs:
           config: .kube-linter.yml
           directory: 1-cluster-infra
           format: sarif
-          output-file: kube-linter-cluster-infra.sarif
+          output-file: $(pwd)/kube-linter-cluster-infra.sarif
         continue-on-error: true
 
       - name: Check Kubernetes best practices (environments)
@@ -34,7 +34,7 @@ jobs:
           config: .kube-linter.yml
           directory: 2-environments
           format: sarif
-          output-file: kube-linter-environments.sarif
+          output-file: $(pwd)/kube-linter-environments.sarif
         continue-on-error: true
 
       - name: Check Kubernetes best practices (apps)
@@ -43,7 +43,7 @@ jobs:
           config: .kube-linter.yml
           directory: 3-apps
           format: sarif
-          output-file: kube-linter-apps.sarif
+          output-file: $(pwd)/kube-linter-apps.sarif
         continue-on-error: true
 
       - name: List generated SARIF files
