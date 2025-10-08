@@ -13,9 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: Lint YAML files
         uses: ibiqlik/action-yamllint@v3
         with:
@@ -61,16 +58,20 @@ jobs:
         run: |
           [ -f kube-linter-apps.sarif ] || echo '{"runs":[]}' > kube-linter-apps.sarif
 
-      - name: Combine SARIF files
-        run: |
-          # Merge the 'runs' arrays from the three SARIF files into one SARIF.
-          # jq -s will read all files into an array. We then construct a new object.
-          jq -s '{version: (.[0].version // "2.1.0"), runs: map(.runs) | add}' kube-linter-cluster-infra.sarif kube-linter-environments.sarif kube-linter-apps.sarif > kube-linter-combined.sarif
-
-      - name: Upload combined SARIF
+      - name: Upload SARIF (cluster-infra)
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: kube-linter-combined.sarif
+          sarif_file: kube-linter-cluster-infra.sarif
+
+      - name: Upload SARIF (environments)
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: kube-linter-environments.sarif
+
+      - name: Upload SARIF (apps)
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: kube-linter-apps.sarif
 
   validate:
     name: Kustomize and Structure Validation
@@ -105,7 +106,6 @@ jobs:
 
       - name: Check for native Secrets
         run: |
-          # If any native Secret resources exist the script will exit with error.
           if grep -R --line-number --no-color "kind:[[:space:]]*Secret" .; then
             echo "Error: Native Kubernetes Secrets are not allowed. Please use ExternalSecrets."
             exit 1
