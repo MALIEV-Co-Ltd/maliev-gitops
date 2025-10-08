@@ -2,11 +2,12 @@ rules:
   line-length:
     max: 120
   indentation:
-    spaces: 4
-ignore: |
-  /1-cluster-infra/02-cert-manager/
-  /1-cluster-infra/05-cloudnative-pg/
+    spaces: 2
   braces: enable
   brackets: enable
   colons: enable
   commas: enable
+ignore: |
+  /1-cluster-infra/02-cert-manager/
+  /1-cluster-infra/05-cloudnative-pg/
+  /.github/workflows/
