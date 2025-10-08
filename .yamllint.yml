@@ -4,7 +4,8 @@ rules:
   indentation:
     spaces: 4
 ignore: |
-  /1-cluster-infra/
+  /1-cluster-infra/02-cert-manager/
+  /1-cluster-infra/05-cloudnative-pg/
   braces: enable
   brackets: enable
   colons: enable
