@@ -20,7 +20,7 @@ jobs:
           config_file: .yamllint.yml
 
       - name: Check Kubernetes best practices
-        uses: instrumenta/kube-linter-action@v2
+        uses: stackrox/kube-linter-action@v1
         with:
           config: .kube-linter.yml
           format: sarif
