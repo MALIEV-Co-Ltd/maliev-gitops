@@ -3,6 +3,8 @@ rules:
     max: 120
   indentation:
     spaces: 4
+ignore: |
+  /1-cluster-infra/
   braces: enable
   brackets: enable
   colons: enable
