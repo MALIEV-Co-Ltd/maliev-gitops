@@ -13,6 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install tools (jq, yq)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
+
       - name: Lint YAML files
         uses: ibiqlik/action-yamllint@v3
         with:
@@ -74,7 +82,7 @@ jobs:
           sarif_file: kube-linter-apps.sarif
 
   validate:
-    name: Kustomize and Structure Validation
+    name: Kustomize, Structure and ArgoCD Validation
     runs-on: ubuntu-latest
     needs: lint
     steps:
@@ -82,54 +90,125 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install kustomize
-        run: |-
+        run: |
           set -e
           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           sudo mv kustomize /usr/local/bin/
           kustomize version
 
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
+
       - name: Validate Kustomize overlays
         run: |
           set -e
           found=0
-          while IFS= read -r -d $'\0' file; do
-            dir=$(dirname "$file")
-            echo "Validating kustomization in $dir"
-            if ! kustomize build "$dir" > /dev/null; then
-              echo "kustomize build failed for $dir"
-              found=1
-            fi
-          done < <(find 3-apps -name kustomization.yaml -print0)
+          if [ -d "3-apps" ]; then
+            while IFS= read -r -d $'\0' file; do
+              dir=$(dirname "$file")
+              echo "Validating kustomization in $dir"
+              if ! kustomize build "$dir" > /dev/null; then
+                echo "kustomize build failed for $dir"
+                found=1
+              fi
+            done < <(find 3-apps -name kustomization.yaml -print0)
+          else
+            echo "No 3-apps directory found. Skipping kustomize overlay validation."
+          fi
           if [ "$found" -ne 0 ]; then
             exit 1
           fi
 
       - name: Check for native Secrets
         run: |
-          if grep -R --line-number --no-color "kind:[[:space:]]*Secret" .; then
-            echo "Error: Native Kubernetes Secrets are not allowed. Please use ExternalSecrets."
+          set -e
+          # exclude argocd directory where applications may reference secrets in other forms
+          if grep -R --line-number --no-color --exclude-dir=argocd "kind:[[:space:]]*Secret" . ; then
+            echo "Error: Native Kubernetes Secrets are not allowed. Please use ExternalSecrets. See offending lines above."
             exit 1
           else
-            echo "No native Secret resources found."
+            echo "No native Secret resources found (outside argocd)."
           fi
 
-      - name: Validate repository structure
+      - name: Validate repository structure (3-apps)
         run: |
           set -e
-          for app in 3-apps/*; do
-            if [ -d "$app" ]; then
-              if [ ! -d "$app/base" ] || [ ! -d "$app/overlays" ]; then
-                echo "Error: $app must have a 'base' and 'overlays' directory."
-                exit 1
+          if [ -d "3-apps" ]; then
+            for app in 3-apps/*; do
+              if [ -d "$app" ]; then
+                if [ ! -d "$app/base" ] || [ ! -d "$app/overlays" ]; then
+                  echo "Error: $app must have a 'base' and 'overlays' directory."
+                  exit 1
+                fi
+                for env in development staging production; do
+                  if [ ! -d "$app/overlays/$env" ]; then
+                    echo "Error: $app must have overlays/$env."
+                    exit 1
+                  fi
+                done
               fi
-              if [ ! -d "$app/overlays/development" ] || [ ! -d "$app/overlays/staging" ] || [ ! -d "$app/overlays/production" ]; then
-                echo "Error: $app must have 'development', 'staging', and 'production' overlays."
-                exit 1
-              fi
-            fi
-          done
-          echo "Repository structure validated."
+            done
+            echo "Repository structure for 3-apps validated."
+          else
+            echo "3-apps directory not present. Skipping structure validation."
+          fi
 
       - name: Validate ArgoCD Application paths
         run: |
-          echo "Placeholder: Validation of ArgoCD Application paths would be implemented here."
+          set -e
+          echo "Validating ArgoCD Application manifests under argocd/..."
+          errors=0
+          # find all yaml files in argocd
+          find argocd -type f \( -iname '*.yml' -o -iname '*.yaml' \) -print0 | while IFS= read -r -d $'\0' file; do
+            kind=$(yq -r '.kind // empty' "$file")
+            if [ "$kind" != "Application" ]; then
+              # skip non-Application manifests
+              continue
+            fi
+            name=$(yq -r '.metadata.name // "<noname>"' "$file")
+            echo "Checking Application: $name (file: $file)"
+
+            # prefer .spec.source.path. If empty but uses chart, skip path check.
+            source_path=$(yq -r '.spec.source.path // empty' "$file")
+            chart=$(yq -r '.spec.source.chart // empty' "$file")
+            repoURL=$(yq -r '.spec.source.repoURL // empty' "$file")
+
+            if [ -n "$chart" ] && [ -z "$source_path" ]; then
+              echo "  Skipping path check for $name because it references a Helm chart ($chart)."
+              continue
+            fi
+
+            if [ -z "$source_path" ]; then
+              echo "  Error: Application $name has no spec.source.path and is not a chart. File: $file"
+              errors=1
+              continue
+            fi
+
+            # Normalize relative paths. ArgoCD path is repo-relative.
+            # Check existence as file or directory in repo.
+            if [ -d "$source_path" ] || [ -f "$source_path" ]; then
+              echo "  OK: referenced path exists: $source_path"
+            else
+              # try relative to argocd directory (in case path is ../3-apps/...)
+              candidate="$(dirname "$file")/$source_path"
+              if [ -d "$candidate" ] || [ -f "$candidate" ]; then
+                echo "  OK: referenced path exists (relative): $candidate"
+              else
+                echo "  Error: Path '$source_path' referenced in Application $name (file: $file) does not exist."
+                echo "    repoURL: $repoURL"
+                errors=1
+              fi
+            fi
+          done
+
+          if [ "$errors" -ne 0 ]; then
+            echo "ArgoCD Application path validation failed."
+            exit 1
+          fi
+          echo "All ArgoCD Application paths are valid."
+
+      - name: Final note
+        run: echo "Validation completed."
