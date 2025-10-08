@@ -70,16 +70,19 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: kube-linter-cluster-infra.sarif
+          category: kube-linter-cluster-infra
 
       - name: Upload SARIF (environments)
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: kube-linter-environments.sarif
+          category: kube-linter-environments
 
       - name: Upload SARIF (apps)
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: kube-linter-apps.sarif
+          category: kube-linter-apps
 
   validate:
     name: Kustomize, Structure and ArgoCD Validation
