@@ -13,19 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: Lint YAML files
         uses: ibiqlik/action-yamllint@v3
         with:
           file_or_dir: .
           config_file: .yamllint.yml
-
-
-      
-
-
-
-      
-
 
       - name: Check Kubernetes best practices (cluster-infra)
         uses: stackrox/kube-linter-action@v1
@@ -36,7 +31,7 @@ jobs:
           output-file: kube-linter-cluster-infra.sarif
         continue-on-error: true
 
-      - name: Create empty SARIF for cluster-infra if not generated
+      - name: Ensure cluster-infra SARIF exists
         run: |
           [ -f kube-linter-cluster-infra.sarif ] || echo '{"runs":[]}' > kube-linter-cluster-infra.sarif
 
@@ -49,7 +44,7 @@ jobs:
           output-file: kube-linter-environments.sarif
         continue-on-error: true
 
-      - name: Create empty SARIF for environments if not generated
+      - name: Ensure environments SARIF exists
         run: |
           [ -f kube-linter-environments.sarif ] || echo '{"runs":[]}' > kube-linter-environments.sarif
 
@@ -61,15 +56,21 @@ jobs:
           format: sarif
           output-file: kube-linter-apps.sarif
         continue-on-error: true
-        
-      - name: Create empty SARIF for apps if not generated
+
+      - name: Ensure apps SARIF exists
         run: |
           [ -f kube-linter-apps.sarif ] || echo '{"runs":[]}' > kube-linter-apps.sarif
-              
-      - name: Upload SARIF file
+
+      - name: Combine SARIF files
+        run: |
+          # Merge the 'runs' arrays from the three SARIF files into one SARIF.
+          # jq -s will read all files into an array. We then construct a new object.
+          jq -s '{version: (.[0].version // "2.1.0"), runs: map(.runs) | add}' kube-linter-cluster-infra.sarif kube-linter-environments.sarif kube-linter-apps.sarif > kube-linter-combined.sarif
+
+      - name: Upload combined SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: kube-linter-*.sarif
+          sarif_file: kube-linter-combined.sarif
 
   validate:
     name: Kustomize and Structure Validation
@@ -81,26 +82,40 @@ jobs:
 
       - name: Install kustomize
         run: |-
-          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+          set -e
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           sudo mv kustomize /usr/local/bin/
+          kustomize version
 
       - name: Validate Kustomize overlays
         run: |
-          find 3-apps -name kustomization.yaml -print0 | while IFS= read -r -d $'\0' file; do
+          set -e
+          found=0
+          while IFS= read -r -d $'\0' file; do
             dir=$(dirname "$file")
             echo "Validating kustomization in $dir"
-            kustomize build "$dir" || exit 1
-          done
+            if ! kustomize build "$dir" > /dev/null; then
+              echo "kustomize build failed for $dir"
+              found=1
+            fi
+          done < <(find 3-apps -name kustomization.yaml -print0)
+          if [ "$found" -ne 0 ]; then
+            exit 1
+          fi
 
       - name: Check for native Secrets
         run: |
-          if grep -r "kind: Secret" .; then
+          # If any native Secret resources exist the script will exit with error.
+          if grep -R --line-number --no-color "kind:[[:space:]]*Secret" .; then
             echo "Error: Native Kubernetes Secrets are not allowed. Please use ExternalSecrets."
             exit 1
+          else
+            echo "No native Secret resources found."
           fi
 
       - name: Validate repository structure
         run: |
+          set -e
           for app in 3-apps/*; do
             if [ -d "$app" ]; then
               if [ ! -d "$app/base" ] || [ ! -d "$app/overlays" ]; then
@@ -113,8 +128,8 @@ jobs:
               fi
             fi
           done
+          echo "Repository structure validated."
 
       - name: Validate ArgoCD Application paths
         run: |
-          # This is a more complex script, for now we will just have a placeholder
-          echo "Validation of ArgoCD Application paths would be implemented here."
+          echo "Placeholder: Validation of ArgoCD Application paths would be implemented here."
