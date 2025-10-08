@@ -1,26 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-    name: maliev-customer-service-staging
+  name: maliev-customer-service-staging
     namespace: argocd
     labels:
-        app.kubernetes.io/name: maliev-customer-service
+      app.kubernetes.io/name: maliev-customer-service
         app.kubernetes.io/part-of: maliev
         app.kubernetes.io/environment: staging
     finalizers:
-        - resources-finalizer.argocd.argoproj.io
+      - resources-finalizer.argocd.argoproj.io
 spec:
-    project: default
+  project: default
     source:
-        repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
+      repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
         targetRevision: main
         path: 3-apps/maliev-customer-service/overlays/staging
     destination:
-        server: "https://kubernetes.default.svc"
+      server: "https://kubernetes.default.svc"
         namespace: maliev-staging
     syncPolicy:
-        automated:
-            prune: true
+      automated:
+          prune: true
             selfHeal: true
         syncOptions:
-            - CreateNamespace=true
+          - CreateNamespace=true
