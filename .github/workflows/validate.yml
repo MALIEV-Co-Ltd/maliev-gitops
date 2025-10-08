@@ -176,41 +176,47 @@ jobs:
 
       - name: Validate ArgoCD Application paths
         run: |
-          set -e
+          set -euo pipefail
+          
+          YQ_BIN=/usr/local/bin/yq
+
           echo "Validating ArgoCD Application manifests under argocd/..."
           errors=0
-          # find all yaml files in argocd
+
+          # find all YAML files in argocd directory
           find argocd -type f \( -iname '*.yml' -o -iname '*.yaml' \) -print0 | while IFS= read -r -d $'\0' file; do
-            kind=$(yq -r '.kind // empty' "$file")
+            kind=$($YQ_BIN -r '.kind // ""' "$file")
             if [ "$kind" != "Application" ]; then
               # skip non-Application manifests
               continue
             fi
-            name=$(yq -r '.metadata.name // "<noname>"' "$file")
+
+            name=$($YQ_BIN -r '.metadata.name // "<noname>"' "$file")
             echo "Checking Application: $name (file: $file)"
 
-            # prefer .spec.source.path. If empty but uses chart, skip path check.
-            source_path=$(yq -r '.spec.source.path // empty' "$file")
-            chart=$(yq -r '.spec.source.chart // empty' "$file")
-            repoURL=$(yq -r '.spec.source.repoURL // empty' "$file")
+            # Get source fields
+            source_path=$($YQ_BIN -r '.spec.source.path // ""' "$file")
+            chart=$($YQ_BIN -r '.spec.source.chart // ""' "$file")
+            repoURL=$($YQ_BIN -r '.spec.source.repoURL // ""' "$file")
 
+            # Skip path check if using a Helm chart
             if [ -n "$chart" ] && [ -z "$source_path" ]; then
               echo "  Skipping path check for $name because it references a Helm chart ($chart)."
               continue
             fi
 
+            # Fail if no path provided and not a chart
             if [ -z "$source_path" ]; then
               echo "  Error: Application $name has no spec.source.path and is not a chart. File: $file"
               errors=1
               continue
             fi
 
-            # Normalize relative paths. ArgoCD path is repo-relative.
-            # Check existence as file or directory in repo.
+            # Check if path exists
             if [ -d "$source_path" ] || [ -f "$source_path" ]; then
               echo "  OK: referenced path exists: $source_path"
             else
-              # try relative to argocd directory (in case path is ../3-apps/...)
+              # try relative to the argocd directory
               candidate="$(dirname "$file")/$source_path"
               if [ -d "$candidate" ] || [ -f "$candidate" ]; then
                 echo "  OK: referenced path exists (relative): $candidate"
@@ -226,6 +232,7 @@ jobs:
             echo "ArgoCD Application path validation failed."
             exit 1
           fi
+
           echo "All ArgoCD Application paths are valid."
 
       - name: Final note
