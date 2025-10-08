@@ -6,10 +6,10 @@ metadata:
 spec:
   description: 'Staging environment applications'
   sourceRepos:
-  - '*'
+    - '*'
   destinations:
-  - namespace: maliev-staging
-    server: https://kubernetes.default.svc
+    - namespace: maliev-staging
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: '*'
+      kind: '*'

@@ -6,10 +6,10 @@ metadata:
 spec:
   description: 'Development environment applications'
   sourceRepos:
-  - '*'
+    - '*'
   destinations:
-  - namespace: maliev-dev
-    server: https://kubernetes.default.svc
+    - namespace: maliev-dev
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: '*'
+      kind: '*'
