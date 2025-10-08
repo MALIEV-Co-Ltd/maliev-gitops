@@ -5,4 +5,4 @@ kind: Kustomization
 
 labels:
   - pairs:
-    app.kubernetes.io/part-of: maliev
+        app.kubernetes.io/part-of: maliev
