@@ -60,13 +60,14 @@ jobs:
           directory: 3-apps
           format: sarif
           output-file: kube-linter-apps.sarif
-                continue-on-error: true
+        continue-on-error: true
         
-              - name: Create empty SARIF for apps if not generated
-                run: |
-                  [ -f kube-linter-apps.sarif ] || echo '{"runs":[]}' > kube-linter-apps.sarif
+      - name: Create empty SARIF for apps if not generated
+        run: |
+          [ -f kube-linter-apps.sarif ] || echo '{"runs":[]}' > kube-linter-apps.sarif
               
-              - name: Upload SARIF file        uses: github/codeql-action/upload-sarif@v3
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: kube-linter-*.sarif
 
