@@ -23,6 +23,10 @@ jobs:
         uses: stackrox/kube-linter-action@v1
         with:
           config: .kube-linter.yml
+          files: |
+            1-cluster-infra
+            2-environments
+            3-apps
           format: sarif
           output: kube-linter.sarif
       
