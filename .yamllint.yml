@@ -2,7 +2,7 @@ rules:
   line-length:
     max: 120
   indentation:
-    spaces: 2
+    spaces: 4
   braces: enable
   brackets: enable
   colons: enable
