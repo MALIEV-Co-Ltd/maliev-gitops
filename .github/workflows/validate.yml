@@ -1,41 +1,80 @@
-# GitHub Actions Workflow for Validating Kubernetes Manifests
-#
-# This workflow runs on every Pull Request against the `main` branch.
-# It does NOT deploy anything. Its only job is to act as a safety net
-# by ensuring that the Kustomize configurations are valid and can be built successfully.
-#
-# In your GitHub repository settings, you can create a branch protection rule
-# for `main` that requires this check to pass before a PR can be merged.
-
-name: Validate K8s Config
+name: GitOps Validation
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  validate:
-    name: Validate Kustomize and YAML
+  lint:
+    name: Lint and Static Analysis
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Kustomize
-      uses: imranismail/setup-kustomize@v1
+      - name: Lint YAML files
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: .
+          config_file: .yamllint.yml
 
-    - name: Validate Production Environment
-      run: |
-        echo "Validating Production Environment..."
-        kustomize build 2-environments/3-production
+      - name: Check Kubernetes best practices
+        uses: instrumenta/kube-linter-action@v2
+        with:
+          config: .kube-linter.yml
+          format: sarif
+          output: kube-linter.sarif
+      
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: kube-linter.sarif
 
-    - name: Validate Development Environment
-      run: |
-        echo "Validating Development Environment..."
-        kustomize build 2-environments/1-development
+  validate:
+    name: Kustomize and Structure Validation
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Validate Staging Environment
-      run: |
-        echo "Validating Staging Environment..."
-        kustomize build 2-environments/2-staging
+      - name: Install kustomize
+        run: |-
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+          sudo mv kustomize /usr/local/bin/
+
+      - name: Validate Kustomize overlays
+        run: |
+          find 3-apps -name kustomization.yaml -print0 | while IFS= read -r -d $'\0' file; do
+            dir=$(dirname "$file")
+            echo "Validating kustomization in $dir"
+            kustomize build "$dir" || exit 1
+          done
+
+      - name: Check for native Secrets
+        run: |
+          if grep -r "kind: Secret" .; then
+            echo "Error: Native Kubernetes Secrets are not allowed. Please use ExternalSecrets."
+            exit 1
+          fi
+
+      - name: Validate repository structure
+        run: |
+          for app in 3-apps/*; do
+            if [ -d "$app" ]; then
+              if [ ! -d "$app/base" ] || [ ! -d "$app/overlays" ]; then
+                echo "Error: $app must have a 'base' and 'overlays' directory."
+                exit 1
+              fi
+              if [ ! -d "$app/overlays/development" ] || [ ! -d "$app/overlays/staging" ] || [ ! -d "$app/overlays/production" ]; then
+                echo "Error: $app must have 'development', 'staging', and 'production' overlays."
+                exit 1
+              fi
+            fi
+          done
+
+      - name: Validate ArgoCD Application paths
+        run: |
+          # This is a more complex script, for now we will just have a placeholder
+          echo "Validation of ArgoCD Application paths would be implemented here."
