@@ -4,7 +4,4 @@ metadata:
   name: environment-config
   namespace: maliev-prod
 data:
-  Logging__LogLevel__Default: "Warning"
-  AllowedHosts: "*"
-  Cors__AllowedOrigins: "http://*.maliev.com,https://*.maliev.com"
   ASPNETCORE_ENVIRONMENT: "Production"
