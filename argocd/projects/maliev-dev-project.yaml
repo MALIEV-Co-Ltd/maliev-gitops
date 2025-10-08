@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-    name: maliev-dev
-    namespace: argocd
+  name: maliev-dev
+  namespace: argocd
 spec:
-    description: 'Development environment applications'
-    sourceRepos:
-        - '*'
-    destinations:
-        - namespace: maliev-dev
-          server: https://kubernetes.default.svc
-    clusterResourceWhitelist:
-        - group: '*'
-          kind: '*'
+  description: 'Development environment applications'
+  sourceRepos:
+    - '*'
+  destinations:
+    - namespace: maliev-dev
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
