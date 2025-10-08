@@ -23,36 +23,24 @@ jobs:
       
 
 
-      - name: Check Kubernetes best practices (cluster-infra)
-        uses: stackrox/kube-linter-action@v1
-        with:
-          config: .kube-linter.yml
-          directory: 1-cluster-infra
-          format: sarif
-          output-file: kube-linter-cluster-infra.sarif
-        continue-on-error: true
 
-      - name: Check Kubernetes best practices (environments)
-        uses: stackrox/kube-linter-action@v1
-        with:
-          config: .kube-linter.yml
-          directory: 2-environments
-          format: sarif
-          output-file: kube-linter-environments.sarif
-        continue-on-error: true
-
-      - name: Check Kubernetes best practices (apps)
-        uses: stackrox/kube-linter-action@v1
-        with:
-          config: .kube-linter.yml
-          directory: 3-apps
-          format: sarif
-          output-file: kube-linter-apps.sarif
-        continue-on-error: true
-
-      - name: List generated SARIF files
-        run: ls -l kube-linter-*.sarif
       
+      - name: Download KubeLinter
+        run: |
+          LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/stackrox/kube-linter/releases/latest | grep "browser_download_url.*kube-linter-linux-amd64" | cut -d : -f 2,3 | tr -d \" | wget -qi -)
+          wget -O kube-linter "$LATEST_RELEASE_URL"
+          chmod +x kube-linter
+          sudo mv kube-linter /usr/local/bin/kube-linter
+
+      - name: Run KubeLinter on cluster-infra
+        run: kube-linter lint 1-cluster-infra --config .kube-linter.yml --format sarif --output-file kube-linter-cluster-infra.sarif || true
+
+      - name: Run KubeLinter on environments
+        run: kube-linter lint 2-environments --config .kube-linter.yml --format sarif --output-file kube-linter-environments.sarif || true
+
+      - name: Run KubeLinter on apps
+        run: kube-linter lint 3-apps --config .kube-linter.yml --format sarif --output-file kube-linter-apps.sarif || true
+
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
