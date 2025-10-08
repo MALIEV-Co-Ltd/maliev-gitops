@@ -7,9 +7,9 @@ metadata:
     run: maliev-line-chatbot-service
 spec:
   ports:
-  - port: 80
-    targetPort: 8000
-    name: http
+    - port: 80
+      targetPort: 8000
+      name: http
   selector:
     app: maliev-line-chatbot-service
   sessionAffinity: None

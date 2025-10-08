@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       containers:
-      - name: maliev-email-service
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Development"
+        - name: maliev-email-service
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"

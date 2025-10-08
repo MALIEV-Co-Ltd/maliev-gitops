@@ -19,24 +19,23 @@ spec:
       labels:
         app: maliev-country-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-country-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-country-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /countries/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /countries/readiness
-            port: 8080
-        envFrom:
-        - secretRef:
-            name: maliev-shared-secrets
-        - secretRef:
-            name: maliev-country-service-secrets
+        - name: maliev-country-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-country-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /countries/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /countries/readiness
+              port: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-country-service-secrets

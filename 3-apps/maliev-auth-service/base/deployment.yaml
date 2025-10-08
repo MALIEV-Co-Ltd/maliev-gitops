@@ -19,25 +19,23 @@ spec:
       labels:
         app: maliev-auth-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-auth-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-auth-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /auth/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /auth/readiness
-            port: 8080
-        envFrom:
-        - secretRef:
-            name: maliev-shared-secrets
-        - secretRef:
-            name: maliev-auth-service-secrets
-        
+        - name: maliev-auth-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-auth-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /auth/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /auth/readiness
+              port: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-auth-service-secrets

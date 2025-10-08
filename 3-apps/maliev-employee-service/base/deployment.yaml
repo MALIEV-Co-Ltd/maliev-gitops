@@ -19,24 +19,23 @@ spec:
       labels:
         app: maliev-employee-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-employee-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-employee-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /employees/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /employees/readiness
-            port: 8080
-        envFrom:
-        - secretRef:
-            name: maliev-shared-secrets
-        - secretRef:
-            name: maliev-employee-service-secrets
+        - name: maliev-employee-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-employee-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /employees/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /employees/readiness
+              port: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-employee-service-secrets

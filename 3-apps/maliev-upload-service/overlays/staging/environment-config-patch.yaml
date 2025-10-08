@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       containers:
-      - name: maliev-upload-service
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Staging"
+        - name: maliev-upload-service
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Staging"

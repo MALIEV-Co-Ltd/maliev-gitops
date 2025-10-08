@@ -19,24 +19,23 @@ spec:
       labels:
         app: maliev-line-chatbot-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-line-chatbot-service-container
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-line-chatbot-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8000
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-        envFrom:
-        - secretRef:
-            name: maliev-shared-secrets
-        - secretRef:
-            name: maliev-line-chatbot-service-secrets
+        - name: maliev-line-chatbot-service-container
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-line-chatbot-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-line-chatbot-service-secrets

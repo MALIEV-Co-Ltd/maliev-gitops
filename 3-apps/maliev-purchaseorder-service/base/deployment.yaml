@@ -19,19 +19,18 @@ spec:
       labels:
         app: maliev-purchaseorder-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-purchaseorder-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-purchaseorder-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /purchaseorders/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /purchaseorders/readiness
-            port: 8080
+        - name: maliev-purchaseorder-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-purchaseorder-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /purchaseorders/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /purchaseorders/readiness
+              port: 8080

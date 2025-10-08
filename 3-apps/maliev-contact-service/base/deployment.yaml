@@ -19,24 +19,23 @@ spec:
       labels:
         app: maliev-contact-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-contact-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-contact-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /contacts/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /contacts/readiness
-            port: 8080
-        envFrom:
-        - secretRef:
-            name: maliev-shared-secrets
-        - secretRef:
-            name: maliev-contact-service-secrets
+        - name: maliev-contact-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-contact-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /contacts/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /contacts/readiness
+              port: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-contact-service-secrets

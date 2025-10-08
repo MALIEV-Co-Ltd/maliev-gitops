@@ -4,7 +4,4 @@ metadata:
   name: environment-config
   namespace: maliev-staging
 data:
-  Logging__LogLevel__Default: "Information"
-  AllowedHosts: "*"
-  Cors__AllowedOrigins: "http://staging.*.maliev.com,https://staging.*.maliev.com"
   ASPNETCORE_ENVIRONMENT: "Staging"

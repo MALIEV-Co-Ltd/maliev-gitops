@@ -19,19 +19,18 @@ spec:
       labels:
         app: maliev-payment-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-payment-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-payment-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /payments/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /payments/readiness
-            port: 8080
+        - name: maliev-payment-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-payment-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /payments/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /payments/readiness
+              port: 8080

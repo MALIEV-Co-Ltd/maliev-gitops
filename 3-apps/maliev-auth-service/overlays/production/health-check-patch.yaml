@@ -6,21 +6,21 @@ spec:
   template:
     spec:
       containers:
-      - name: maliev-auth-service
-        livenessProbe:
-          httpGet:
-            path: /auth/liveness
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 20
-          timeoutSeconds: 10
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /auth/readiness
-            port: 8080
-          initialDelaySeconds: 35
-          periodSeconds: 15
-          timeoutSeconds: 10
-          failureThreshold: 3
-          successThreshold: 1
+        - name: maliev-auth-service
+          livenessProbe:
+            httpGet:
+              path: /auth/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /auth/readiness
+              port: 8080
+            initialDelaySeconds: 35
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1

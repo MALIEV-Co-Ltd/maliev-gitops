@@ -9,14 +9,14 @@
 apiVersion: external-secrets.io/v1
 kind: ClusterSecretStore
 metadata:
-    name: gcp-secret-store
+  name: gcp-secret-store
 spec:
-    provider:
-        gcpsm:
-            projectID: "maliev-website"
-            # Optional: Specify a service account for authentication
-            # auth:
-            #   secretRef:
-            #     serviceAccountSecretRef:
-            #       name: "gcp-sa-credentials"
-            #       key: "credentials.json"
+  provider:
+    gcpsm:
+      projectID: "maliev-website"
+      # Optional: Specify a service account for authentication
+      # auth:
+      #   secretRef:
+      #     serviceAccountSecretRef:
+      #       name: "gcp-sa-credentials"
+      #       key: "credentials.json"

@@ -19,19 +19,18 @@ spec:
       labels:
         app: maliev-invoice-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-invoice-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-invoice-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /invoices/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /invoices/readiness
-            port: 8080
+        - name: maliev-invoice-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-invoice-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /invoices/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /invoices/readiness
+              port: 8080

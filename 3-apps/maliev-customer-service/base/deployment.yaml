@@ -19,24 +19,23 @@ spec:
       labels:
         app: maliev-customer-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-customer-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-customer-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /customers/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /customers/readiness
-            port: 8080
-        envFrom:
-        - secretRef:
-            name: maliev-shared-secrets
-        - secretRef:
-            name: maliev-customer-service-secrets
+        - name: maliev-customer-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-customer-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /customers/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /customers/readiness
+              port: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-customer-service-secrets

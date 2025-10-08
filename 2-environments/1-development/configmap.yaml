@@ -4,7 +4,4 @@ metadata:
   name: environment-config
   namespace: maliev-dev
 data:
-  Logging__LogLevel__Default: "Information"
-  AllowedHosts: "*"
-  Cors__AllowedOrigins: "http://dev.*.maliev.com,https://dev.*.maliev.com"
   ASPNETCORE_ENVIRONMENT: "Development"

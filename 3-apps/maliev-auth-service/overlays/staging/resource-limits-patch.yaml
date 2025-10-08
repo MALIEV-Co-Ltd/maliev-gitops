@@ -6,11 +6,11 @@ spec:
   template:
     spec:
       containers:
-      - name: maliev-auth-service
-        resources:
-          requests:
-            cpu: 200m
-            memory: 384Mi
-          limits:
-            cpu: 750m
-            memory: 768Mi
+        - name: maliev-auth-service
+          resources:
+            requests:
+              cpu: 200m
+              memory: 384Mi
+            limits:
+              cpu: 750m
+              memory: 768Mi

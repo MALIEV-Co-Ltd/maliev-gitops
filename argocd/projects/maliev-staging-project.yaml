@@ -4,12 +4,12 @@ metadata:
   name: maliev-staging
   namespace: argocd
 spec:
-  description: 'Staging environment applications'
+  description: "Staging environment applications"
   sourceRepos:
-    - '*'
+    - "*"
   destinations:
     - namespace: maliev-staging
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
-    - group: '*'
-      kind: '*'
+    - group: "*"
+      kind: "*"

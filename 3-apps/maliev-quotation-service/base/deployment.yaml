@@ -19,19 +19,18 @@ spec:
       labels:
         app: maliev-quotation-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-quotation-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-quotation-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /quotations/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /quotations/readiness
-            port: 8080
+        - name: maliev-quotation-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-quotation-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /quotations/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /quotations/readiness
+              port: 8080

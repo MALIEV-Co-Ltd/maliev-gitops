@@ -3,13 +3,13 @@ kind: Kustomization
 namespace: maliev-staging
 
 resources:
-- namespace.yaml
-- ingress.yaml
-- configmap.yaml
-- secrets.yaml
-- ../../3-apps/_common
-- ../_database/base
-- shared-secrets.yaml
+  - namespace.yaml
+  - ingress.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - ../../3-apps/_common
+  - ../_database/base
+  - shared-secrets.yaml
 
 patches:
   - path: db-patch.yaml
