@@ -8,11 +8,11 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
     targetRevision: main
     path: argocd/environments/dev/apps
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: "https://kubernetes.default.svc"
     namespace: maliev-dev
   syncPolicy:
     automated:

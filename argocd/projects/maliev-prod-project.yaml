@@ -4,12 +4,12 @@ metadata:
   name: maliev-prod
   namespace: argocd
 spec:
-  description: 'Production environment applications'
+  description: "Production environment applications"
   sourceRepos:
-  - '*'
+    - "*"
   destinations:
-  - namespace: maliev-prod
-    server: https://kubernetes.default.svc
+    - namespace: maliev-prod
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: "*"
+      kind: "*"

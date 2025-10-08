@@ -6,10 +6,10 @@ spec:
   template:
     spec:
       containers:
-      - name: maliev-purchaseorder-service
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Development"
-        envFrom:
-        - secretRef:
-            name: maliev-purchaseorder-service-secrets
+        - name: maliev-purchaseorder-service
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+          envFrom:
+            - secretRef:
+                name: maliev-purchaseorder-service-secrets

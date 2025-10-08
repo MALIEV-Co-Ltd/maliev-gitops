@@ -8,11 +8,11 @@ metadata:
 spec:
   project: maliev-prod
   source:
-    repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
     targetRevision: main
     path: 2-environments/3-production
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: "https://kubernetes.default.svc"
     namespace: maliev-prod
   syncPolicy:
     automated:

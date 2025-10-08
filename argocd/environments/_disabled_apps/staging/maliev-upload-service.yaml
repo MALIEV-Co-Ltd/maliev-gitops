@@ -8,19 +8,19 @@ metadata:
     app.kubernetes.io/part-of: maliev
     app.kubernetes.io/environment: staging
   finalizers:
-  - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
     targetRevision: main
     path: 3-apps/maliev-upload-service/overlays/staging
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: "https://kubernetes.default.svc"
     namespace: maliev-staging
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true

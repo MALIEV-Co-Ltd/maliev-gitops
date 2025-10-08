@@ -19,24 +19,23 @@ spec:
       labels:
         app: maliev-intranet
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-intranet
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-intranet
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /readiness
-            port: 8080
-        envFrom:
-        - secretRef:
-            name: maliev-shared-secrets
-        - secretRef:
-            name: maliev-intranet-secrets
+        - name: maliev-intranet
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-intranet
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-intranet-secrets

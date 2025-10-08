@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       containers:
-      - name: maliev-contact-service
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Staging"
+        - name: maliev-contact-service
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Staging"

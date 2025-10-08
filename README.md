@@ -6,131 +6,130 @@ This repository is the **single source of truth** for all application and infras
 
 - [Core Concepts](#core-concepts)
 - [Repository Structure Overview](#repository-structure-overview)
-- [The End-to-End Workflow: From Dev to Production](#the-end-to-end-workflow-from-dev-to-production)
-- [One-Time Setup Guide](#one-time-setup-guide)
-  - [A. Setting up the CI Pipeline (For each C# repo)](#a-setting-up-the-ci-pipeline-for-each-c-repo)
-  - [B. Setting up the GitOps Controller (In Kubernetes)](#b-setting-up-the-gitops-controller-in-kubernetes)
-  - [C. Creating an Argo CD User (Recommended)](#c-creating-an-argo-cd-user-recommended)
+- [End-to-End Workflows](#end-to-end-workflows)
+  - [Onboarding a New Application](#onboarding-a-new-application)
+  - [Promoting a Release](#promoting-a-release)
+  - [Rolling Back a Faulty Deployment](#rolling-back-a-faulty-deployment)
+- [Step-by-Step Guide: Onboarding a New Application](#step-by-step-guide-onboarding-a-new-application)
 - [Detailed Operational Guides](#detailed-operational-guides)
-  - [1. Managing DNS Records](#1-managing-dns-records)
-  - [2. Health Probe (Liveness & Readiness) Tuning](#2-health-probe-liveness--readiness-tuning)
-  - [3. Onboarding a New Service](#3-onboarding-a-new-service)
-  - [4. Secret Management](#4-secret-management)
+  - [Secret Management](#secret-management)
+  - [Managing DNS Records](#managing-dns-records)
+  - [Health Probe Tuning](#health-probe-tuning)
+- [One-Time Setup Guide](#one-time-setup-guide)
 
 ---
 
 ## Core Concepts
 
-* **GitOps**: The practice of using this Git repository as the declarative source of truth. Changes are made via Pull Request and an automated controller in the cluster synchronizes the state. We recommend free, open-source, CNCF-graduated tools like **Argo CD** or **Flux CD** for this.
-* **App of Apps Pattern**: The scalable, industry-standard GitOps practice for managing a large number of applications. Instead of manually creating a deployment manifest for each service in each environment, we use a single "root" Argo CD application that manages other Argo CD applications. This provides a centralized overview and simplifies the process of adding new services and promoting them between environments.
-* **GitHub Actions**: The CI/CD tool used to build, test, and containerize the C# microservices. The workflow files reside in each service's own repository.
-* **Kustomize**: The tool used to manage configuration variants for different environments without duplicating YAML files.
+* **GitOps**: The practice of using this Git repository as the declarative source of truth. Changes are made via Pull Request and an automated controller (Argo CD) in the cluster synchronizes the state.
+* **App of Apps Pattern**: The scalable, industry-standard GitOps practice we use for managing a large number of applications. A single "root" Argo CD application manages other Argo CD applications, which in turn manage the actual services. This provides a centralized overview and simplifies adding new services.
+* **Kustomize**: The tool used to manage configuration variants for different environments (`development`, `staging`, `production`) without duplicating YAML files. We use a `base`/`overlays` pattern.
 
 ---
 
-## The End-to-End Workflow: From Dev to Production
+## Repository Structure Overview
 
-This workflow describes the path of a single code change from a developer's machine to a live customer, using a standard Git branching model.
-
-1.  **Feature Development**: A developer creates a `feature` branch from the `develop` branch in a service's repository (e.g., `Maliev.AuthService`).
-
-2.  **Code Review & Merge to `develop`**: The developer opens a Pull Request to merge their feature into the `develop` branch. Once merged, the CI pipeline triggers.
-
-3.  **Automated Deployment to `development` Environment**: The CI pipeline for the `develop` branch builds a new container image and automatically opens a Pull Request in this `maliev-gitops` repository. This PR updates the image tag in the service's manifest (e.g., `argocd/environments/dev/apps/maliev-auth-service.yaml`). Once you merge this PR, the latest code is deployed to the `development` environment.
-
-4.  **Preparing a Release for `staging`**: When you are ready to test a release, you create a `release/v1.1.0` branch from `develop` in the service's repository. You then open a PR in this `maliev-gitops` repo to change the `targetRevision` in the service's staging manifest (e.g., `argocd/environments/staging/apps/maliev-auth-service.yaml`) to point to this new `release/v1.1.0` branch. This deploys a stable release candidate to the `staging` environment for QA and UAT.
-
-5.  **Promoting a Release to `production`**: After the release is approved in `staging`, you merge the `release/v1.1.0` branch into `main` and create a `v1.1.0` Git tag in the service's repository. You then open a final PR in `maliev-gitops` to update the `targetRevision` in the service's production manifest (e.g., `argocd/environments/prod/apps/maliev-auth-service.yaml`) to the new `v1.1.0` tag. This deploys the specific, tested version to your production customers.
-
----
-
-## One-Time Setup Guide
-
-### A. Setting up the CI Pipeline (For each C# repo)
-
-For each of your C# microservice repositories, perform the following steps. For Python-based services, you will need to create a custom CI pipeline (e.g., `deploy.yml` in `.github/workflows`) that builds and pushes your Docker image, and then updates this GitOps repository. An example of such a pipeline for the `Maliev.LineChatbotService` has been provided.
-
-1.  **Copy the Workflow File**: Copy the `example-ci.yml` file from the root of this project into your service repository at the path `.github/workflows/ci.yml`.
-
-2.  **Edit the Workflow File**: Open the newly copied `ci.yml` and edit the `SERVICE_NAME` environment variable at the top.
-
-3.  **Create GitHub Secrets**: In your service repository's settings (`Settings > Secrets and variables > Actions`), create two new repository secrets:
-    
-    *   **`GCP_SA_KEY`**: Allows GitHub Actions to push container images to your Google Artifact Registry. To create it, go to the Google Cloud Console, create a Service Account, grant it the **"Artifact Registry Writer"** role, and create and download a JSON key. Copy the entire JSON content into the value of this secret.
-    
-    *   **`GITOPS_PAT`**: Allows the GitHub Action to create a Pull Request in the `maliev-gitops` repository. To create it, go to your personal GitHub account's **Developer Settings**, generate a new **Personal access token (classic)**, give it a descriptive name, and check the **`repo`** scope. Copy the generated token into the value of this secret.
-        **Note for Organization Repositories:** For repositories belonging to an organization, it is a best practice to use a dedicated machine user (bot account) to create the PAT. This avoids tying the CI/CD process to a specific person's account. You can create a new GitHub account to be used as a bot, and then grant that bot account write access to the `maliev-gitops` repository.
-
-### B. Setting up the GitOps Controller (In Kubernetes)
-
-You need a GitOps controller in your cluster to watch this repository. Here is how to do this with **Argo CD** using the **App of Apps** pattern.
-
-**Important Note for Cloud Shell Users:** If you encounter `Kubernetes cluster unreachable` errors when running `helm` or `kubectl` commands in Google Cloud Shell, you likely need to configure your `kubectl` context. Run the following command, replacing the placeholders with your cluster details:
-
-```bash
-gcloud container clusters get-credentials <cluster-name> --zone <cluster-zone> --project <project-id>
+```
+.
+├── 1-cluster-infra/  # Core infrastructure components (e.g., NGINX, Cert-Manager)
+├── 2-environments/   # Environment-specific configurations (e.g., namespaces, RBAC)
+├── 3-apps/           # Application-specific manifests, one directory per app
+│   └── maliev-auth-service/
+│       ├── base/         # Environment-agnostic manifests (Deployment, Service)
+│       └── overlays/     # Environment-specific patches
+│           ├── development/
+│           ├── staging/
+│           └── production/
+└── argocd/             # Argo CD application definitions (App of Apps)
+    ├── projects/       # Argo CD AppProject definitions
+    └── environments/   # Parent applications for each environment
+        └── dev/
+            └── apps/   # Argo CD Application manifest for each app in dev
 ```
 
-1.  **Install Argo CD**: Follow the official Argo CD documentation to install it in your cluster.
+---
 
-2.  **Apply the Root Application**: The only manifest you need to apply manually is the `root-app.yaml` located in the `argocd` directory of this repository. This `Application` is the entry point for the App of Apps pattern. It will automatically deploy and manage all other applications for all environments.
-    
-    ```bash
-    kubectl apply -f maliev-gitops/argocd/root-app.yaml
-    ```
-    
-    Once applied, you can view the `root` application in the Argo CD UI. It will, in turn, show you the applications it manages for each of your environments.
+## End-to-End Workflows
 
-### C. Creating an Argo CD User (Recommended)
+### Onboarding a New Application
 
-For security, you should not use the default `admin` account for daily work. Here is how to create a new user.
-**Note:** The `maliev` user has already been created.
+As a DevOps Engineer, I want to follow a standard process to deploy a new application to the `development` environment so that it is managed via GitOps.
 
-1.  **Create the User Account**: Edit the `argocd-cm` ConfigMap to declare the new user.
-    
-    ```bash
-    kubectl edit cm argocd-cm -n argocd
-    ```
-    
-    Add the following line under the `data` section (or create the `data` section if it doesn't exist):
-    
-    ```yaml
-    data:
-      accounts.<new-user>: apiKey, login
-    ```
+*   **GIVEN** I have created the necessary file structure in `3-apps/` and the ArgoCD Application manifest in `argocd/environments/dev/apps/`.
+*   **WHEN** my Pull Request is merged to `main`.
+*   **THEN** the new application appears in the ArgoCD UI and becomes `Healthy` and `Synced` within 5 minutes.
 
-2.  **Set the Password**: The easiest way is with the Argo CD CLI. First, log in as admin, then update the new user's password.
-    
-    ```bash
-    # Log in with the initial password
-    argocd login localhost:8080
-    
-    # Set the new password (the CLI will handle hashing)
-    argocd account update-password --account <new-user> --new-password YOUR_CHOSEN_STRONG_PASSWORD
-    ```
+### Promoting a Release
 
-3.  **Grant Permissions**: Edit the `argocd-rbac-cm` ConfigMap to give your new user permissions.
-    
-    ```bash
-    kubectl edit cm argocd-rbac-cm -n argocd
-    ```
-    
-    Add the following `data` section, ensuring the indentation is correct:
-    
-    ```yaml
-    data:
-      policy.csv: |
-        p, role:org-admin, applications, *, */*, allow
-        g, <new-user>, role:org-admin
-    ```
+As a DevOps Engineer, I want to promote a new version of an application to `staging` or `production` by updating a single image tag.
 
-4.  **Log In**: You can now log out and log back in with the username `<new-user>` and your new password.
+*   **GIVEN** a new container image (`my-app:v1.1.0`) is available.
+*   **WHEN** I update the `newTag` in the Kustomize overlay for the target environment (e.g., `3-apps/my-app/overlays/staging/kustomization.yaml`).
+*   **THEN** ArgoCD updates the application in the target namespace to use the new image within 5 minutes.
+
+### Rolling Back a Faulty Deployment
+
+As a DevOps Engineer, I want to quickly roll back a faulty deployment by reverting a commit in Git.
+
+*   **GIVEN** a deployment is failing due to a bad commit (e.g., an invalid image tag).
+*   **WHEN** I revert the faulty commit in the `main` branch.
+*   **THEN** ArgoCD automatically re-syncs the application and restores it to the previous working version within 10 minutes.
+
+---
+
+## Step-by-Step Guide: Onboarding a New Application
+
+This section provides a detailed, prescriptive guide for onboarding a new application.
+
+**Step 1: Create Application Manifests (`3-apps`)**
+
+1.  Create a new directory for your application under `3-apps/`, e.g., `3-apps/my-new-app`.
+2.  Inside, create a `base` directory containing the core, environment-agnostic Kubernetes manifests:
+    *   `deployment.yaml`: The main workload definition.
+    *   `service.yaml`: The service resource to expose the application.
+    *   `hpa.yaml`: The Horizontal Pod Autoscaler configuration.
+    *   `service-secrets.yaml`: An `ExternalSecret` manifest. It MUST reference the `gcp-secret-manager` `ClusterSecretStore`.
+    *   `kustomization.yaml`: This file MUST list all the above resources and include `../../_common`.
+3.  Inside your application directory, create an `overlays` directory containing subdirectories for `development`, `staging`, and `production`.
+4.  In each environment overlay (e.g., `overlays/development`), create a `kustomization.yaml`. This file MUST:
+    *   Reference the base: `resources: - ../../base`
+    *   Set the correct namespace, e.g., `namespace: maliev-dev`.
+    *   Include an `images` block to specify the container image and tag for that specific environment.
+    *   Include `patches` to override base configurations, such as resource limits and secret keys.
+
+**Step 2: Register the Application in ArgoCD (`argocd`)**
+
+1.  Navigate to the `argocd/environments/dev/apps/` directory.
+2.  Create a new YAML file for your application, e.g., `my-new-app.yaml`.
+3.  This file defines an ArgoCD `Application` resource. It must specify:
+    *   `metadata.name`: e.g., `my-new-app-dev`
+    *   `metadata.namespace`: `argocd`
+    *   `spec.project`: `maliev-dev`
+    *   `spec.source.path`: The path to your application's **development overlay**, e.g., `3-apps/my-new-app/overlays/development`.
+    *   `spec.source.repoURL`: The URL of the GitOps repository.
+    *   `spec.destination.namespace`: The target namespace, e.g., `maliev-dev`.
+
+**Step 3: Submit for Review**
+
+1.  Commit all the new files and push them to a feature branch.
+2.  Create a Pull Request to merge the changes into the `main` branch.
+3.  Once the PR is approved and merged, ArgoCD will automatically detect the new application definition and deploy it.
 
 ---
 
 ## Detailed Operational Guides
 
-### 1. Managing DNS Records
+### Secret Management
+
+This repository uses the **External Secrets Operator** to securely manage secrets.
+
+*   **Storage**: All secrets are stored in **Google Secret Manager**.
+*   **Syncing**: `ExternalSecret` resources in this repository tell the operator to fetch a secret from Google Secret Manager and create a corresponding native Kubernetes `Secret`.
+*   **Configuration**:
+    *   The `base/service-secrets.yaml` for each application defines the `ExternalSecret` resource.
+    *   The environment-specific overlay (`overlays/<env>`) patches this resource to specify the exact `key` (version) of the secret to pull from Google Secret Manager for that environment. This allows `development` to use a different database password than `production` while using the same base manifest.
+
+### Managing DNS Records
 
 All of the following `A` records should be configured in your DNS provider to point to your main static IP address: **`35.244.136.255`**.
 
@@ -138,58 +137,36 @@ All of the following `A` records should be configured in your DNS provider to po
 
 | Hostname / Name       | Type | Value / Points to |
 |:--------------------- |:---- |:----------------- |
-| `@` (or `maliev.com`) | A    | `35.244.136.255`  |
-| `www`                 | A    | `35.244.136.255`  |
-| `api`                 | A    | `35.244.136.255`  |
-| `intranet`            | A    | `35.244.136.255`  |
-| `line-chatbot`        | A    | `35.244.136.255`  |
+| `@` (or `maliev.com`) | A    | `100.200.300.255`  |
+| `www`                 | A    | `100.200.300.255`  |
+| `api`                 | A    | `100.200.300.255`  |
 
-**Staging Environment**
+**Staging & Development Environments** are prefixed accordingly (e.g., `staging.api`, `dev.api`).
 
-| Hostname / Name    | Type | Value / Points to |
-|:------------------ |:---- |:----------------- |
-| `staging`          | A    | `35.244.136.255`  |
-| `staging.www`      | A    | `35.244.136.255`  |
-| `staging.api`      | A    | `35.244.136.255`  |
-| `staging.intranet` | A    | `35.244.136.255`  |
+### Health Probe Tuning
 
-**Development Environment**
+The `deployment.yaml` for each service contains `livenessProbe` and `readinessProbe` sections. The key parameter to tune for each service is **`initialDelaySeconds`**. Set this to be slightly longer than your service's average startup time to prevent premature restarts.
 
-| Hostname / Name | Type | Value / Points to |
-|:--------------- |:---- |:----------------- |
-| `dev`           | A    | `35.244.136.255`  |
-| `dev.www`       | A    | `35.244.136.255`  |
-| `dev.api`       | A    | `35.244.136.255`  |
-| `dev.intranet`  | A    | `35.244.136.255`  |
+---
 
-### 2. Health Probe (Liveness & Readiness) Tuning
+## One-Time Setup Guide
 
-The `deployment.yaml` for each service contains `livenessProbe` and `readinessProbe` sections. These are critical for ensuring your application is stable.
+This section covers the initial setup required to use this GitOps repository.
 
-*   **`livenessProbe`**: If this fails, Kubernetes restarts the container. It answers the question, "Is the application alive or deadlocked?"
-*   **`readinessProbe`**: If this fails, Kubernetes stops sending traffic to the container. It answers, "Is the application ready to serve new requests?"
+### A. Setting up the CI Pipeline (For each C# repo)
 
-The key parameter to tune for each service is **`initialDelaySeconds`**. You should set this to be slightly longer than your service's average startup time to prevent premature failures.
+For each of your C# microservice repositories, you must configure a GitHub Actions workflow to automatically build and push container images.
 
-### 3. Onboarding a New Service
+1.  **Copy Workflow**: Copy `example-ci.yml` from this repo to your service repo at `.github/workflows/ci.yml`.
+2.  **Edit Workflow**: Change the `SERVICE_NAME` environment variable in the file.
+3.  **Create GitHub Secrets**: In your service repo's settings, create two secrets:
+    *   `GCP_SA_KEY`: A Google Cloud Service Account key with the **"Artifact Registry Writer"** role.
+    *   `GITOPS_PAT`: A GitHub Personal Access Token with the **`repo`** scope to allow the action to open Pull Requests in this repository.
 
-1.  **Create App Directory**: In `3-apps/`, create a new folder for your service with the name `maliev-<app-name>`. This directory should contain `base` and `overlays` subdirectories.
-2.  **Add Manifests**: Create the `deployment.yaml`, `service.yaml`, etc., in the `base` directory. Also create the overlay component directories and files (e.g., `overlays/development/kustomization.yaml`).
-3.  **Create an Application Manifest**: In the `argocd/environments/<env>/apps` directory, create a new `Application` manifest for your service with the name `maliev-<app-name>.yaml`. This manifest will define how your service is deployed to each environment.
-4.  **Automatic Deployment**: Argo CD will automatically detect the new application manifest in the `argocd/environments/<env>/apps` directory and deploy your new service.
+### B. Setting up the GitOps Controller (In Kubernetes)
 
-### 4. Secret Management
-
-This repository uses the External Secrets Operator to manage secrets securely across all environments. For detailed information about secret management, including naming conventions, templates, and troubleshooting, see:
-
--   **[HOW_TO_USE.md - Secret Management Section](HOW_TO_USE.md#understanding-secretsyaml-and-secret-management)** - Practical guide for day-to-day secret operations
--   **[secret-templates.yaml](secret-templates.yaml)** - Reusable templates for adding new service secrets
-
-**Quick Reference:**
-
--   All secrets are stored in Google Secret Manager and synced to Kubernetes
--   Standardized naming: `maliev-{environment}-{scope}-{type}`
--   Templates available for common patterns (database, API, shared infrastructure)
--   Critical secrets already implemented: LINE Bot, JWT, database connections
-
-For immediate help with GitHub Actions failures related to missing environment variables, see the analysis document.
+1.  **Install Argo CD**: Follow the official Argo CD documentation to install it in your cluster.
+2.  **Apply the Root Application**: Apply the `root-app.yaml` from the `argocd` directory. This is the only manual `kubectl apply` needed. It bootstraps the entire App of Apps structure.
+    ```bash
+    kubectl apply -f maliev-gitops/argocd/root-app.yaml
+    ```

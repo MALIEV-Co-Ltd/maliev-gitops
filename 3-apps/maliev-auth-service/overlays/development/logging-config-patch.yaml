@@ -6,23 +6,23 @@ spec:
   template:
     spec:
       containers:
-      - name: maliev-auth-service
-        env:
-        - name: Serilog__MinimumLevel__Default
-          value: "Information"
-        - name: Serilog__MinimumLevel__Override__Microsoft
-          value: "Warning"
-        - name: Serilog__MinimumLevel__Override__System
-          value: "Warning"
-        - name: RateLimit__TokenEndpoint__PermitLimit
-          value: "50"
-        - name: RateLimit__RefreshEndpoint__PermitLimit
-          value: "100"
-        - name: RateLimit__Global__PermitLimit
-          value: "500"
-        - name: Cache__ValidationCache__Enabled
-          value: "true"
-        - name: Cache__ValidationCache__ExpirationTime
-          value: "00:02:00"
-        - name: CredentialValidation__EnableSanitization
-          value: "true"
+        - name: maliev-auth-service
+          env:
+            - name: Serilog__MinimumLevel__Default
+              value: "Information"
+            - name: Serilog__MinimumLevel__Override__Microsoft
+              value: "Warning"
+            - name: Serilog__MinimumLevel__Override__System
+              value: "Warning"
+            - name: RateLimit__TokenEndpoint__PermitLimit
+              value: "50"
+            - name: RateLimit__RefreshEndpoint__PermitLimit
+              value: "100"
+            - name: RateLimit__Global__PermitLimit
+              value: "500"
+            - name: Cache__ValidationCache__Enabled
+              value: "true"
+            - name: Cache__ValidationCache__ExpirationTime
+              value: "00:02:00"
+            - name: CredentialValidation__EnableSanitization
+              value: "true"

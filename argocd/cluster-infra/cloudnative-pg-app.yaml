@@ -6,11 +6,11 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/MALIEV-Co-Ltd/maliev-gitops.git'
+    repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
     targetRevision: main
     path: 1-cluster-infra/05-cloudnative-pg
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: "https://kubernetes.default.svc"
     namespace: cnpg-system
   syncPolicy:
     automated:

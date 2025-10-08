@@ -19,19 +19,18 @@ spec:
       labels:
         app: maliev-web
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-web
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-web
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /readiness
-            port: 8080
+        - name: maliev-web
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-web
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 8080

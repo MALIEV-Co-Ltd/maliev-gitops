@@ -19,19 +19,18 @@ spec:
       labels:
         app: maliev-supplier-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-supplier-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-supplier-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /suppliers/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /suppliers/readiness
-            port: 8080
+        - name: maliev-supplier-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-supplier-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /suppliers/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /suppliers/readiness
+              port: 8080

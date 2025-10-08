@@ -19,24 +19,23 @@ spec:
       labels:
         app: maliev-order-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-order-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-order-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /orders/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /orders/readiness
-            port: 8080
-        envFrom:
-        - secretRef:
-            name: maliev-shared-secrets
-        - secretRef:
-            name: maliev-order-service-secrets
+        - name: maliev-order-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-order-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /orders/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /orders/readiness
+              port: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-order-service-secrets

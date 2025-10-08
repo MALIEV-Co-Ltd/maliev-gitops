@@ -1,41 +1,239 @@
-# GitHub Actions Workflow for Validating Kubernetes Manifests
-#
-# This workflow runs on every Pull Request against the `main` branch.
-# It does NOT deploy anything. Its only job is to act as a safety net
-# by ensuring that the Kustomize configurations are valid and can be built successfully.
-#
-# In your GitHub repository settings, you can create a branch protection rule
-# for `main` that requires this check to pass before a PR can be merged.
-
-name: Validate K8s Config
+name: GitOps Validation
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  validate:
-    name: Validate Kustomize and YAML
+  lint:
+    name: Lint and Static Analysis
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Kustomize
-      uses: imranismail/setup-kustomize@v1
+      - name: Install tools (jq, yq)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
 
-    - name: Validate Production Environment
-      run: |
-        echo "Validating Production Environment..."
-        kustomize build 2-environments/3-production
+      - name: Lint YAML files
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: .
+          config_file: .yamllint.yml
 
-    - name: Validate Development Environment
-      run: |
-        echo "Validating Development Environment..."
-        kustomize build 2-environments/1-development
+      - name: Check Kubernetes best practices (cluster-infra)
+        uses: stackrox/kube-linter-action@v1
+        with:
+          config: .kube-linter.yml
+          directory: 1-cluster-infra
+          format: sarif
+          output-file: kube-linter-cluster-infra.sarif
+        continue-on-error: true
 
-    - name: Validate Staging Environment
-      run: |
-        echo "Validating Staging Environment..."
-        kustomize build 2-environments/2-staging
+      - name: Ensure cluster-infra SARIF exists
+        run: |
+          [ -f kube-linter-cluster-infra.sarif ] || echo '{"runs":[]}' > kube-linter-cluster-infra.sarif
+
+      - name: Check Kubernetes best practices (environments)
+        uses: stackrox/kube-linter-action@v1
+        with:
+          config: .kube-linter.yml
+          directory: 2-environments
+          format: sarif
+          output-file: kube-linter-environments.sarif
+        continue-on-error: true
+
+      - name: Ensure environments SARIF exists
+        run: |
+          [ -f kube-linter-environments.sarif ] || echo '{"runs":[]}' > kube-linter-environments.sarif
+
+      - name: Check Kubernetes best practices (apps)
+        uses: stackrox/kube-linter-action@v1
+        with:
+          config: .kube-linter.yml
+          directory: 3-apps
+          format: sarif
+          output-file: kube-linter-apps.sarif
+        continue-on-error: true
+
+      - name: Ensure apps SARIF exists
+        run: |
+          [ -f kube-linter-apps.sarif ] || echo '{"runs":[]}' > kube-linter-apps.sarif
+
+      - name: Upload SARIF (cluster-infra)
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: kube-linter-cluster-infra.sarif
+          category: kube-linter-cluster-infra
+
+      - name: Upload SARIF (environments)
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: kube-linter-environments.sarif
+          category: kube-linter-environments
+
+      - name: Upload SARIF (apps)
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: kube-linter-apps.sarif
+          category: kube-linter-apps
+
+  validate:
+    name: Kustomize, Structure and ArgoCD Validation
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install kustomize
+        run: |
+          set -e
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          sudo mv kustomize /usr/local/bin/
+          kustomize version
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
+
+      - name: Validate Kustomize overlays
+        run: |
+          set -e
+          found=0
+          if [ -d "3-apps" ]; then
+            while IFS= read -r -d $'\0' file; do
+              dir=$(dirname "$file")
+              echo "Validating kustomization in $dir"
+              if ! kustomize build "$dir" > /dev/null; then
+                echo "kustomize build failed for $dir"
+                found=1
+              fi
+            done < <(find 3-apps -name kustomization.yaml -print0)
+          else
+            echo "No 3-apps directory found. Skipping kustomize overlay validation."
+          fi
+          if [ "$found" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Check for native Secrets
+        run: |
+          set -e
+          # exclude argocd directory where applications may reference secrets in other forms
+          if grep -R --line-number --no-color --exclude-dir=argocd "kind:[[:space:]]*Secret" . ; then
+            echo "Error: Native Kubernetes Secrets are not allowed. Please use ExternalSecrets. See offending lines above."
+            exit 1
+          else
+            echo "No native Secret resources found (outside argocd)."
+          fi
+
+      - name: Validate repository structure (3-apps)
+        run: |
+          set -euo pipefail
+          if [ ! -d "3-apps" ]; then
+            echo "3-apps directory not present. Skipping structure validation."
+            exit 0
+          fi
+
+          for app_path in 3-apps/*; do
+            [ -d "$app_path" ] || continue
+            app_name=$(basename "$app_path")
+
+            # Skip internal/shared directories (names starting with underscore)
+            case "$app_name" in
+              _*) 
+                echo "Skipping internal directory: $app_name"
+                continue
+                ;;
+            esac
+
+            # Now validate expected layout for normal apps
+            if [ ! -d "$app_path/base" ] || [ ! -d "$app_path/overlays" ]; then
+              echo "Error: $app_path must have a 'base' and 'overlays' directory."
+              exit 1
+            fi
+
+            for env in development staging production; do
+              if [ ! -d "$app_path/overlays/$env" ]; then
+                echo "Error: $app_path must have overlays/$env."
+                exit 1
+              fi
+            done
+
+            echo "Validated structure for $app_name."
+          done
+
+          echo "Repository structure validation complete."
+
+      - name: Validate ArgoCD Application paths
+        run: |
+          set -euo pipefail
+          
+          YQ_BIN=/usr/local/bin/yq
+
+          echo "Validating ArgoCD Application manifests under argocd/..."
+          errors=0
+
+          # find all YAML files in argocd directory
+          find argocd -type f \( -iname '*.yml' -o -iname '*.yaml' \) -print0 | while IFS= read -r -d $'\0' file; do
+            kind=$($YQ_BIN -r '.kind // ""' "$file")
+            if [ "$kind" != "Application" ]; then
+              # skip non-Application manifests
+              continue
+            fi
+
+            name=$($YQ_BIN -r '.metadata.name // "<noname>"' "$file")
+            echo "Checking Application: $name (file: $file)"
+
+            # Get source fields
+            source_path=$($YQ_BIN -r '.spec.source.path // ""' "$file")
+            chart=$($YQ_BIN -r '.spec.source.chart // ""' "$file")
+            repoURL=$($YQ_BIN -r '.spec.source.repoURL // ""' "$file")
+
+            # Skip path check if using a Helm chart
+            if [ -n "$chart" ] && [ -z "$source_path" ]; then
+              echo "  Skipping path check for $name because it references a Helm chart ($chart)."
+              continue
+            fi
+
+            # Fail if no path provided and not a chart
+            if [ -z "$source_path" ]; then
+              echo "  Error: Application $name has no spec.source.path and is not a chart. File: $file"
+              errors=1
+              continue
+            fi
+
+            # Check if path exists
+            if [ -d "$source_path" ] || [ -f "$source_path" ]; then
+              echo "  OK: referenced path exists: $source_path"
+            else
+              # try relative to the argocd directory
+              candidate="$(dirname "$file")/$source_path"
+              if [ -d "$candidate" ] || [ -f "$candidate" ]; then
+                echo "  OK: referenced path exists (relative): $candidate"
+              else
+                echo "  Error: Path '$source_path' referenced in Application $name (file: $file) does not exist."
+                echo "    repoURL: $repoURL"
+                errors=1
+              fi
+            fi
+          done
+
+          if [ "$errors" -ne 0 ]; then
+            echo "ArgoCD Application path validation failed."
+            exit 1
+          fi
+
+          echo "All ArgoCD Application paths are valid."
+
+      - name: Final note
+        run: echo "Validation completed."

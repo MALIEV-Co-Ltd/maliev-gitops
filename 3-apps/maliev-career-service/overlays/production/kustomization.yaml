@@ -2,16 +2,16 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 images:
-- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-career-service
-  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-career-service
-  newTag: 9a2f55532030d132b8cefe743a223cfc3e811909
+  - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-career-service
+    newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-career-service
+    newTag: 9a2f55532030d132b8cefe743a223cfc3e811909
 
 namespace: maliev-prod
 
 resources:
-- ../../base
+  - ../../base
 
 patches:
-- path: resource-limits-patch.yaml
-- path: health-check-patch.yaml
-- path: service-secrets-patch.yaml
+  - path: resource-limits-patch.yaml
+  - path: health-check-patch.yaml
+  - path: service-secrets-patch.yaml

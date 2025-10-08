@@ -19,19 +19,18 @@ spec:
       labels:
         app: maliev-pdf-service
     spec:
-      
       terminationGracePeriodSeconds: 30
       containers:
-      - name: maliev-pdf-service
-        image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-pdf-service
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /pdfs/liveness
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /pdfs/readiness
-            port: 8080
+        - name: maliev-pdf-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-pdf-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /pdfs/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /pdfs/readiness
+              port: 8080
