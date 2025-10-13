@@ -7,18 +7,18 @@ spec:
   postgresql:
     parameters:
       # TCP keepalive settings to prevent connection drops during port forwarding
-      tcp_keepalives_idle: "60"      # Start keepalive after 60 seconds of inactivity
-      tcp_keepalives_interval: "10"   # Send keepalive every 10 seconds
-      tcp_keepalives_count: "3"      # Drop connection after 3 failed keepalives
+      tcp_keepalives_idle: "60" # Start keepalive after 60 seconds of inactivity
+      tcp_keepalives_interval: "10" # Send keepalive every 10 seconds
+      tcp_keepalives_count: "3" # Drop connection after 3 failed keepalives
 
       # Connection management optimized for small scale
-      max_connections: "25"          # Sufficient for 5-10 users + connections from services
-      shared_buffers: "64MB"         # Reasonable for small workload
-      effective_cache_size: "256MB"  # Conservative cache size
+      max_connections: "25" # Sufficient for 5-10 users + connections from services
+      shared_buffers: "64MB" # Reasonable for small workload
+      effective_cache_size: "256MB" # Conservative cache size
 
       # Connection timeout settings
-      statement_timeout: "300000"    # 5 minutes (300 seconds)
-      idle_in_transaction_session_timeout: "300000"  # 5 minutes
+      statement_timeout: "300000" # 5 minutes (300 seconds)
+      idle_in_transaction_session_timeout: "300000" # 5 minutes
 
       # Logging for troubleshooting connection issues
       log_connections: "on"
