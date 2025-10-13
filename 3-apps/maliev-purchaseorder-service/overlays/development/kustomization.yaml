@@ -2,17 +2,17 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 images:
-  - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-purchaseorder-service
-    newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-purchaseorder-service
-    newTag: dd939c7b3d77e89e402fcb9da57bd7a5518dd207
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-purchaseorder-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-purchaseorder-service
+  newTag: d679e44322704cd3d6b6a90c8c1962f600411c35
 
 namespace: maliev-dev
 
 resources:
-  - ../../base
+- ../../base
 
 patches:
-  - path: environment-config-patch.yaml
-  - path: resource-limits-patch.yaml
-  - path: health-check-patch.yaml
-  - path: service-secrets-patch.yaml
+- path: environment-config-patch.yaml
+- path: resource-limits-patch.yaml
+- path: health-check-patch.yaml
+- path: service-secrets-patch.yaml
