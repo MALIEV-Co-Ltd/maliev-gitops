@@ -8,11 +8,17 @@ spec:
       containers:
         - name: maliev-customer-service
           livenessProbe:
+            httpGet:
+              path: /customers/liveness
+              port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
             timeoutSeconds: 3
             failureThreshold: 3
           readinessProbe:
+            httpGet:
+              path: /customers/readiness
+              port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
             timeoutSeconds: 3
