@@ -4,18 +4,21 @@ This repository is the **single source of truth** for all application and infras
 
 **Table of Contents**
 
-- [Core Concepts](#core-concepts)
-- [Repository Structure Overview](#repository-structure-overview)
-- [End-to-End Workflows](#end-to-end-workflows)
-  - [Onboarding a New Application](#onboarding-a-new-application)
-  - [Promoting a Release](#promoting-a-release)
-  - [Rolling Back a Faulty Deployment](#rolling-back-a-faulty-deployment)
-- [Step-by-Step Guide: Onboarding a New Application](#step-by-step-guide-onboarding-a-new-application)
-- [Detailed Operational Guides](#detailed-operational-guides)
-  - [Secret Management](#secret-management)
-  - [Managing DNS Records](#managing-dns-records)
-  - [Health Probe Tuning](#health-probe-tuning)
-- [One-Time Setup Guide](#one-time-setup-guide)
+- [Maliev GitOps: Setup and Operations Guide](#maliev-gitops-setup-and-operations-guide)
+  - [Core Concepts](#core-concepts)
+  - [Repository Structure Overview](#repository-structure-overview)
+  - [End-to-End Workflows](#end-to-end-workflows)
+    - [Onboarding a New Application](#onboarding-a-new-application)
+    - [Promoting a Release](#promoting-a-release)
+    - [Rolling Back a Faulty Deployment](#rolling-back-a-faulty-deployment)
+  - [Step-by-Step Guide: Onboarding a New Application](#step-by-step-guide-onboarding-a-new-application)
+  - [Detailed Operational Guides](#detailed-operational-guides)
+    - [Secret Management](#secret-management)
+    - [Managing DNS Records](#managing-dns-records)
+    - [Health Probe Tuning](#health-probe-tuning)
+  - [One-Time Setup Guide](#one-time-setup-guide)
+    - [A. Setting up the CI Pipeline (For each C# repo)](#a-setting-up-the-ci-pipeline-for-each-c-repo)
+    - [B. Setting up the GitOps Controller (In Kubernetes)](#b-setting-up-the-gitops-controller-in-kubernetes)
 
 ---
 
@@ -131,7 +134,7 @@ This repository uses the **External Secrets Operator** to securely manage secret
 
 ### Managing DNS Records
 
-All of the following `A` records should be configured in your DNS provider to point to your main static IP address: **`35.244.136.255`**.
+All of the following `A` records should be configured in your DNS provider to point to your main static IP address: **`100.200.300.255`**.
 
 **Production Environment**
 
