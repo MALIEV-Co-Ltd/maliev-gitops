@@ -12,3 +12,4 @@ ignore: |
   /1-cluster-infra/02-cert-manager/
   /1-cluster-infra/05-cloudnative-pg/
   /.github/workflows/
+  3-apps/*/overlays/**/kustomization.yaml
