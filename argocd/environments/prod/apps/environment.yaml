@@ -1,22 +1,24 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: maliev-prod-environment
-  namespace: argocd
-  labels:
-    app.kubernetes.io/environment: production
-spec:
-  project: default
-  source:
-    repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
-    targetRevision: main
-    path: 2-environments/3-production
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: maliev-prod
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+# DISABLED - PostgreSQL database removed to reduce resource usage
+# Uncomment below to re-enable production database
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: maliev-prod-environment
+#   namespace: argocd
+#   labels:
+#     app.kubernetes.io/environment: production
+# spec:
+#   project: default
+#   source:
+#     repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
+#     targetRevision: main
+#     path: 2-environments/3-production
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: maliev-prod
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true

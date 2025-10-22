@@ -16,3 +16,4 @@ patches:
 - path: health-check-patch.yaml
 - path: service-secrets-patch.yaml
 - path: environment-config-patch.yaml
+- path: hpa-patch.yaml
