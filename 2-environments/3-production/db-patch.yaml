@@ -4,7 +4,7 @@ metadata:
   name: postgres-cluster
   namespace: maliev-prod
 spec:
-  instances: 3
+  instances: 1
   storage:
     size: 100Gi
     storageClass: standard
