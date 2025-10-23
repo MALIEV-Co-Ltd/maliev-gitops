@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-line-chatbot-service
+  name: maliev-chat-service
 spec:
   template:
     spec:
       containers:
-        - name: maliev-line-chatbot-service-container
+        - name: maliev-chat-service-container
           livenessProbe:
             initialDelaySeconds: 10
             periodSeconds: 5

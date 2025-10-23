@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-line-chatbot-redis
+  name: maliev-chat-redis
   labels:
-    app: maliev-line-chatbot-redis
+    app: maliev-chat-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: maliev-line-chatbot-redis
+      app: maliev-chat-redis
   template:
     metadata:
       labels:
-        app: maliev-line-chatbot-redis
+        app: maliev-chat-redis
     spec:
       containers:
         - name: redis

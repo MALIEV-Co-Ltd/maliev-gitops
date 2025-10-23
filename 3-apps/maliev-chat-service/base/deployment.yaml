@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: maliev-line-chatbot-service
-  name: maliev-line-chatbot-service
+    app: maliev-chat-service
+  name: maliev-chat-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,16 +13,16 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: maliev-line-chatbot-service
+      app: maliev-chat-service
   template:
     metadata:
       labels:
-        app: maliev-line-chatbot-service
+        app: maliev-chat-service
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-        - name: maliev-line-chatbot-service-container
-          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-line-chatbot-service
+        - name: maliev-chat-service-container
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-chat-service
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
@@ -38,4 +38,4 @@ spec:
             - secretRef:
                 name: maliev-shared-secrets
             - secretRef:
-                name: maliev-line-chatbot-service-secrets
+                name: maliev-chat-service-secrets
