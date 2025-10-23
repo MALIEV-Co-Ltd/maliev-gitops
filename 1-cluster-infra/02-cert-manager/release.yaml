@@ -18,10 +18,11 @@ spec:
     solvers:
     - selector:
         dnsNames:
-        - 'www.maliev.com'
-        - 'maliev.com'
         - 'api.maliev.com'
+        - 'chat.maliev.com'
         - 'intranet.maliev.com'
+        - 'maliev.com'
+        - 'www.maliev.com'
       http01:
         ingress:
           class: gce
@@ -45,11 +46,11 @@ spec:
     solvers:
     - selector:
         dnsNames:
-        - 'dev.www.maliev.com'
         - 'dev.api.maliev.com'
+        - 'dev.chat.maliev.com'
         - 'dev.intranet.maliev.com'
         - 'dev.maliev.com'
-        - 'dev.line-chatbot.maliev.com'
+        - 'dev.www.maliev.com'
       http01:
         ingress:
           class: gce
@@ -59,11 +60,11 @@ spec:
                 cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     - selector:
         dnsNames:
-        - 'staging.www.maliev.com'
         - 'staging.api.maliev.com'
+        - 'staging.chat.maliev.com'
         - 'staging.intranet.maliev.com'
         - 'staging.maliev.com'
-        - 'staging.line-chatbot.maliev.com'
+        - 'staging.www.maliev.com'
       http01:
         ingress:
           class: gce
