@@ -9,8 +9,8 @@ spec:
         - name: maliev-upload-service
           resources:
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 5m
+              memory: 64Mi
             limits:
-              cpu: 200m
-              memory: 256Mi
+              cpu: 50m
+              memory: 128Mi
