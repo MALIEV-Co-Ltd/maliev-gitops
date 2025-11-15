@@ -9,7 +9,7 @@ spec:
         - name: maliev-invoice-service
           env:
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Development"
+              value: "Production"
             # Redis configuration
             - name: Redis__Configuration
               value: "redis.maliev-infra.svc.cluster.local:6379"
