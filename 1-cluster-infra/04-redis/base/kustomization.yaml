@@ -4,7 +4,8 @@ kind: Kustomization
 resources:
   - statefulset.yaml
 
-commonLabels:
-  managed-by: argocd
-  component: redis
-  tier: infrastructure
+labels:
+  - pairs:
+      managed-by: argocd
+      component: redis
+      tier: infrastructure
