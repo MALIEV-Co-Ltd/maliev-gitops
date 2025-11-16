@@ -10,19 +10,27 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Development"
-            # Redis configuration
+            # Redis configuration (namespace-local)
             - name: Redis__Configuration
-              value: "redis.maliev-infra.svc.cluster.local:6379"
-            # RabbitMQ configuration
+              value: "redis.maliev-dev.svc.cluster.local:6379"
+            # RabbitMQ configuration (namespace-local)
             - name: RabbitMQ__Enabled
               value: "true"
             - name: RabbitMQ__Host
-              value: "rabbitmq.maliev-infra.svc.cluster.local"
+              value: "rabbitmq.maliev-dev.svc.cluster.local"
             - name: RabbitMQ__Port
               value: "5672"
             - name: RabbitMQ__Username
-              value: "maliev"
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-shared-secrets
+                  key: RabbitMq__Username
+                  optional: true
             - name: RabbitMQ__Password
-              value: "maliev123"
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-shared-secrets
+                  key: RabbitMq__Password
+                  optional: true
             - name: RabbitMQ__VirtualHost
               value: "/"
