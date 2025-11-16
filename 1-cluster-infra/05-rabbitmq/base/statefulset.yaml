@@ -134,13 +134,13 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: maliev-shared-secrets
-                  key: RABBITMQ_USERNAME
+                  key: RabbitMq__Username
                   optional: true
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
                   name: maliev-shared-secrets
-                  key: RABBITMQ_PASSWORD
+                  key: RabbitMq__Password
                   optional: true
             - name: RABBITMQ_ERLANG_COOKIE
               valueFrom:
