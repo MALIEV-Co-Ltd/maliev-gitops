@@ -12,7 +12,7 @@ resources:
   - shared-secrets.yaml
   # Infrastructure (DISABLED - uncomment when ready to deploy)
   # - ../../1-cluster-infra/04-redis/base
-  # - ../../1-cluster-infra/05-rabbitmq/base
+  # - ../../1-cluster-infra/06-rabbitmq/base
 
 patches:
   - path: db-patch.yaml

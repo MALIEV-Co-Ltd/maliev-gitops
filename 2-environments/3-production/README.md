@@ -32,7 +32,7 @@ When ready to activate production:
    ```yaml
    resources:
      - ../../1-cluster-infra/04-redis/base
-     - ../../1-cluster-infra/05-rabbitmq/base
+     - ../../1-cluster-infra/06-rabbitmq/base
    ```
 
 4. **Deploy Applications**: Move apps from `3-apps/_disabled_apps` or configure overlays
