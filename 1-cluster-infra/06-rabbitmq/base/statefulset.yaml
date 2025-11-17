@@ -19,7 +19,7 @@ data:
 
     # Clustering configuration (for future HA upgrade)
     cluster_formation.peer_discovery_backend = classic_config
-    cluster_formation.classic_config.nodes.1 = rabbit@localhost
+    cluster_formation.classic_config.nodes.1 = rabbit@rabbitmq-0.rabbitmq-headless.maliev-dev.svc.cluster.local
 
     # Performance tuning
     channel_max = 2048
@@ -148,12 +148,20 @@ spec:
                   name: maliev-shared-secrets
                   key: RABBITMQ_ERLANG_COOKIE
                   optional: true
+            # For single-node deployment, hardcode the node name
+            # When scaling to HA cluster, this will need to be dynamic
             - name: RABBITMQ_NODENAME
-              value: "rabbit@$(POD_NAME).rabbitmq-headless"
+              value: "rabbit@rabbitmq-0.rabbitmq-headless.maliev-dev.svc.cluster.local"
+            - name: RABBITMQ_USE_LONGNAME
+              value: "true"
             - name: POD_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
 
           volumeMounts:
             - name: config
