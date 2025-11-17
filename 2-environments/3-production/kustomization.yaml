@@ -8,14 +8,16 @@ resources:
   - configmap.yaml
   - secrets.yaml
   - ../../3-apps/_common
-  - ../_database/base
+  # Database (DISABLED - only enabled in dev environment)
+  # - ../_database/base
   - shared-secrets.yaml
   # Infrastructure (DISABLED - uncomment when ready to deploy)
   # - ../../1-cluster-infra/04-redis/base
   # - ../../1-cluster-infra/06-rabbitmq/base
 
-patches:
-  - path: db-patch.yaml
-    target:
-      kind: Cluster
-      name: postgres-cluster
+# Database patches (DISABLED - only enabled in dev environment)
+# patches:
+#   - path: db-patch.yaml
+#     target:
+#       kind: Cluster
+#       name: postgres-cluster
