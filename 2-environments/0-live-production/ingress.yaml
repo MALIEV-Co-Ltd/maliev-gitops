@@ -11,17 +11,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - www.maliev.com
-    secretName: www-maliev-com-tls
-  - hosts:
+    - "*.maliev.com"
     - maliev.com
-    secretName: maliev-com-tls
-  - hosts:
-    - api.maliev.com
-    secretName: api-maliev-com-tls
-  - hosts:
-    - intranet.maliev.com
-    secretName: intranet-maliev-com-tls
+    secretName: maliev-com-wildcard-tls
   rules:
   - host: www.maliev.com
     http:

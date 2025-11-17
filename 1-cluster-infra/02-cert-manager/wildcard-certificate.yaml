@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: maliev-com-wildcard-tls
+  namespace: maliev
+spec:
+  secretName: maliev-com-wildcard-tls
+  dnsNames:
+  - "*.maliev.com"
+  - maliev.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

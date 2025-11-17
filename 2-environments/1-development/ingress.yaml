@@ -9,12 +9,12 @@ metadata:
     kubernetes.io/ingress.global-static-ip-name: maliev-ip
     cert-manager.io/cluster-issuer: letsencrypt-staging
     cert-manager.io/issue-temporary-certificate: "true"
-    acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   tls:
-    - hosts:
-        - dev.api.maliev.com
-      secretName: dev-api-maliev-com-tls
+  - hosts:
+    - "*.maliev.com"
+    - maliev.com
+    secretName: maliev-com-wildcard-tls
   rules:
     - host: dev.api.maliev.com
       http:

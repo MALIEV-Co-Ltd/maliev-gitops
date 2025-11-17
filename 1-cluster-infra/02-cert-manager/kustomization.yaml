@@ -4,3 +4,4 @@ resources:
 - cert-manager.yaml
 - release.yaml
 - cloudflare-api-token-secret.yaml
+- wildcard-certificate.yaml
