@@ -18,18 +18,13 @@ spec:
     solvers:
     - selector:
         dnsNames:
-        - 'api.maliev.com'
-        - 'chat.maliev.com'
-        - 'intranet.maliev.com'
-        - 'maliev.com'
         - 'www.maliev.com'
+        - 'maliev.com'
+        - 'api.maliev.com'
+        - 'intranet.maliev.com'
       http01:
         ingress:
-          class: gce
-          podTemplate:
-            metadata:
-              annotations:
-                cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+          name: gce-ingress-maliev
 
 ---
 

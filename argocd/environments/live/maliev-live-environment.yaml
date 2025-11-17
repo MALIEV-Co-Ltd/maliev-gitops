@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maliev-live-environment
+  namespace: argocd
+  labels:
+    app.kubernetes.io/environment: live-production
+spec:
+  project: default
+  source:
+    repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
+    targetRevision: main
+    path: 2-environments/0-live-production
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: maliev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
