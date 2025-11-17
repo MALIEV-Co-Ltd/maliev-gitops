@@ -4,13 +4,13 @@ namespace: maliev-prod
 
 resources:
   - namespace.yaml
-  - ingress.yaml
-  - configmap.yaml
-  - secrets.yaml
-  - ../../3-apps/_common
+  # - ingress.yaml
+  # - configmap.yaml
+  # - secrets.yaml
+  # - ../../3-apps/_common
   # Database (DISABLED - only enabled in dev environment)
   # - ../_database/base
-  - shared-secrets.yaml
+  # - shared-secrets.yaml
   # Infrastructure (DISABLED - uncomment when ready to deploy)
   # - ../../1-cluster-infra/04-redis/base
   # - ../../1-cluster-infra/06-rabbitmq/base

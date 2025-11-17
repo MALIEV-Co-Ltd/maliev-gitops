@@ -26,17 +26,3 @@ spec:
             name: maliev-auth-service
             port:
               number: 8080
-      - path: /countries
-        pathType: Prefix
-        backend:
-          service:
-            name: maliev-country-service
-            port:
-              number: 8080
-      - path: /currencies
-        pathType: Prefix
-        backend:
-          service:
-            name: maliev-currency-service
-            port:
-              number: 8080
