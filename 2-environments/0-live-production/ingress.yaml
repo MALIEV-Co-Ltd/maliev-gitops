@@ -171,7 +171,6 @@ spec:
             name: maliev-receiptservice-api
             port:
               number: 8080
-
       - path: /quotationrequests
         pathType: Prefix
         backend:
