@@ -16,15 +16,14 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
-    - selector:
-        dnsNames:
-        - 'www.maliev.com'
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
+      selector:
+        dnsZones:
         - 'maliev.com'
-        - 'api.maliev.com'
-        - 'intranet.maliev.com'
-      http01:
-        ingress:
-          name: gce-ingress-maliev
 
 ---
 
@@ -39,31 +38,11 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-staging
     solvers:
-    - selector:
-        dnsNames:
-        - 'dev.api.maliev.com'
-        - 'dev.chat.maliev.com'
-        - 'dev.intranet.maliev.com'
-        - 'dev.maliev.com'
-        - 'dev.www.maliev.com'
-      http01:
-        ingress:
-          class: gce
-          podTemplate:
-            metadata:
-              annotations:
-                cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-    - selector:
-        dnsNames:
-        - 'staging.api.maliev.com'
-        - 'staging.chat.maliev.com'
-        - 'staging.intranet.maliev.com'
-        - 'staging.maliev.com'
-        - 'staging.www.maliev.com'
-      http01:
-        ingress:
-          class: gce
-          podTemplate:
-            metadata:
-              annotations:
-                cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
+      selector:
+        dnsZones:
+        - 'maliev.com'
