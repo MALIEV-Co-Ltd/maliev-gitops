@@ -11,7 +11,7 @@ spec:
             httpGet:
               path: /materials/liveness
               port: 8080
-            initialDelaySeconds: 15
+            initialDelaySeconds: 40
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
