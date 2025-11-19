@@ -61,6 +61,13 @@ spec:
                 name: maliev-material-service
                 port:
                   number: 8080
+          - path: /payments
+            pathType: Prefix
+            backend:
+              service:
+                name: maliev-payment-service
+                port:
+                  number: 8080
           - path: /orders
             pathType: Prefix
             backend:
