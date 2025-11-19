@@ -11,10 +11,10 @@ metadata:
     cert-manager.io/issue-temporary-certificate: "true"
 spec:
   tls:
-  - hosts:
-    - "*.maliev.com"
-    - maliev.com
-    secretName: maliev-com-wildcard-tls
+    - hosts:
+        - "*.maliev.com"
+        - maliev.com
+      secretName: maliev-com-wildcard-tls
   rules:
     - host: dev.api.maliev.com
       http:

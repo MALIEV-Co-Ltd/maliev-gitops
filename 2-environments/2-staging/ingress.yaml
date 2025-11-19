@@ -11,15 +11,15 @@ metadata:
     cert-manager.io/issue-temporary-certificate: "true"
 spec:
   tls:
-  - hosts:
-    - "*.maliev.com"
-    - maliev.com
-    secretName: maliev-com-wildcard-tls
+    - hosts:
+        - "*.maliev.com"
+        - maliev.com
+      secretName: maliev-com-wildcard-tls
   rules:
-  - host: staging.api.maliev.com
-    http:
-      paths:
-      - path: /auth
+    - host: staging.api.maliev.com
+      http:
+        paths:
+          - path: /auth
         pathType: Prefix
         backend:
           service:
