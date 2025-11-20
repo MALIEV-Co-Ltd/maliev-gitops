@@ -1,12 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-quotation-service
+  name: placeholder
 spec:
   template:
     spec:
       containers:
-        - name: maliev-quotation-service
+        - name: placeholder
           resources:
-            requests: {}
-            limits: {}
+            requests:
+              cpu: 50m
+              memory: 96Mi
+            limits:
+              cpu: 150m
+              memory: 192Mi
