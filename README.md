@@ -88,7 +88,17 @@ This section provides a detailed, prescriptive guide for onboarding a new applic
 
 1.  Create a new directory for your application under `3-apps/`, e.g., `3-apps/my-new-app`.
 2.  Inside, create a `base` directory containing the core, environment-agnostic Kubernetes manifests:
-    *   `deployment.yaml`: The main workload definition.
+    *   `deployment.yaml`: The main workload definition. **CRITICAL**: This MUST include `envFrom` configuration to inject secrets:
+        ```yaml
+        containers:
+          - name: my-app
+            image: ...
+            envFrom:
+              - secretRef:
+                  name: maliev-shared-secrets      # Shared config (JWT, RabbitMQ, Redis)
+              - secretRef:
+                  name: my-app-secrets             # Service-specific config (DB connection, etc.)
+        ```
     *   `service.yaml`: The service resource to expose the application.
     *   `hpa.yaml`: The Horizontal Pod Autoscaler configuration.
     *   `service-secrets.yaml`: An `ExternalSecret` manifest. It MUST reference the `gcp-secret-manager` `ClusterSecretStore`.
@@ -128,9 +138,11 @@ This repository uses the **External Secrets Operator** to securely manage secret
 
 *   **Storage**: All secrets are stored in **Google Secret Manager**.
 *   **Syncing**: `ExternalSecret` resources in this repository tell the operator to fetch a secret from Google Secret Manager and create a corresponding native Kubernetes `Secret`.
+*   **Injection**: Secrets MUST be injected into pods using `envFrom` in the deployment manifest. This makes secrets available as environment variables, which are automatically loaded by ASP.NET Core configuration system.
 *   **Configuration**:
     *   The `base/service-secrets.yaml` for each application defines the `ExternalSecret` resource.
     *   The environment-specific overlay (`overlays/<env>`) patches this resource to specify the exact `key` (version) of the secret to pull from Google Secret Manager for that environment. This allows `development` to use a different database password than `production` while using the same base manifest.
+    *   **CRITICAL**: Every `base/deployment.yaml` MUST include `envFrom` to reference both `maliev-shared-secrets` (shared infrastructure config) and `<service-name>-secrets` (service-specific config). Without this, secrets will not be accessible to the application and connections will fail.
 
 ### Managing DNS Records
 

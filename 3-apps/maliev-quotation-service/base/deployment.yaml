@@ -26,6 +26,11 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-quotation-service-secrets
           livenessProbe:
             httpGet:
               path: /quotations/liveness
