@@ -11,16 +11,16 @@ spec:
             httpGet:
               path: /purchaseorders/liveness
               port: 8080
-            initialDelaySeconds: 15
+            initialDelaySeconds: 60
             periodSeconds: 10
-            timeoutSeconds: 5
+            timeoutSeconds: 10
             failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /purchaseorders/readiness
               port: 8080
-            initialDelaySeconds: 20
+            initialDelaySeconds: 90
             periodSeconds: 5
-            timeoutSeconds: 5
+            timeoutSeconds: 10
             failureThreshold: 3
             successThreshold: 1
