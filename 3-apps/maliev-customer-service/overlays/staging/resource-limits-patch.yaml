@@ -8,9 +8,5 @@ spec:
       containers:
         - name: maliev-customer-service
           resources:
-            requests:
-              cpu: 5m
-              memory: 64Mi
-            limits:
-              cpu: 50m
-              memory: 128Mi
+            requests: {}
+            limits: {}

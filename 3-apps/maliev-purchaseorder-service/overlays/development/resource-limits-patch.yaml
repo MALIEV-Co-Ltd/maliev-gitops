@@ -8,9 +8,5 @@ spec:
       containers:
         - name: maliev-purchaseorder-service
           resources:
-            requests:
-              cpu: 10m
-              memory: 256Mi
-            limits:
-              cpu: 100m
-              memory: 512Mi
+            requests: {}
+            limits: {}
