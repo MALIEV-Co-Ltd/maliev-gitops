@@ -1,14 +1,12 @@
 # Update resource-limits-patch.yaml in maliev-gitops for all services
 
-# Define service tiers
+# Define service tiers (optimized 2025-11-21)
 $tier1Services = @(
     "maliev-auth-service",
     "maliev-country-service",
     "maliev-currency-service",
-    "maliev-employee-service",
     "maliev-supplier-service",
     "maliev-email-service",
-    "maliev-log-service",
     "maliev-career-service",
     "maliev-contact-service"
 )
@@ -19,6 +17,9 @@ $tier2Services = @(
     "maliev-material-service",
     "maliev-order-service",
     "maliev-payment-service",
+    "maliev-employee-service",
+    "maliev-message-service",
+    "maliev-orderstatus-service",
     "maliev-quotation-service",
     "maliev-quotationrequest-service",
     "maliev-purchaseorder-service",
@@ -33,8 +34,7 @@ $tier3Services = @(
 
 $tier4Services = @(
     "maliev-web",
-    "maliev-intranet",
-    "maliev-chat-service"
+    "maliev-intranet"
 )
 
 function Update-ResourceLimitsPatch {
@@ -79,26 +79,27 @@ function Get-ResourcesForEnvironment {
         [string]$Tier
     )
 
+    # Optimized resource allocations based on actual usage analysis (2025-11-21)
     if ($Environment -eq "development") {
         switch ($Tier) {
-            "1" { return @("25m", "64Mi", "100m", "128Mi") }
-            "2" { return @("50m", "96Mi", "150m", "192Mi") }
-            "3" { return @("75m", "128Mi", "250m", "256Mi") }
-            "4" { return @("25m", "64Mi", "100m", "128Mi") }
+            "1" { return @("5m", "64Mi", "15m", "96Mi") }
+            "2" { return @("10m", "96Mi", "25m", "128Mi") }
+            "3" { return @("15m", "128Mi", "35m", "192Mi") }
+            "4" { return @("10m", "128Mi", "25m", "192Mi") }
         }
     } elseif ($Environment -eq "staging") {
         switch ($Tier) {
-            "1" { return @("25m", "64Mi", "100m", "128Mi") }
-            "2" { return @("50m", "96Mi", "150m", "192Mi") }
-            "3" { return @("75m", "128Mi", "250m", "256Mi") }
-            "4" { return @("25m", "64Mi", "100m", "128Mi") }
+            "1" { return @("10m", "96Mi", "25m", "128Mi") }
+            "2" { return @("15m", "128Mi", "40m", "192Mi") }
+            "3" { return @("20m", "192Mi", "50m", "256Mi") }
+            "4" { return @("15m", "192Mi", "40m", "256Mi") }
         }
     } else { # production
         switch ($Tier) {
-            "1" { return @("50m", "128Mi", "200m", "256Mi") }
-            "2" { return @("75m", "192Mi", "300m", "384Mi") }
-            "3" { return @("100m", "256Mi", "500m", "512Mi") }
-            "4" { return @("50m", "128Mi", "200m", "256Mi") }
+            "1" { return @("10m", "96Mi", "25m", "128Mi") }
+            "2" { return @("15m", "128Mi", "40m", "192Mi") }
+            "3" { return @("20m", "192Mi", "50m", "256Mi") }
+            "4" { return @("15m", "192Mi", "40m", "256Mi") }
         }
     }
 }

@@ -9,8 +9,8 @@ spec:
         - name: placeholder
           resources:
             requests:
-              cpu: 75m
-              memory: 192Mi
+              cpu: 15m
+              memory: 128Mi
             limits:
-              cpu: 300m
-              memory: 384Mi
+              cpu: 40m
+              memory: 192Mi
