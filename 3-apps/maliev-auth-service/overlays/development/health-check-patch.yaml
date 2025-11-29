@@ -17,9 +17,9 @@ spec:
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /auth/liveness # Note: Changed from /auth/readiness to /auth/liveness.
+              path: /auth/liveness # Keep using /auth/liveness since RabbitMQ health check is removed
               port: 8080
-            initialDelaySeconds: 20
+            initialDelaySeconds: 30
             periodSeconds: 5
             timeoutSeconds: 5
             failureThreshold: 3
