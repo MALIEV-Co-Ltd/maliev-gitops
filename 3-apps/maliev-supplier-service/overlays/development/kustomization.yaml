@@ -4,7 +4,7 @@ kind: Kustomization
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-supplier-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-supplier-service
-  newTag: 30136b66521957c73573fff77a1d62bb84d39825
+  newTag: 347a4ddfd30a5b1d58fdd2eb64cbc601d001a3fe
 
 namespace: maliev-dev
 
