@@ -6,6 +6,7 @@ namespace: maliev-infra
 resources:
   - rabbitmq-cluster.yaml    # RabbitMQ Cluster Operator resource
   - service-alias.yaml       # Backward compatibility alias
+  - shared-secrets.yaml      # Shared secrets (RabbitMQ credentials)
 
 commonLabels:
   app.kubernetes.io/part-of: maliev

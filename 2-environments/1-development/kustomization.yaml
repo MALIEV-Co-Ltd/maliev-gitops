@@ -10,9 +10,6 @@ resources:
   - ../../3-apps/_common
   - ../_database/base
   - shared-secrets.yaml
-  # Infrastructure (Redis, RabbitMQ)
-  - ../../1-cluster-infra/04-redis/base
-  - ../../1-cluster-infra/06-rabbitmq/base
 
 patches:
   - path: db-patch.yaml
