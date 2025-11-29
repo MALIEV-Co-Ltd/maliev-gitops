@@ -14,7 +14,7 @@ patches:
     patch: |-
       - op: replace
         path: /metadata/name
-        value: rabbitmq
+        value: maliev-prod-rabbitmq
       - op: replace
         path: /spec/replicas
         value: 3
@@ -37,18 +37,14 @@ patches:
         path: /spec/dataFrom/0/extract/key
         value: maliev-prod-shared-config
 
-  # Rename alias service to avoid conflict with operator-created service
-  # and update selector to point to the new cluster name
+  # Update service alias selector to point to the environment-specific cluster
   - target:
       kind: Service
       name: rabbitmq
     patch: |-
       - op: replace
-        path: /metadata/name
-        value: rabbitmq-alias
-      - op: replace
         path: /spec/selector/app.kubernetes.io~1name
-        value: rabbitmq
+        value: maliev-prod-rabbitmq
 
 labels:
   - pairs:
