@@ -12,3 +12,5 @@ resources:
   - cluster-infra/cloudnative-pg-app.yaml
   - cluster-infra/external-secrets-app.yaml
   - cluster-infra/external-secrets-config-app.yaml
+  - cluster-infra/redis-app.yaml
+  - cluster-infra/rabbitmq-app.yaml
