@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: placeholder
+  name: maliev-payment-service
 spec:
   template:
     spec:
       containers:
-        - name: placeholder
+        - name: maliev-payment-service
           resources:
             requests:
               cpu: 15m

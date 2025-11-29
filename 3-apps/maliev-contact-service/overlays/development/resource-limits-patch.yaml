@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: placeholder
+  name: maliev-contact-service
 spec:
   template:
     spec:
       containers:
-        - name: placeholder
+        - name: maliev-contact-service
           resources:
             requests:
               cpu: 5m
