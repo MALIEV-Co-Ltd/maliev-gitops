@@ -36,6 +36,10 @@ spec:
       channel_max = 2048
       heartbeat = 60
       
+      # Handshake timeout - increased from default 10s to 60s for slow connections
+      # This prevents {handshake_timeout,frame_header} errors with MassTransit
+      handshake_timeout = 60000
+      
       # Memory and disk limits
       vm_memory_high_watermark.relative = 0.6
       disk_free_limit.absolute = 1GB
