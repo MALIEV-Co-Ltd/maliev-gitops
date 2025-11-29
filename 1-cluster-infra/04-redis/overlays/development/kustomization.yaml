@@ -45,5 +45,6 @@ patches:
           tcp-keepalive 300
           loglevel notice
 
-commonLabels:
-  environment: development
+labels:
+  - pairs:
+      environment: development

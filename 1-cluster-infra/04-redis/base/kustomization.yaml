@@ -4,7 +4,8 @@ kind: Kustomization
 resources:
   - redis-statefulset.yaml
 
-commonLabels:
-  app.kubernetes.io/name: redis
-  app.kubernetes.io/part-of: maliev
-  tier: cache
+labels:
+  - pairs:
+      app.kubernetes.io/name: redis
+      app.kubernetes.io/part-of: maliev
+      tier: cache

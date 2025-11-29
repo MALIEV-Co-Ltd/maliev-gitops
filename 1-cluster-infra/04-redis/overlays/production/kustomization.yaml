@@ -55,5 +55,6 @@ patches:
           slowlog-log-slower-than 10000
           slowlog-max-len 128
 
-commonLabels:
-  environment: production
+labels:
+  - pairs:
+      environment: production

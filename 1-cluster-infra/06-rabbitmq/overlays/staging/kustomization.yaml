@@ -37,5 +37,6 @@ patches:
         path: /spec/selector/app.kubernetes.io~1name
         value: maliev-staging-rabbitmq
 
-commonLabels:
-  environment: staging
+labels:
+  - pairs:
+      environment: staging

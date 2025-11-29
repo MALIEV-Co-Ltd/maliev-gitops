@@ -46,5 +46,6 @@ patches:
         path: /spec/selector/app.kubernetes.io~1name
         value: maliev-dev-rabbitmq
 
-commonLabels:
-  environment: development
+labels:
+  - pairs:
+      environment: development

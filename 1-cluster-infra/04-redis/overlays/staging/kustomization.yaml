@@ -45,5 +45,6 @@ patches:
           tcp-keepalive 300
           loglevel notice
 
-commonLabels:
-  environment: staging
+labels:
+  - pairs:
+      environment: staging
