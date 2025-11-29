@@ -12,5 +12,9 @@ resources:
   - cluster-infra/cloudnative-pg-app.yaml
   - cluster-infra/external-secrets-app.yaml
   - cluster-infra/external-secrets-config-app.yaml
-  - cluster-infra/redis-app.yaml
-  - cluster-infra/rabbitmq-app.yaml
+  - environments/dev/rabbitmq.yaml
+  - environments/dev/redis.yaml
+  - environments/staging/rabbitmq.yaml
+  - environments/staging/redis.yaml
+  - environments/prod/rabbitmq.yaml
+  - environments/prod/redis.yaml
