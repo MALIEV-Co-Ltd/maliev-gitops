@@ -14,15 +14,3 @@ spec:
               value: "Warning"
             - name: Logging__LogLevel__System
               value: "Warning"
-            - name: RateLimit__TokenEndpoint__PermitLimit
-              value: "50"
-            - name: RateLimit__RefreshEndpoint__PermitLimit
-              value: "100"
-            - name: RateLimit__Global__PermitLimit
-              value: "500"
-            - name: Cache__ValidationCache__Enabled
-              value: "true"
-            - name: Cache__ValidationCache__ExpirationTime
-              value: "00:02:00"
-            - name: CredentialValidation__EnableSanitization
-              value: "true"
