@@ -8,11 +8,11 @@ spec:
       containers:
         - name: maliev-auth-service
           env:
-            - name: Serilog__MinimumLevel__Default
+            - name: Logging__LogLevel__Default
               value: "Information"
-            - name: Serilog__MinimumLevel__Override__Microsoft
+            - name: Logging__LogLevel__Microsoft
               value: "Warning"
-            - name: Serilog__MinimumLevel__Override__System
+            - name: Logging__LogLevel__System
               value: "Warning"
             - name: RateLimit__TokenEndpoint__PermitLimit
               value: "50"
