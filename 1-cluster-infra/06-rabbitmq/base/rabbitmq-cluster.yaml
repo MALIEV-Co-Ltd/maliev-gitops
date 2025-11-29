@@ -1,0 +1,102 @@
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: maliev-rabbitmq
+  labels:
+    app.kubernetes.io/name: maliev-rabbitmq
+    app.kubernetes.io/part-of: maliev
+    tier: messaging
+spec:
+  # Start with 1 replica for development, scale to 3 for production HA
+  replicas: 1
+  
+  # Use the official RabbitMQ image with management plugin
+  image: rabbitmq:4.2.1-management-alpine
+  
+  # Resource allocation per pod
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  
+  # Persistent storage configuration
+  persistence:
+    storageClassName: standard-rwo  # GKE default storage class
+    storage: 5Gi
+  
+  # RabbitMQ-specific configuration
+  rabbitmq:
+    # Additional RabbitMQ configuration
+    additionalConfig: |
+      # Performance tuning for MALIEV microservices
+      channel_max = 2048
+      heartbeat = 60
+      
+      # Memory and disk limits
+      vm_memory_high_watermark.relative = 0.6
+      disk_free_limit.absolute = 1GB
+      
+      # Consumer timeout (30 minutes for long-running PDF generation)
+      consumer_timeout = 1800000
+      
+      # Queue master locator strategy
+      queue_master_locator = min-masters
+    
+    # Enable essential plugins
+    additionalPlugins:
+      - rabbitmq_management          # Web UI and HTTP API
+      - rabbitmq_prometheus           # Prometheus metrics
+      - rabbitmq_shovel               # Message forwarding between clusters
+      - rabbitmq_shovel_management    # Shovel management UI
+      - rabbitmq_federation           # Federation for multi-cluster setup
+      - rabbitmq_tracing              # Message tracing for debugging
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    annotations:
+      # Enable Prometheus scraping
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "15692"
+      prometheus.io/path: "/metrics"
+  
+  # Override default credentials using existing shared secrets
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            containers:
+              - name: rabbitmq
+                env:
+                  # Use credentials from maliev-shared-secrets
+                  - name: RABBITMQ_DEFAULT_USER
+                    valueFrom:
+                      secretKeyRef:
+                        name: maliev-shared-secrets
+                        key: RabbitMq__Username
+                        optional: false
+                  - name: RABBITMQ_DEFAULT_PASS
+                    valueFrom:
+                      secretKeyRef:
+                        name: maliev-shared-secrets
+                        key: RabbitMq__Password
+                        optional: false
+  
+  # High availability: spread pods across different nodes
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: maliev-rabbitmq
+            topologyKey: kubernetes.io/hostname
+  
+  # Termination grace period for graceful shutdown
+  terminationGracePeriodSeconds: 604800  # 7 days (RabbitMQ default)

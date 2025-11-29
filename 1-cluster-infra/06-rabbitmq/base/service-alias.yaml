@@ -1,0 +1,28 @@
+---
+# Service alias to maintain backward compatibility with existing service references
+# The operator creates a service named: <cluster-name>-rabbitmq-client
+# This alias allows services to continue using: rabbitmq.maliev-infra.svc.cluster.local
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  labels:
+    app.kubernetes.io/name: maliev-rabbitmq
+    app.kubernetes.io/part-of: maliev
+    tier: messaging
+    component: compatibility-alias
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5672
+      targetPort: 5672
+      protocol: TCP
+      name: amqp
+    - port: 15672
+      targetPort: 15672
+      protocol: TCP
+      name: management
+  # Point to the operator-managed service
+  selector:
+    app.kubernetes.io/name: maliev-rabbitmq
+    app.kubernetes.io/component: rabbitmq
