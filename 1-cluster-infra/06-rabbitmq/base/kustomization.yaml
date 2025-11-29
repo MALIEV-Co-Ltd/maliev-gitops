@@ -1,12 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: maliev-infra
-
 resources:
   - rabbitmq-cluster.yaml    # RabbitMQ Cluster Operator resource
   - service-alias.yaml       # Backward compatibility alias
-  - shared-secrets.yaml      # Shared secrets (RabbitMQ credentials)
+  - shared-secrets.yaml      # Shared secrets (RabbitMQ credentials) - will be patched per environment
 
 commonLabels:
   app.kubernetes.io/part-of: maliev

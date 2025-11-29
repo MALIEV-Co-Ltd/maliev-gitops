@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maliev-staging-redis
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: maliev-staging
+  source:
+    repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
+    targetRevision: main
+    path: 1-cluster-infra/04-redis/overlays/staging
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: maliev-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

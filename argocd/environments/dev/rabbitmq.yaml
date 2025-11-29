@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maliev-dev-rabbitmq
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: maliev-dev
+  source:
+    repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
+    targetRevision: main
+    path: 1-cluster-infra/06-rabbitmq/overlays/development
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: maliev-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

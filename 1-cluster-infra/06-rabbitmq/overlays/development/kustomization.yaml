@@ -1,0 +1,50 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: maliev-dev
+
+resources:
+  - ../../base
+
+# Patch the namespace for RabbitMQ cluster
+patches:
+  - target:
+      kind: RabbitmqCluster
+      name: maliev-rabbitmq
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: maliev-dev-rabbitmq
+      - op: replace
+        path: /spec/replicas
+        value: 1
+      - op: replace
+        path: /spec/resources/requests/memory
+        value: 256Mi
+      - op: replace
+        path: /spec/resources/limits/memory
+        value: 1Gi
+      - op: replace
+        path: /spec/persistence/storage
+        value: 2Gi
+
+  # Update ExternalSecret to use dev-specific secret
+  - target:
+      kind: ExternalSecret
+      name: shared-secrets
+    patch: |-
+      - op: replace
+        path: /spec/dataFrom/0/extract/key
+        value: maliev-dev-shared-config
+
+  # Update service alias name
+  - target:
+      kind: Service
+      name: rabbitmq
+    patch: |-
+      - op: replace
+        path: /spec/selector/app.kubernetes.io~1name
+        value: maliev-dev-rabbitmq
+
+commonLabels:
+  environment: development

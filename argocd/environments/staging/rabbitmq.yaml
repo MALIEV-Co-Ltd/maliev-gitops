@@ -1,17 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: redis
+  name: maliev-staging-rabbitmq
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: maliev-staging
   source:
     repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
     targetRevision: main
-    path: 1-cluster-infra/04-redis
+    path: 1-cluster-infra/06-rabbitmq/overlays/staging
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: maliev-infra
+    namespace: maliev-staging
   syncPolicy:
     automated:
       prune: true

@@ -1,0 +1,50 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: maliev-prod
+
+resources:
+  - ../../base
+
+# Patch for production environment with full HA
+patches:
+  - target:
+      kind: RabbitmqCluster
+      name: maliev-rabbitmq
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: maliev-prod-rabbitmq
+      - op: replace
+        path: /spec/replicas
+        value: 3
+      - op: replace
+        path: /spec/resources/requests/memory
+        value: 1Gi
+      - op: replace
+        path: /spec/resources/limits/memory
+        value: 4Gi
+      - op: replace
+        path: /spec/persistence/storage
+        value: 10Gi
+
+  # Update ExternalSecret to use production-specific secret
+  - target:
+      kind: ExternalSecret
+      name: shared-secrets
+    patch: |-
+      - op: replace
+        path: /spec/dataFrom/0/extract/key
+        value: maliev-prod-shared-config
+
+  # Update service alias name
+  - target:
+      kind: Service
+      name: rabbitmq
+    patch: |-
+      - op: replace
+        path: /spec/selector/app.kubernetes.io~1name
+        value: maliev-prod-rabbitmq
+
+commonLabels:
+  environment: production

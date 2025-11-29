@@ -1,17 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: rabbitmq
+  name: maliev-dev-redis
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: maliev-dev
   source:
     repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
     targetRevision: main
-    path: 1-cluster-infra/06-rabbitmq/base
+    path: 1-cluster-infra/04-redis/overlays/development
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: maliev-infra
+    namespace: maliev-dev
   syncPolicy:
     automated:
       prune: true
