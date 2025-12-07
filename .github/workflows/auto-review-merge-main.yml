@@ -1,4 +1,4 @@
-name: Auto Review and Merge Develop
+name: Auto Review and Merge Main
 
 on:
   pull_request_target:
@@ -7,7 +7,7 @@ on:
       - synchronize
       - reopened
     branches:
-      - develop
+      - main
 
 permissions:
   pull-requests: write
