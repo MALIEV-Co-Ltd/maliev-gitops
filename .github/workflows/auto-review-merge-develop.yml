@@ -1,0 +1,39 @@
+name: Auto Review and Merge Develop
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - develop
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  auto-review-and-merge:
+    name: Auto Review and Merge
+    runs-on: ubuntu-latest
+
+    # For security, only run on PRs from the same repository, not from forks.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - name: 'Log PR details'
+        run: |
+          echo "PR Number: ${{ github.event.pull_request.number }}"
+          echo "PR Head Repo: ${{ github.event.pull_request.head.repo.full_name }}"
+          echo "Base Repo: ${{ github.repository }}"
+
+      - name: 'Approve pull request'
+        run: gh pr review ${{ github.event.pull_request.number }} --approve -b "This PR was auto-approved."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Enable auto-merge for pull request'
+        run: gh pr merge ${{ github.event.pull_request.number }} --auto --merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
