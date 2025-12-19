@@ -28,11 +28,11 @@ spec:
             - containerPort: 8080
           livenessProbe:
             httpGet:
-              path: /materials/liveness
+              path: /material/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: /materials/readiness
+              path: /material/readiness
               port: 8080
           envFrom:
             - secretRef:

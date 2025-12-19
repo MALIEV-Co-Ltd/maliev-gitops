@@ -28,11 +28,11 @@ spec:
             - containerPort: 8080
           livenessProbe:
             httpGet:
-              path: /currencies/liveness
+              path: /currency/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: /currencies/readiness
+              path: /currency/readiness
               port: 8080
           envFrom:
             - secretRef:

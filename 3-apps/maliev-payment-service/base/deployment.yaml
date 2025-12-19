@@ -33,9 +33,9 @@ spec:
                 name: maliev-payment-service-secrets
           livenessProbe:
             httpGet:
-              path: /payments/liveness
+              path: /payment/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: /payments/readiness
+              path: /payment/readiness
               port: 8080

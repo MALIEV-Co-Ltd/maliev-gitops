@@ -171,11 +171,18 @@ spec:
                 name: maliev-receiptservice-api
               port:
                 number: 8080
-          - path: /quotationrequests
+          - path: /accounting
             pathType: Prefix
             backend:
               service:
-                name: maliev-quotationrequestservice-api
+                name: maliev-accountingservice-api
+              port:
+                number: 8080
+          - path: /notifications
+            pathType: Prefix
+            backend:
+              service:
+                name: maliev-notificationservice-api
               port:
                 number: 8080
           - path: /predictions

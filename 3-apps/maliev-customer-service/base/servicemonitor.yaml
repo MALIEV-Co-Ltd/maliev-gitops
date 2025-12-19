@@ -11,6 +11,6 @@ spec:
       app: maliev-customer-service
   endpoints:
     - port: http
-      path: /metrics
+      path: /customer/metrics
       interval: 30s
       scrapeTimeout: 10s

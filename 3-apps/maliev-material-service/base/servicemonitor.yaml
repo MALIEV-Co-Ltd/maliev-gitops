@@ -1,16 +1,16 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: maliev-country-service
+  name: maliev-material-service
   labels:
-    app: maliev-country-service
+    app: maliev-material-service
     release: prometheus
 spec:
   selector:
     matchLabels:
-      app: maliev-country-service
+      app: maliev-material-service
   endpoints:
     - port: http
-      path: /country/metrics
+      path: /material/metrics
       interval: 30s
       scrapeTimeout: 10s

@@ -6,3 +6,4 @@ resources:
   - hpa.yaml
   - ../../_common
   - service-secrets.yaml
+  - servicemonitor.yaml

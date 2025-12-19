@@ -11,6 +11,6 @@ spec:
       app: maliev-invoice-service
   endpoints:
     - port: http
-      path: /invoices/metrics
+      path: /invoice/metrics
       interval: 30s
       scrapeTimeout: 10s

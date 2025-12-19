@@ -33,9 +33,9 @@ spec:
                 name: maliev-supplier-service-secrets
           livenessProbe:
             httpGet:
-              path: /suppliers/liveness
+              path: /supplier/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: /suppliers/readiness
+              path: /supplier/readiness
               port: 8080

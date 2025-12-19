@@ -33,9 +33,9 @@ spec:
                 name: maliev-invoice-service-secrets
           livenessProbe:
             httpGet:
-              path: /invoices/liveness
+              path: /invoice/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: /invoices/readiness
+              path: /invoice/readiness
               port: 8080
