@@ -12,6 +12,7 @@ on:
 permissions:
   pull-requests: write
   contents: write
+  checks: read
 
 jobs:
   auto-review-and-merge:
@@ -19,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      checks: read
 
     # For security, only run on PRs from the same repository, not from forks.
     if: github.event.pull_request.head.repo.full_name == github.repository
@@ -42,7 +44,10 @@ jobs:
           check-regexp: '^(Lint and Static Analysis|Kustomize, Structure and ArgoCD Validation)$'
           allowed-conclusions: success,neutral
 
+      - name: Ensure gh is available
+        run: gh --version
+
       - name: 'Merge pull request'
-        run: gh pr merge ${{ github.event.pull_request.number }} --admin --merge
+        run: gh pr merge ${{ github.event.pull_request.number }} --merge
         env:
-          GH_TOKEN: ${{ secrets.GITOPS_PAT }}
+          GH_TOKEN: ${{ github.token }}
