@@ -40,6 +40,16 @@ jobs:
         run: |
           [ -f kube-linter-cluster-infra.sarif ] || echo '{"runs":[]}' > kube-linter-cluster-infra.sarif
 
+      - name: Check cluster-infra SARIF has results
+        id: cluster_runs
+        run: |
+          # Verify at least one result exists across all runs
+          if jq -e '(.runs | map(.results? // [] | length) | add) > 0' kube-linter-cluster-infra.sarif >/dev/null 2>&1; then
+            echo "has_runs=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_runs=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Check Kubernetes best practices (environments)
         uses: stackrox/kube-linter-action@v1
         with:
@@ -52,6 +62,16 @@ jobs:
       - name: Ensure environments SARIF exists
         run: |
           [ -f kube-linter-environments.sarif ] || echo '{"runs":[]}' > kube-linter-environments.sarif
+
+      - name: Check environments SARIF has results
+        id: env_runs
+        run: |
+          # Verify at least one result exists across all runs
+          if jq -e '(.runs | map(.results? // [] | length) | add) > 0' kube-linter-environments.sarif >/dev/null 2>&1; then
+            echo "has_runs=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_runs=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Check Kubernetes best practices (apps)
         uses: stackrox/kube-linter-action@v1
@@ -66,20 +86,33 @@ jobs:
         run: |
           [ -f kube-linter-apps.sarif ] || echo '{"runs":[]}' > kube-linter-apps.sarif
 
+      - name: Check apps SARIF has results
+        id: apps_runs
+        run: |
+          # Verify at least one result exists across all runs
+          if jq -e '(.runs | map(.results? // [] | length) | add) > 0' kube-linter-apps.sarif >/dev/null 2>&1; then
+            echo "has_runs=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_runs=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Upload SARIF (cluster-infra)
-        uses: github/codeql-action/upload-sarif@v3
+        if: steps.cluster_runs.outputs.has_runs == 'true'
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: kube-linter-cluster-infra.sarif
           category: kube-linter-cluster-infra
 
       - name: Upload SARIF (environments)
-        uses: github/codeql-action/upload-sarif@v3
+        if: steps.env_runs.outputs.has_runs == 'true'
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: kube-linter-environments.sarif
           category: kube-linter-environments
 
       - name: Upload SARIF (apps)
-        uses: github/codeql-action/upload-sarif@v3
+        if: steps.apps_runs.outputs.has_runs == 'true'
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: kube-linter-apps.sarif
           category: kube-linter-apps
