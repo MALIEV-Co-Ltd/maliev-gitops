@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-accounting-service
+  labels:
+    app: maliev-accounting-service
+spec:
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-accounting-service
+  template:
+    metadata:
+      labels:
+        app: maliev-accounting-service
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: maliev-accounting-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-accounting-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-accounting-service-secrets
+          livenessProbe:
+            httpGet:
+              path: /accounting/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /accounting/readiness
+              port: 8080
