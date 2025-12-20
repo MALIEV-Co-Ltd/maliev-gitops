@@ -11,6 +11,6 @@ spec:
       app: maliev-country-service
   endpoints:
     - port: http
-      path: /metrics
+      path: /country/metrics
       interval: 30s
       scrapeTimeout: 10s

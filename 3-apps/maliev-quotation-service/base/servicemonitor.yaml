@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: maliev-quotation-service
+  labels:
+    app: maliev-quotation-service
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: maliev-quotation-service
+  endpoints:
+    - port: http
+      path: /quotation/metrics
+      interval: 30s
+      scrapeTimeout: 10s

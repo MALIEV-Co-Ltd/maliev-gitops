@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: maliev-order-service
+  labels:
+    app: maliev-order-service
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: maliev-order-service
+  endpoints:
+    - port: http
+      path: /order/metrics
+      interval: 30s
+      scrapeTimeout: 10s

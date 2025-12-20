@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-notification-service
+  labels:
+    app: maliev-notification-service
+spec:
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-notification-service
+  template:
+    metadata:
+      labels:
+        app: maliev-notification-service
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: maliev-notification-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-notification-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /notification/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /notification/readiness
+              port: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-notification-service-secrets

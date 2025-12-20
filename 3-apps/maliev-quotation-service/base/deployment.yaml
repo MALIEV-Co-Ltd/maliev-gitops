@@ -33,9 +33,9 @@ spec:
                 name: maliev-quotation-service-secrets
           livenessProbe:
             httpGet:
-              path: /quotations/liveness
+              path: /quotation/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: /quotations/readiness
+              path: /quotation/readiness
               port: 8080

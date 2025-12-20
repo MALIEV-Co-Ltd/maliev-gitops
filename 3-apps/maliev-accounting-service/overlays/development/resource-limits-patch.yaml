@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-accounting-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-accounting-service
+          resources:
+            requests:
+              cpu: 10m
+              memory: 96Mi
+            limits:
+              cpu: 25m
+              memory: 128Mi

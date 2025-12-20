@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: maliev-contact-service
+  labels:
+    app: maliev-contact-service
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: maliev-contact-service
+  endpoints:
+    - port: http
+      path: /contact/metrics
+      interval: 30s
+      scrapeTimeout: 10s
