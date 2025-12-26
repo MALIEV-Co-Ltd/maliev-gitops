@@ -1,2 +1,3 @@
 gha-creds-*.json
 .claude/settings.local.json
+.gemini/settings.local.json

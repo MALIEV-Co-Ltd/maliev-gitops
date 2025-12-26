@@ -1,0 +1,399 @@
+Auto Review and Merge	Set up job	﻿2025-12-20T06:40:43.1236699Z Current runner version: '2.330.0'
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1268938Z ##[group]Runner Image Provisioner
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1270147Z Hosted Compute Agent
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1271123Z Version: 20251211.462
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1272012Z Commit: 6cbad8c2bb55d58165063d031ccabf57e2d2db61
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1273131Z Build Date: 2025-12-11T16:28:49Z
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1274250Z Worker ID: {8f6cfdc1-a9b4-41cb-bced-9fdd5139a38a}
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1275648Z ##[endgroup]
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1276476Z ##[group]Operating System
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1277473Z Ubuntu
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1278195Z 24.04.3
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1278856Z LTS
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1279727Z ##[endgroup]
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1280517Z ##[group]Runner Image
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1281362Z Image: ubuntu-24.04
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1282222Z Version: 20251215.174.1
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1283956Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20251215.174/images/ubuntu/Ubuntu2404-Readme.md
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1286480Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20251215.174
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1288493Z ##[endgroup]
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1290363Z ##[group]GITHUB_TOKEN Permissions
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1293057Z Checks: read
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1293883Z Metadata: read
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1294935Z PullRequests: write
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1295836Z ##[endgroup]
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1298572Z Secret source: Actions
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1299756Z Prepare workflow directory
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1753238Z Prepare all required actions
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.1807665Z Getting action download info
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.4417955Z Download action repository 'actions/checkout@v6' (SHA:8e8c483db84b4bee98b60c0593521ed34d9990e8)
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.6088985Z Download action repository 'lewagon/wait-on-check-action@v1.3.1' (SHA:e106e5c43e8ca1edea6383a39a01c5ca495fd812)
+Auto Review and Merge	Set up job	2025-12-20T06:40:43.9286406Z Getting action download info
+Auto Review and Merge	Set up job	2025-12-20T06:40:44.0490534Z Download action repository 'ruby/setup-ruby@v1' (SHA:ed55d55e820a01da7d3e4863a8c51a61d73c3228)
+Auto Review and Merge	Set up job	2025-12-20T06:40:44.2298174Z Download action repository 'actions/cache@v3' (SHA:6f8efc29b200d32929f49075959781ed54ec270c)
+Auto Review and Merge	Set up job	2025-12-20T06:40:44.3926289Z Complete job name: Auto Review and Merge
+Auto Review and Merge	Checkout	﻿2025-12-20T06:40:44.4641663Z ##[group]Run actions/checkout@v6
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4642633Z with:
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4643140Z   repository: MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4643964Z   token: ***
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4644422Z   ssh-strict: true
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4645075Z   ssh-user: git
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4645571Z   persist-credentials: true
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4646085Z   clean: true
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4646539Z   sparse-checkout-cone-mode: true
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4647092Z   fetch-depth: 1
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4647533Z   fetch-tags: false
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4647979Z   show-progress: true
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4648439Z   lfs: false
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4648856Z   submodules: false
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4649313Z   set-safe-directory: true
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.4650072Z ##[endgroup]
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5618246Z Syncing repository: MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5620236Z ##[group]Getting Git version info
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5621089Z Working directory is '/home/runner/work/maliev-gitops/maliev-gitops'
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5622329Z [command]/usr/bin/git version
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5693089Z git version 2.52.0
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5713588Z ##[endgroup]
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5729996Z Temporarily overriding HOME='/home/runner/work/_temp/1484df01-1d3a-429b-acdb-71c24c0234e2' before making global git config changes
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5732842Z Adding repository directory to the temporary git global config as a safe directory
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5735656Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/maliev-gitops/maliev-gitops
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5778210Z Deleting the contents of '/home/runner/work/maliev-gitops/maliev-gitops'
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5781631Z ##[group]Initializing the repository
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5787083Z [command]/usr/bin/git init /home/runner/work/maliev-gitops/maliev-gitops
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5917693Z hint: Using 'master' as the name for the initial branch. This default branch name
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5919468Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5921026Z hint: to use in all of your new repositories, which will suppress this warning,
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5922679Z hint: call:
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5923401Z hint:
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5924399Z hint: 	git config --global init.defaultBranch <name>
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5926421Z hint:
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5928176Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5930345Z hint: 'development'. The just-created branch can be renamed via this command:
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5932312Z hint:
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5933283Z hint: 	git branch -m <name>
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5934285Z hint:
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5935854Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5938573Z Initialized empty Git repository in /home/runner/work/maliev-gitops/maliev-gitops/.git/
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5941665Z [command]/usr/bin/git remote add origin https://github.com/MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5974443Z ##[endgroup]
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5976060Z ##[group]Disabling automatic garbage collection
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.5978883Z [command]/usr/bin/git config --local gc.auto 0
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6007638Z ##[endgroup]
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6008786Z ##[group]Setting up auth
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6009629Z Removing SSH command configuration
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6014455Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6045389Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6402823Z Removing HTTP extra header
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6409619Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6442004Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6658279Z Removing includeIf entries pointing to credentials config files
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6664217Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6694709Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6922159Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6960475Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git.path /home/runner/work/_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.6993229Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.7022731Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.7053324Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.7078963Z ##[endgroup]
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.7079902Z ##[group]Fetching the repository
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.7088481Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0fd3b82bbbbacf716635c67033ce0d37c7b29079:refs/remotes/origin/main
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.8961697Z From https://github.com/MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.8963533Z  * [new ref]         0fd3b82bbbbacf716635c67033ce0d37c7b29079 -> origin/main
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.8995976Z ##[endgroup]
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.8998789Z ##[group]Determining the checkout info
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.9002127Z ##[endgroup]
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.9006453Z [command]/usr/bin/git sparse-checkout disable
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.9051680Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.9081370Z ##[group]Checking out the ref
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.9084717Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.9499845Z Switched to a new branch 'main'
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.9502563Z branch 'main' set up to track 'origin/main'.
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.9511093Z ##[endgroup]
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.9545952Z [command]/usr/bin/git log -1 --format=%H
+Auto Review and Merge	Checkout	2025-12-20T06:40:44.9568040Z 0fd3b82bbbbacf716635c67033ce0d37c7b29079
+Auto Review and Merge	Log PR details	﻿2025-12-20T06:40:44.9809954Z ##[group]Run echo "PR Number: 233"
+Auto Review and Merge	Log PR details	2025-12-20T06:40:44.9811475Z [36;1mecho "PR Number: 233"[0m
+Auto Review and Merge	Log PR details	2025-12-20T06:40:44.9812996Z [36;1mecho "PR Head Repo: MALIEV-Co-Ltd/maliev-gitops"[0m
+Auto Review and Merge	Log PR details	2025-12-20T06:40:44.9814971Z [36;1mecho "Base Repo: MALIEV-Co-Ltd/maliev-gitops"[0m
+Auto Review and Merge	Log PR details	2025-12-20T06:40:44.9854259Z shell: /usr/bin/bash -e {0}
+Auto Review and Merge	Log PR details	2025-12-20T06:40:44.9855563Z ##[endgroup]
+Auto Review and Merge	Log PR details	2025-12-20T06:40:44.9933590Z PR Number: 233
+Auto Review and Merge	Log PR details	2025-12-20T06:40:44.9934634Z PR Head Repo: MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	Log PR details	2025-12-20T06:40:44.9937147Z Base Repo: MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	Wait for validation checks to pass	﻿2025-12-20T06:40:45.0225392Z ##[group]Run lewagon/wait-on-check-action@v1.3.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0226603Z with:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0227436Z   ref: 258b9bb0bab14d23dfae93e67ea085bba3f227fa
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0228999Z   repo-token: ***
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0230358Z   check-regexp: ^(Lint and Static Analysis|Kustomize, Structure and ArgoCD Validation)$
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0232018Z   allowed-conclusions: success,neutral
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0233064Z   wait-interval: 10
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0233853Z   verbose: true
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0234628Z ##[endgroup]
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0386386Z ##[group]Run ruby/setup-ruby@v1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0387384Z with:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0388098Z   ruby-version: 3.2
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0388931Z   bundler-cache: false
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.0389765Z ##[endgroup]
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.2094293Z ##[group]Modifying PATH
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.2099663Z Entries added to PATH to use selected Ruby:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.2103869Z   /opt/hostedtoolcache/Ruby/3.2.9/x64/bin
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.2111937Z ##[endgroup]
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.2114340Z ##[group]Print Ruby version
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.2203197Z [command]/opt/hostedtoolcache/Ruby/3.2.9/x64/bin/ruby --version
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.4112008Z ruby 3.2.9 (2025-07-24 revision 8f611e0c46) [x86_64-linux]
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.4156089Z Took   0.20 seconds
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.4158216Z ##[endgroup]
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.4160092Z ##[group]Installing Bundler
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.4162377Z Using Bundler shipped with ruby-3.2.9
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.4164109Z Took   0.00 seconds
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.4166191Z ##[endgroup]
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.5733297Z ##[group]Run actions/cache@v3
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.5734245Z with:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.5735540Z   path: /home/runner/work/_actions/lewagon/wait-on-check-action/v1.3.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.5736941Z   key: Linux-gems-
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.5737748Z   restore-keys: Linux-gems-
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.5738682Z   enableCrossOsArchive: false
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.5739647Z   fail-on-cache-miss: false
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.5740539Z   lookup-only: false
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.5741344Z ##[endgroup]
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.8607486Z Cache hit for: Linux-gems-
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.9052294Z Received 12647 of 12647 (100.0%), 1.1 MBs/sec
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.9054322Z Cache Size: ~0 MB (12647 B)
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.9094265Z [command]/usr/bin/tar -xf /home/runner/work/_temp/4e83fcaa-9146-4bb2-88dc-ff9c711b5cdd/cache.tzst -P -C /home/runner/work/maliev-gitops/maliev-gitops --use-compress-program unzstd
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.9250036Z Cache restored successfully
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.9331409Z Cache restored from key: Linux-gems-
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.9436905Z ##[group]Run bundle install --jobs 4 --retry 3
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.9438081Z [36;1mbundle install --jobs 4 --retry 3[0m
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.9477151Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:45.9478445Z ##[endgroup]
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:46.9959607Z Bundler 2.4.19 is running, but your lockfile was generated with 2.2.3. Installing Bundler 2.2.3 and restarting using that version.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:48.6065988Z Fetching gem metadata from https://rubygems.org/.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:48.6508425Z Fetching bundler 2.2.3
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:49.1542925Z Installing bundler 2.2.3
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:49.6609749Z Calling `DidYouMean::SPELL_CHECKERS.merge!(error_name => spell_checker)' has been deprecated. Please call `DidYouMean.correct_error(error_name, spell_checker)' instead.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:50.9003756Z Fetching gem metadata from https://rubygems.org/.........
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:50.9143842Z Fetching minitest 5.14.3
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:50.9148877Z Fetching concurrent-ruby 1.1.7
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:50.9215428Z Fetching public_suffix 4.0.7
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:50.9452668Z Fetching zeitwerk 2.4.2
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.0339339Z Installing zeitwerk 2.4.2
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.0519831Z Installing minitest 5.14.3
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.0560074Z Installing public_suffix 4.0.7
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.0769854Z Fetching ast 2.4.2
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.1181924Z Installing ast 2.4.2
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.1282553Z Installing concurrent-ruby 1.1.7
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.1377700Z Using bundler 2.2.3
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.1382751Z Fetching byebug 11.1.3
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.1779526Z Fetching diff-lcs 1.4.4
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.2048056Z Installing byebug 11.1.3 with native extensions
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.2082076Z Fetching faraday-net_http 2.0.3
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.2568373Z Installing diff-lcs 1.4.4
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.2591293Z Installing faraday-net_http 2.0.3
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.2731437Z Using ruby2_keywords 0.0.5
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.2739676Z Fetching parallel 1.20.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.3135126Z Installing parallel 1.20.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.3260361Z Fetching rainbow 3.0.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.3655303Z Installing rainbow 3.0.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.3712514Z Fetching regexp_parser 2.1.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.4219390Z Installing regexp_parser 2.1.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.4408683Z Fetching rexml 3.2.5
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.4937660Z Installing rexml 3.2.5
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.5410711Z Fetching rspec-support 3.10.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.5817421Z Installing rspec-support 3.10.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.6017802Z Fetching ruby-progressbar 1.11.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.6570881Z Installing ruby-progressbar 1.11.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.6652790Z Fetching unicode-display_width 2.0.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.7050373Z Fetching parser 3.0.2.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.7335077Z Installing unicode-display_width 2.0.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.8148864Z Fetching addressable 2.8.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.8410739Z Fetching faraday 2.3.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.8808796Z Installing addressable 2.8.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.8902391Z Installing faraday 2.3.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.9031819Z Installing parser 3.0.2.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.9293124Z Fetching i18n 1.8.7
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.9704143Z Installing i18n 1.8.7
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:51.9903268Z Fetching tzinfo 2.0.4
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.0526033Z Installing tzinfo 2.0.4
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.0581015Z Fetching rspec-core 3.10.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.1060958Z Installing rspec-core 3.10.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.1164625Z Fetching rspec-expectations 3.10.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.1619176Z Installing rspec-expectations 3.10.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.1699792Z Fetching rspec-mocks 3.10.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.2119540Z Installing rspec-mocks 3.10.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.2293994Z Fetching faraday-retry 2.0.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.2596114Z Fetching sawyer 0.9.2
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.2871103Z Installing faraday-retry 2.0.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.2963918Z Installing sawyer 0.9.2
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.3043017Z Fetching activesupport 6.1.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.3331623Z Fetching rubocop-ast 1.10.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.3627260Z Fetching rspec 3.10.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.4007898Z Installing rspec 3.10.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.4058819Z Installing rubocop-ast 1.10.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.4138095Z Fetching octokit 4.25.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.4432900Z Installing activesupport 6.1.1
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.4581734Z Installing octokit 4.25.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.5195452Z Fetching rubocop 1.18.4
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.5905697Z Installing rubocop 1.18.4
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.7498983Z Fetching rubocop-performance 1.11.4
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.7868236Z Installing rubocop-performance 1.11.4
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.8008517Z Fetching standard 1.1.7
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:52.8360183Z Installing standard 1.1.7
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0553791Z Bundle complete! 6 Gemfile dependencies, 34 gems now installed.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0554602Z Use `bundle info [gemname]` to see where a bundled gem is installed.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0555378Z Post-install message from i18n:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0555638Z 
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0555873Z HEADS UP! i18n 1.1 changed fallbacks to exclude default locale.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0556359Z But that may break your application.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0556667Z 
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0556952Z If you are upgrading your Rails application from an older version of Rails:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0557388Z 
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0557799Z Please check your Rails app for 'config.i18n.fallbacks = true'.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0558383Z If you're using I18n (>= 1.1.0) and Rails (< 5.2.2), this should be
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0558894Z 'config.i18n.fallbacks = [I18n.default_locale]'.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0559390Z If not, fallbacks will be broken in your app by I18n 1.1.x.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0560085Z 
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0560370Z If you are starting a NEW Rails application, you can ignore this notice.
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0560779Z 
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0560898Z For more info see:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0561291Z https://github.com/svenfuchs/i18n/releases/tag/v1.1.0
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.0561690Z 
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1066183Z ##[group]Run ruby entrypoint.rb
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1066539Z [36;1mruby entrypoint.rb[0m
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1099631Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1100025Z env:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1100262Z   ALLOWED_CONCLUSIONS: success,neutral
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1100567Z   CHECK_NAME: 
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1100975Z   CHECK_REGEXP: ^(Lint and Static Analysis|Kustomize, Structure and ArgoCD Validation)$
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1101507Z   REF: 258b9bb0bab14d23dfae93e67ea085bba3f227fa
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1102135Z   REPO_TOKEN: ***
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1102370Z   VERBOSE: true
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1102603Z   WAIT_INTERVAL: 10
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1102863Z   RUNNING_WORKFLOW_NAME: 
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1103123Z   API_ENDPOINT: 
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:40:55.1103359Z ##[endgroup]
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6485390Z Checks running on ref:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6486029Z Checks in_progress: Lint and Static Analysis, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6486627Z Checks completed: GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6487089Z Checks after check_name filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6487580Z Checks in_progress: Lint and Static Analysis, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6488335Z Checks completed: GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6488780Z Checks after Regexp filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6489160Z Checks in_progress: Lint and Static Analysis
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6489766Z The requested check isn't complete yet, will check back in 10 seconds...
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6490368Z Checks running on ref:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6490855Z Checks in_progress: Lint and Static Analysis, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6491474Z Checks completed: GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6491955Z Checks after check_name filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6492499Z Checks in_progress: Lint and Static Analysis, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6493132Z Checks completed: GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6493623Z Checks after Regexp filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6494106Z Checks in_progress: Lint and Static Analysis
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6494924Z The requested check isn't complete yet, will check back in 10 seconds...
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6495947Z Checks running on ref:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6496262Z Checks queued: kube-linter
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6496724Z Checks in_progress: Lint and Static Analysis, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6497280Z Checks completed: GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6497722Z Checks after check_name filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6498093Z Checks queued: kube-linter
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6498561Z Checks in_progress: Lint and Static Analysis, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6499135Z Checks completed: GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6499588Z Checks after Regexp filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6499964Z Checks in_progress: Lint and Static Analysis
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6500576Z The requested check isn't complete yet, will check back in 10 seconds...
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6501130Z Checks running on ref:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6501543Z Checks completed: kube-linter, GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6502207Z Checks in_progress: Lint and Static Analysis, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6502807Z Checks after check_name filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6503296Z Checks completed: kube-linter, GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6503921Z Checks in_progress: Lint and Static Analysis, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6504472Z Checks after Regexp filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6505012Z Checks in_progress: Lint and Static Analysis
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6505615Z The requested check isn't complete yet, will check back in 10 seconds...
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6506190Z Checks running on ref:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6506888Z Checks completed: kube-linter, GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6507546Z Checks in_progress: Lint and Static Analysis, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6508061Z Checks after check_name filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6508515Z Checks completed: kube-linter, GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6509339Z Checks in_progress: Lint and Static Analysis, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6510062Z Checks after Regexp filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6510542Z Checks in_progress: Lint and Static Analysis
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6511365Z The requested check isn't complete yet, will check back in 10 seconds...
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6512113Z Checks running on ref:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6512755Z Checks in_progress: Kustomize, Structure and ArgoCD Validation, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6513681Z Checks completed: kube-linter, Lint and Static Analysis, GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6514346Z Checks after check_name filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6515153Z Checks in_progress: Kustomize, Structure and ArgoCD Validation, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6516146Z Checks completed: kube-linter, Lint and Static Analysis, GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6516855Z Checks after Regexp filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6517393Z Checks in_progress: Kustomize, Structure and ArgoCD Validation
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6517951Z Checks completed: Lint and Static Analysis
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6518547Z The requested checks aren't complete yet, will check back in 10 seconds...
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6519115Z Checks running on ref:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6519666Z Checks in_progress: Kustomize, Structure and ArgoCD Validation, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6520509Z Checks completed: kube-linter, Lint and Static Analysis, GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6521142Z Checks after check_name filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6521742Z Checks in_progress: Kustomize, Structure and ArgoCD Validation, Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6522601Z Checks completed: kube-linter, Lint and Static Analysis, GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6523226Z Checks after Regexp filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6523694Z Checks in_progress: Kustomize, Structure and ArgoCD Validation
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6524239Z Checks completed: Lint and Static Analysis
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6524966Z The requested checks aren't complete yet, will check back in 10 seconds...
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6525543Z Checks running on ref:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6526531Z Checks completed: Kustomize, Structure and ArgoCD Validation, kube-linter, Lint and Static Analysis, GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6527350Z Checks in_progress: Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6527734Z Checks after check_name filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6528508Z Checks completed: Kustomize, Structure and ArgoCD Validation, kube-linter, Lint and Static Analysis, GitGuardian Security Checks
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6529368Z Checks in_progress: Auto Review and Merge
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6529764Z Checks after Regexp filter:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6530359Z Checks completed: Kustomize, Structure and ArgoCD Validation, Lint and Static Analysis
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6530908Z Checks completed:
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6531315Z Kustomize, Structure and ArgoCD Validation: completed (success)
+Auto Review and Merge	Wait for validation checks to pass	2025-12-20T06:42:07.6531852Z Lint and Static Analysis: completed (success)
+Auto Review and Merge	Ensure gh is available	﻿2025-12-20T06:42:07.6632244Z ##[group]Run gh --version
+Auto Review and Merge	Ensure gh is available	2025-12-20T06:42:07.6632531Z [36;1mgh --version[0m
+Auto Review and Merge	Ensure gh is available	2025-12-20T06:42:07.6666521Z shell: /usr/bin/bash -e {0}
+Auto Review and Merge	Ensure gh is available	2025-12-20T06:42:07.6693815Z ##[endgroup]
+Auto Review and Merge	Ensure gh is available	2025-12-20T06:42:07.9450901Z gh version 2.83.2 (2025-12-10)
+Auto Review and Merge	Ensure gh is available	2025-12-20T06:42:07.9451574Z https://github.com/cli/cli/releases/tag/v2.83.2
+Auto Review and Merge	Merge pull request	﻿2025-12-20T06:42:07.9521833Z ##[group]Run gh pr merge 233 --merge
+Auto Review and Merge	Merge pull request	2025-12-20T06:42:07.9522207Z [36;1mgh pr merge 233 --merge[0m
+Auto Review and Merge	Merge pull request	2025-12-20T06:42:07.9555126Z shell: /usr/bin/bash -e {0}
+Auto Review and Merge	Merge pull request	2025-12-20T06:42:07.9555406Z env:
+Auto Review and Merge	Merge pull request	2025-12-20T06:42:07.9555846Z   GH_TOKEN: ***
+Auto Review and Merge	Merge pull request	2025-12-20T06:42:07.9556080Z ##[endgroup]
+Auto Review and Merge	Merge pull request	2025-12-20T06:42:08.9679310Z GraphQL: Resource not accessible by integration (mergePullRequest)
+Auto Review and Merge	Merge pull request	2025-12-20T06:42:08.9724267Z ##[error]Process completed with exit code 1.
+Auto Review and Merge	Post Wait for validation checks to pass	﻿2025-12-20T06:42:08.9829522Z Post job cleanup.
+Auto Review and Merge	Post Checkout	﻿2025-12-20T06:42:08.9901146Z Post job cleanup.
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.0678288Z [command]/usr/bin/git version
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.0715079Z git version 2.52.0
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.0750844Z Temporarily overriding HOME='/home/runner/work/_temp/69dfda15-c837-4e6c-96e7-d147de2affa0' before making global git config changes
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.0752204Z Adding repository directory to the temporary git global config as a safe directory
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.0756132Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/maliev-gitops/maliev-gitops
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.0786851Z Removing SSH command configuration
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.0794107Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.0828656Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1056893Z Removing HTTP extra header
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1062182Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1095801Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1315808Z Removing includeIf entries pointing to credentials config files
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1322907Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1346051Z includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git.path
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1346987Z includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git/worktrees/*.path
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1347555Z includeif.gitdir:/github/workspace/.git.path
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1348101Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1355469Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git.path
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1375935Z /home/runner/work/_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1386084Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git.path /home/runner/work/_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1417642Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git/worktrees/*.path
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1438165Z /home/runner/work/_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1447557Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1476414Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1496594Z /github/runner_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1505187Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1534276Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1554380Z /github/runner_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1563153Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1593001Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Auto Review and Merge	Post Checkout	2025-12-20T06:42:09.1809816Z Removing credentials config '/home/runner/work/_temp/git-credentials-a22f022b-cfb0-4717-8a39-9120190557db.config'
+Auto Review and Merge	Complete job	﻿2025-12-20T06:42:09.1940084Z Cleaning up orphan processes

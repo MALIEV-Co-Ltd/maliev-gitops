@@ -1,0 +1,375 @@
+Auto Review and Merge	UNKNOWN STEP	﻿2025-12-20T02:45:46.1722837Z Current runner version: '2.330.0'
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1757956Z ##[group]Runner Image Provisioner
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1759257Z Hosted Compute Agent
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1760117Z Version: 20251211.462
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1761255Z Commit: 6cbad8c2bb55d58165063d031ccabf57e2d2db61
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1762569Z Build Date: 2025-12-11T16:28:49Z
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1763644Z Worker ID: {78a409c0-583c-458a-81ff-56d4c42fd53b}
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1764843Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1765881Z ##[group]Operating System
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1766887Z Ubuntu
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1767605Z 24.04.3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1768474Z LTS
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1769214Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1770120Z ##[group]Runner Image
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1771365Z Image: ubuntu-24.04
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1772219Z Version: 20251215.174.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1774193Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20251215.174/images/ubuntu/Ubuntu2404-Readme.md
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1776943Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20251215.174
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1778844Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1780836Z ##[group]GITHUB_TOKEN Permissions
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1783729Z Checks: read
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1784604Z Metadata: read
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1785362Z PullRequests: write
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1786367Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1789198Z Secret source: Actions
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.1790829Z Prepare workflow directory
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.2261149Z Prepare all required actions
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.2317524Z Getting action download info
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.4619677Z Download action repository 'actions/checkout@v6' (SHA:8e8c483db84b4bee98b60c0593521ed34d9990e8)
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.5549577Z Download action repository 'lewagon/wait-on-check-action@v1.3.1' (SHA:e106e5c43e8ca1edea6383a39a01c5ca495fd812)
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:46.8932845Z Getting action download info
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.0160820Z Download action repository 'ruby/setup-ruby@v1' (SHA:ed55d55e820a01da7d3e4863a8c51a61d73c3228)
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.1889386Z Download action repository 'actions/cache@v3' (SHA:6f8efc29b200d32929f49075959781ed54ec270c)
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.3485349Z Complete job name: Auto Review and Merge
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4164117Z ##[group]Run actions/checkout@v6
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4164951Z with:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4165409Z   repository: MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4166132Z   token: ***
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4166539Z   ssh-strict: true
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4166980Z   ssh-user: git
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4167417Z   persist-credentials: true
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4167889Z   clean: true
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4168326Z   sparse-checkout-cone-mode: true
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4168847Z   fetch-depth: 1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4169338Z   fetch-tags: false
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4169782Z   show-progress: true
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4170239Z   lfs: false
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4170817Z   submodules: false
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4171267Z   set-safe-directory: true
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.4171986Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5113039Z Syncing repository: MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5114877Z ##[group]Getting Git version info
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5115775Z Working directory is '/home/runner/work/maliev-gitops/maliev-gitops'
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5117004Z [command]/usr/bin/git version
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5163377Z git version 2.52.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5184217Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5197912Z Temporarily overriding HOME='/home/runner/work/_temp/26f544f0-a50b-4358-b866-af9a889a1f77' before making global git config changes
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5200102Z Adding repository directory to the temporary git global config as a safe directory
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5203086Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/maliev-gitops/maliev-gitops
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5242713Z Deleting the contents of '/home/runner/work/maliev-gitops/maliev-gitops'
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5246209Z ##[group]Initializing the repository
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5251264Z [command]/usr/bin/git init /home/runner/work/maliev-gitops/maliev-gitops
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5355221Z hint: Using 'master' as the name for the initial branch. This default branch name
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5356858Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5358448Z hint: to use in all of your new repositories, which will suppress this warning,
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5359691Z hint: call:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5360503Z hint:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5361487Z hint: 	git config --global init.defaultBranch <name>
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5362395Z hint:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5363025Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5363950Z hint: 'development'. The just-created branch can be renamed via this command:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5364702Z hint:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5365120Z hint: 	git branch -m <name>
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5365815Z hint:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5366747Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5368181Z Initialized empty Git repository in /home/runner/work/maliev-gitops/maliev-gitops/.git/
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5371872Z [command]/usr/bin/git remote add origin https://github.com/MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5404702Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5405605Z ##[group]Disabling automatic garbage collection
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5407877Z [command]/usr/bin/git config --local gc.auto 0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5435554Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5436715Z ##[group]Setting up auth
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5437546Z Removing SSH command configuration
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5442585Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5472823Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5776638Z Removing HTTP extra header
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5781545Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.5809905Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6020526Z Removing includeIf entries pointing to credentials config files
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6025669Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6054774Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6273686Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6308309Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git.path /home/runner/work/_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6339117Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6369657Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6399751Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6426221Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6427862Z ##[group]Fetching the repository
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.6437607Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0fd3b82bbbbacf716635c67033ce0d37c7b29079:refs/remotes/origin/main
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8225483Z From https://github.com/MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8226748Z  * [new ref]         0fd3b82bbbbacf716635c67033ce0d37c7b29079 -> origin/main
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8255110Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8256377Z ##[group]Determining the checkout info
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8257888Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8263319Z [command]/usr/bin/git sparse-checkout disable
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8304760Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8333167Z ##[group]Checking out the ref
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8344553Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8748440Z Switched to a new branch 'main'
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8750584Z branch 'main' set up to track 'origin/main'.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8759888Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8800639Z [command]/usr/bin/git log -1 --format=%H
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.8823873Z 0fd3b82bbbbacf716635c67033ce0d37c7b29079
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9062240Z ##[group]Run echo "PR Number: 231"
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9063620Z [36;1mecho "PR Number: 231"[0m
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9065049Z [36;1mecho "PR Head Repo: MALIEV-Co-Ltd/maliev-gitops"[0m
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9066736Z [36;1mecho "Base Repo: MALIEV-Co-Ltd/maliev-gitops"[0m
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9105212Z shell: /usr/bin/bash -e {0}
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9106354Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9184867Z PR Number: 231
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9185939Z PR Head Repo: MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9188148Z Base Repo: MALIEV-Co-Ltd/maliev-gitops
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9482543Z ##[group]Run lewagon/wait-on-check-action@v1.3.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9483770Z with:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9484624Z   ref: b756705dc9f682cc7e90ecb4776abca68ebf1c0e
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9486218Z   repo-token: ***
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9487641Z   check-regexp: ^(Lint and Static Analysis|Kustomize, Structure and ArgoCD Validation)$
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9489367Z   allowed-conclusions: success,neutral
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9490591Z   wait-interval: 10
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9491421Z   verbose: true
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9492213Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9643346Z ##[group]Run ruby/setup-ruby@v1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9644321Z with:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9645027Z   ruby-version: 3.2
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9645846Z   bundler-cache: false
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:47.9646672Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.1242232Z ##[group]Modifying PATH
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.1246132Z Entries added to PATH to use selected Ruby:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.1249392Z   /opt/hostedtoolcache/Ruby/3.2.9/x64/bin
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.1256807Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.1258323Z ##[group]Print Ruby version
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.1329835Z [command]/opt/hostedtoolcache/Ruby/3.2.9/x64/bin/ruby --version
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.3824136Z ruby 3.2.9 (2025-07-24 revision 8f611e0c46) [x86_64-linux]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.3861179Z Took   0.26 seconds
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.3863463Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.3865830Z ##[group]Installing Bundler
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.3868560Z Using Bundler shipped with ruby-3.2.9
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.3870883Z Took   0.00 seconds
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.3873235Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.5463664Z ##[group]Run actions/cache@v3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.5464538Z with:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.5465567Z   path: /home/runner/work/_actions/lewagon/wait-on-check-action/v1.3.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.5466883Z   key: Linux-gems-
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.5467708Z   restore-keys: Linux-gems-
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.5468651Z   enableCrossOsArchive: false
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.5469541Z   fail-on-cache-miss: false
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.5470536Z   lookup-only: false
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.5471304Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.7776074Z Cache hit for: Linux-gems-
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.8247422Z Received 12647 of 12647 (100.0%), 1.1 MBs/sec
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.8249611Z Cache Size: ~0 MB (12647 B)
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.8289357Z [command]/usr/bin/tar -xf /home/runner/work/_temp/d4d54218-564f-4c1a-a06c-b3096aaa5a1e/cache.tzst -P -C /home/runner/work/maliev-gitops/maliev-gitops --use-compress-program unzstd
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.8358237Z Cache restored successfully
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.8439241Z Cache restored from key: Linux-gems-
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.8537276Z ##[group]Run bundle install --jobs 4 --retry 3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.8538427Z [36;1mbundle install --jobs 4 --retry 3[0m
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.8576247Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:48.8577470Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:49.6342434Z Bundler 2.4.19 is running, but your lockfile was generated with 2.2.3. Installing Bundler 2.2.3 and restarting using that version.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:50.7148641Z Fetching gem metadata from https://rubygems.org/.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:50.7284837Z Fetching bundler 2.2.3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:50.8382233Z Installing bundler 2.2.3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:51.0501872Z Calling `DidYouMean::SPELL_CHECKERS.merge!(error_name => spell_checker)' has been deprecated. Please call `DidYouMean.correct_error(error_name, spell_checker)' instead.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.4733298Z Fetching gem metadata from https://rubygems.org/.........
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.5521041Z Fetching concurrent-ruby 1.1.7
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.5547656Z Fetching public_suffix 4.0.7
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.6049609Z Fetching minitest 5.14.3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.6050614Z Fetching zeitwerk 2.4.2
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.6661300Z Installing zeitwerk 2.4.2
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.6907528Z Installing minitest 5.14.3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.6961244Z Installing public_suffix 4.0.7
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.7199332Z Fetching ast 2.4.2
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.7582082Z Installing ast 2.4.2
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.7621092Z Installing concurrent-ruby 1.1.7
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.7749497Z Using bundler 2.2.3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.7753806Z Fetching byebug 11.1.3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.8038448Z Fetching diff-lcs 1.4.4
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.8459742Z Installing byebug 11.1.3 with native extensions
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.8512586Z Installing diff-lcs 1.4.4
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.8605008Z Fetching faraday-net_http 2.0.3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.9079669Z Installing faraday-net_http 2.0.3
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.9205771Z Using ruby2_keywords 0.0.5
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.9210901Z Fetching parallel 1.20.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.9592516Z Installing parallel 1.20.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:52.9722905Z Fetching rainbow 3.0.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.0038681Z Fetching regexp_parser 2.1.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.0318609Z Installing rainbow 3.0.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.0554708Z Installing regexp_parser 2.1.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.0809077Z Fetching rexml 3.2.5
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.1303285Z Installing rexml 3.2.5
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.1826123Z Fetching rspec-support 3.10.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.2339367Z Installing rspec-support 3.10.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.2460559Z Fetching ruby-progressbar 1.11.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.2851756Z Installing ruby-progressbar 1.11.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.3076183Z Fetching unicode-display_width 2.0.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.3361836Z Fetching parser 3.0.2.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.3724609Z Installing unicode-display_width 2.0.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.3969892Z Fetching addressable 2.8.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.4523010Z Fetching faraday 2.3.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.4931035Z Installing addressable 2.8.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.5075700Z Installing faraday 2.3.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.5431153Z Installing parser 3.0.2.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.5660029Z Fetching i18n 1.8.7
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.6084070Z Installing i18n 1.8.7
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.6225136Z Fetching tzinfo 2.0.4
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.6840147Z Installing tzinfo 2.0.4
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.6877159Z Fetching rspec-core 3.10.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.7689488Z Installing rspec-core 3.10.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.7767525Z Fetching rspec-expectations 3.10.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.8337111Z Installing rspec-expectations 3.10.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.8424506Z Fetching rspec-mocks 3.10.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.9053891Z Installing rspec-mocks 3.10.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.9183102Z Fetching faraday-retry 2.0.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.9479069Z Fetching sawyer 0.9.2
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.9782367Z Installing faraday-retry 2.0.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.9901428Z Installing sawyer 0.9.2
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:53.9999374Z Fetching activesupport 6.1.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.0362453Z Fetching rubocop-ast 1.10.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.0380160Z Fetching octokit 4.25.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.1029978Z Installing activesupport 6.1.1
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.1120807Z Installing octokit 4.25.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.1251693Z Installing rubocop-ast 1.10.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.2078897Z Fetching rspec 3.10.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.2444528Z Fetching rubocop 1.18.4
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.2781521Z Installing rspec 3.10.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.3185425Z Installing rubocop 1.18.4
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.4755030Z Fetching rubocop-performance 1.11.4
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.5211069Z Installing rubocop-performance 1.11.4
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.5355832Z Fetching standard 1.1.7
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:54.5726378Z Installing standard 1.1.7
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2363622Z Bundle complete! 6 Gemfile dependencies, 34 gems now installed.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2364338Z Use `bundle info [gemname]` to see where a bundled gem is installed.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2364919Z Post-install message from i18n:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2365160Z 
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2365384Z HEADS UP! i18n 1.1 changed fallbacks to exclude default locale.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2365899Z But that may break your application.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2366243Z 
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2366554Z If you are upgrading your Rails application from an older version of Rails:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2367011Z 
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2367285Z Please check your Rails app for 'config.i18n.fallbacks = true'.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2367715Z If you're using I18n (>= 1.1.0) and Rails (< 5.2.2), this should be
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2368078Z 'config.i18n.fallbacks = [I18n.default_locale]'.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2368688Z If not, fallbacks will be broken in your app by I18n 1.1.x.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2368935Z 
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2369131Z If you are starting a NEW Rails application, you can ignore this notice.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2369414Z 
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2369498Z For more info see:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2369802Z https://github.com/svenfuchs/i18n/releases/tag/v1.1.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2370462Z 
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2860808Z ##[group]Run ruby entrypoint.rb
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2861149Z [36;1mruby entrypoint.rb[0m
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2894082Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2894399Z env:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2894589Z   ALLOWED_CONCLUSIONS: success,neutral
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2894826Z   CHECK_NAME: 
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2895147Z   CHECK_REGEXP: ^(Lint and Static Analysis|Kustomize, Structure and ArgoCD Validation)$
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2895552Z   REF: b756705dc9f682cc7e90ecb4776abca68ebf1c0e
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2896077Z   REPO_TOKEN: ***
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2896290Z   VERBOSE: true
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2896481Z   WAIT_INTERVAL: 10
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2896673Z   RUNNING_WORKFLOW_NAME: 
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2896883Z   API_ENDPOINT: 
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:45:55.2897058Z ##[endgroup]
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6184384Z Checks running on ref:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6186508Z Checks in_progress: Auto Review and Merge, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6187160Z Checks completed: GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6187614Z Checks after check_name filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6188144Z Checks in_progress: Auto Review and Merge, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6188807Z Checks completed: GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6189257Z Checks after Regexp filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6189665Z Checks in_progress: Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6190516Z The requested check isn't complete yet, will check back in 10 seconds...
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6191106Z Checks running on ref:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6191640Z Checks in_progress: Auto Review and Merge, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6192241Z Checks completed: GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6192697Z Checks after check_name filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6193209Z Checks in_progress: Auto Review and Merge, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6193794Z Checks completed: GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6194242Z Checks after Regexp filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6194626Z Checks in_progress: Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6195223Z The requested check isn't complete yet, will check back in 10 seconds...
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6195963Z Checks running on ref:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6196248Z Checks completed: kube-linter, GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6196643Z Checks in_progress: Auto Review and Merge, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6196978Z Checks after check_name filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6197262Z Checks completed: kube-linter, GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6197645Z Checks in_progress: Auto Review and Merge, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6197977Z Checks after Regexp filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6198217Z Checks in_progress: Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6198570Z The requested check isn't complete yet, will check back in 10 seconds...
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6198912Z Checks running on ref:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6199174Z Checks completed: kube-linter, GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6199555Z Checks in_progress: Auto Review and Merge, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6199883Z Checks after check_name filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6200177Z Checks completed: kube-linter, GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6200780Z Checks in_progress: Auto Review and Merge, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6201106Z Checks after Regexp filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6201344Z Checks in_progress: Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6201698Z The requested check isn't complete yet, will check back in 10 seconds...
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6202032Z Checks running on ref:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6202465Z Checks completed: kube-linter, GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6202850Z Checks in_progress: Auto Review and Merge, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6203174Z Checks after check_name filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6203456Z Checks completed: kube-linter, GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6203838Z Checks in_progress: Auto Review and Merge, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6204155Z Checks after Regexp filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6204399Z Checks in_progress: Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6204763Z The requested check isn't complete yet, will check back in 10 seconds...
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6205106Z Checks running on ref:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6205452Z Checks in_progress: Kustomize, Structure and ArgoCD Validation, Auto Review and Merge
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6205995Z Checks completed: kube-linter, Lint and Static Analysis, GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6206391Z Checks after check_name filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6206749Z Checks in_progress: Kustomize, Structure and ArgoCD Validation, Auto Review and Merge
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6207246Z Checks completed: kube-linter, Lint and Static Analysis, GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6207610Z Checks after Regexp filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6207881Z Checks in_progress: Kustomize, Structure and ArgoCD Validation
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6208196Z Checks completed: Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6208541Z The requested checks aren't complete yet, will check back in 10 seconds...
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6208875Z Checks running on ref:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6209337Z Checks completed: Kustomize, Structure and ArgoCD Validation, kube-linter, Lint and Static Analysis, GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6209853Z Checks in_progress: Auto Review and Merge
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6210100Z Checks after check_name filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6210799Z Checks completed: Kustomize, Structure and ArgoCD Validation, kube-linter, Lint and Static Analysis, GitGuardian Security Checks
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6211353Z Checks in_progress: Auto Review and Merge
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6211592Z Checks after Regexp filter:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6211936Z Checks completed: Kustomize, Structure and ArgoCD Validation, Lint and Static Analysis
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6212302Z Checks completed:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6212559Z Kustomize, Structure and ArgoCD Validation: completed (failure)
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6212953Z Lint and Static Analysis: completed (success)
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6213580Z The conclusion of one or more checks were not allowed. Allowed conclusions are: success, neutral. This can be configured with the 'allowed-conclusions' param.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6271713Z ##[error]Process completed with exit code 1.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6414834Z Post job cleanup.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.6488009Z Post job cleanup.
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7267189Z [command]/usr/bin/git version
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7302963Z git version 2.52.0
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7371271Z Temporarily overriding HOME='/home/runner/work/_temp/6d825057-7e38-4679-acce-a7f8b0326037' before making global git config changes
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7372502Z Adding repository directory to the temporary git global config as a safe directory
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7377225Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/maliev-gitops/maliev-gitops
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7409223Z Removing SSH command configuration
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7416762Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7449739Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7674596Z Removing HTTP extra header
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7679141Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7709312Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7924793Z Removing includeIf entries pointing to credentials config files
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7930481Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7951781Z includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git.path
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7952674Z includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git/worktrees/*.path
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7953478Z includeif.gitdir:/github/workspace/.git.path
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7954062Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7962359Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git.path
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7983022Z /home/runner/work/_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.7993883Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git.path /home/runner/work/_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8025602Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git/worktrees/*.path
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8045867Z /home/runner/work/_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8054961Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/maliev-gitops/maliev-gitops/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8083773Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8103828Z /github/runner_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8111202Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8139965Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8159932Z /github/runner_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8169033Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8200127Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8412121Z Removing credentials config '/home/runner/work/_temp/git-credentials-4aaf8635-90ff-4561-8524-2cbaa3459335.config'
+Auto Review and Merge	UNKNOWN STEP	2025-12-20T02:46:57.8534558Z Cleaning up orphan processes

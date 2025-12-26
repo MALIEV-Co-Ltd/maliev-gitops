@@ -33,9 +33,9 @@ spec:
             - containerPort: 8080
           livenessProbe:
             httpGet:
-              path: /uploads/liveness
+              path: /upload/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: /uploads/readiness
+              path: /upload/readiness
               port: 8080

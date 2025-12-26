@@ -33,9 +33,9 @@ spec:
                 name: maliev-purchaseorder-service-secrets
           livenessProbe:
             httpGet:
-              path: /purchaseorder/liveness
+              path: /purchase-order/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: /purchaseorder/readiness
+              path: /purchase-order/readiness
               port: 8080

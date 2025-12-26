@@ -1,0 +1,1022 @@
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	﻿2025-12-19T18:40:09.4742016Z Current runner version: '2.330.0'
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4765537Z ##[group]Runner Image Provisioner
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4766428Z Hosted Compute Agent
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4766991Z Version: 20251211.462
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4767587Z Commit: 6cbad8c2bb55d58165063d031ccabf57e2d2db61
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4768330Z Build Date: 2025-12-11T16:28:49Z
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4768995Z Worker ID: {9ebfe1b7-5180-47b6-b8ab-bc6a8847c120}
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4769678Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4770242Z ##[group]Operating System
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4770770Z Ubuntu
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4771474Z 24.04.3
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4771958Z LTS
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4772436Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4773004Z ##[group]Runner Image
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4773539Z Image: ubuntu-24.04
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4774070Z Version: 20251215.174.1
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4775108Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20251215.174/images/ubuntu/Ubuntu2404-Readme.md
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4776894Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20251215.174
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4777942Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4779073Z ##[group]GITHUB_TOKEN Permissions
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4781250Z Contents: read
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4781781Z Metadata: read
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4782392Z Packages: read
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4782863Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4784819Z Secret source: Actions
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.4785608Z Prepare workflow directory
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.5102661Z Prepare all required actions
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.5140985Z Getting action download info
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:09.9694955Z Download action repository 'actions/checkout@v3' (SHA:f43a0e5ff2bd294095638e18286ca9a3d1956744)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.1653249Z Complete job name: Kustomize, Structure and ArgoCD Validation
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2368646Z ##[group]Run actions/checkout@v3
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2369545Z with:
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2370027Z   repository: MALIEV-Co-Ltd/maliev-gitops
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2370777Z   token: ***
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2371562Z   ssh-strict: true
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2372062Z   persist-credentials: true
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2372571Z   clean: true
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2373030Z   sparse-checkout-cone-mode: true
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2373562Z   fetch-depth: 1
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2374003Z   fetch-tags: false
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2374440Z   lfs: false
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2374855Z   submodules: false
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2375312Z   set-safe-directory: true
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.2376126Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3225581Z Syncing repository: MALIEV-Co-Ltd/maliev-gitops
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3227529Z ##[group]Getting Git version info
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3228361Z Working directory is '/home/runner/work/maliev-gitops/maliev-gitops'
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3229442Z [command]/usr/bin/git version
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3300444Z git version 2.52.0
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3327309Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3344687Z Temporarily overriding HOME='/home/runner/work/_temp/c81ad025-9922-49e7-bd65-18d9df087467' before making global git config changes
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3347480Z Adding repository directory to the temporary git global config as a safe directory
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3349801Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/maliev-gitops/maliev-gitops
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3386422Z Deleting the contents of '/home/runner/work/maliev-gitops/maliev-gitops'
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3390238Z ##[group]Initializing the repository
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3394324Z [command]/usr/bin/git init /home/runner/work/maliev-gitops/maliev-gitops
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3494971Z hint: Using 'master' as the name for the initial branch. This default branch name
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3496403Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3497887Z hint: to use in all of your new repositories, which will suppress this warning,
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3498974Z hint: call:
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3499522Z hint:
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3500567Z hint: 	git config --global init.defaultBranch <name>
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3501995Z hint:
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3503525Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3505390Z hint: 'development'. The just-created branch can be renamed via this command:
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3506840Z hint:
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3507584Z hint: 	git branch -m <name>
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3508429Z hint:
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3509602Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3511902Z Initialized empty Git repository in /home/runner/work/maliev-gitops/maliev-gitops/.git/
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3514896Z [command]/usr/bin/git remote add origin https://github.com/MALIEV-Co-Ltd/maliev-gitops
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3545567Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3546959Z ##[group]Disabling automatic garbage collection
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3548375Z [command]/usr/bin/git config --local gc.auto 0
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3575585Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3576997Z ##[group]Setting up auth
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3581655Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3609140Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3946787Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.3974616Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.4187486Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.4220051Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.4221816Z ##[group]Fetching the repository
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.4229415Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +a52092d5236e0367d617ba8ed99681d43e67bc5f:refs/remotes/pull/228/merge
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8620691Z remote: Enumerating objects: 838, done.        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8623873Z remote: Counting objects:   0% (1/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8625032Z remote: Counting objects:   1% (9/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8625879Z remote: Counting objects:   2% (17/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8626858Z remote: Counting objects:   3% (26/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8627497Z remote: Counting objects:   4% (34/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8628125Z remote: Counting objects:   5% (42/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8628756Z remote: Counting objects:   6% (51/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8629383Z remote: Counting objects:   7% (59/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8630047Z remote: Counting objects:   8% (68/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8630692Z remote: Counting objects:   9% (76/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8631576Z remote: Counting objects:  10% (84/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8632232Z remote: Counting objects:  11% (93/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8632857Z remote: Counting objects:  12% (101/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8633583Z remote: Counting objects:  13% (109/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8634608Z remote: Counting objects:  14% (118/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8635240Z remote: Counting objects:  15% (126/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8635917Z remote: Counting objects:  16% (135/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8636666Z remote: Counting objects:  17% (143/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8637633Z remote: Counting objects:  18% (151/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8638256Z remote: Counting objects:  19% (160/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8638877Z remote: Counting objects:  20% (168/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8639502Z remote: Counting objects:  21% (176/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8640130Z remote: Counting objects:  22% (185/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8640752Z remote: Counting objects:  23% (193/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8641598Z remote: Counting objects:  24% (202/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8642467Z remote: Counting objects:  25% (210/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8643111Z remote: Counting objects:  26% (218/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8643734Z remote: Counting objects:  27% (227/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8644368Z remote: Counting objects:  28% (235/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8644992Z remote: Counting objects:  29% (244/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8645626Z remote: Counting objects:  30% (252/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8646515Z remote: Counting objects:  31% (260/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8647388Z remote: Counting objects:  32% (269/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8648027Z remote: Counting objects:  33% (277/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8648671Z remote: Counting objects:  34% (285/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8649287Z remote: Counting objects:  35% (294/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8649914Z remote: Counting objects:  36% (302/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8650539Z remote: Counting objects:  37% (311/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8651365Z remote: Counting objects:  38% (319/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8652019Z remote: Counting objects:  39% (327/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8652663Z remote: Counting objects:  40% (336/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8653308Z remote: Counting objects:  41% (344/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8653935Z remote: Counting objects:  42% (352/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8654563Z remote: Counting objects:  43% (361/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8655192Z remote: Counting objects:  44% (369/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8655827Z remote: Counting objects:  45% (378/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8656551Z remote: Counting objects:  46% (386/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8657354Z remote: Counting objects:  47% (394/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8657995Z remote: Counting objects:  48% (403/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8658622Z remote: Counting objects:  49% (411/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8659250Z remote: Counting objects:  50% (419/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8659865Z remote: Counting objects:  51% (428/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8660495Z remote: Counting objects:  52% (436/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8661290Z remote: Counting objects:  53% (445/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8661929Z remote: Counting objects:  54% (453/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8662540Z remote: Counting objects:  55% (461/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8663169Z remote: Counting objects:  56% (470/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8663796Z remote: Counting objects:  57% (478/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8664402Z remote: Counting objects:  58% (487/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8665074Z remote: Counting objects:  59% (495/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8665710Z remote: Counting objects:  60% (503/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8666345Z remote: Counting objects:  61% (512/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8666976Z remote: Counting objects:  62% (520/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8667616Z remote: Counting objects:  63% (528/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8668273Z remote: Counting objects:  64% (537/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8668897Z remote: Counting objects:  65% (545/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8669542Z remote: Counting objects:  66% (554/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8670160Z remote: Counting objects:  67% (562/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8670786Z remote: Counting objects:  68% (570/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8671637Z remote: Counting objects:  69% (579/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8672284Z remote: Counting objects:  70% (587/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8672915Z remote: Counting objects:  71% (595/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8673556Z remote: Counting objects:  72% (604/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8674224Z remote: Counting objects:  73% (612/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8674859Z remote: Counting objects:  74% (621/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8675478Z remote: Counting objects:  75% (629/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8676097Z remote: Counting objects:  76% (637/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8676875Z remote: Counting objects:  77% (646/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8677508Z remote: Counting objects:  78% (654/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8678126Z remote: Counting objects:  79% (663/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8678746Z remote: Counting objects:  80% (671/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8679355Z remote: Counting objects:  81% (679/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8679977Z remote: Counting objects:  82% (688/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8680592Z remote: Counting objects:  83% (696/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8681423Z remote: Counting objects:  84% (704/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8682059Z remote: Counting objects:  85% (713/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8682680Z remote: Counting objects:  86% (721/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8683312Z remote: Counting objects:  87% (730/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8683947Z remote: Counting objects:  88% (738/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8684578Z remote: Counting objects:  89% (746/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8685209Z remote: Counting objects:  90% (755/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8685838Z remote: Counting objects:  91% (763/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8686456Z remote: Counting objects:  92% (771/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8687079Z remote: Counting objects:  93% (780/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8687699Z remote: Counting objects:  94% (788/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8688319Z remote: Counting objects:  95% (797/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8688950Z remote: Counting objects:  96% (805/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8689569Z remote: Counting objects:  97% (813/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8690191Z remote: Counting objects:  98% (822/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8690808Z remote: Counting objects:  99% (830/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8691775Z remote: Counting objects: 100% (838/838)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8692461Z remote: Counting objects: 100% (838/838), done.        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8693134Z remote: Compressing objects:   0% (1/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8693789Z remote: Compressing objects:   1% (4/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8694447Z remote: Compressing objects:   2% (7/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.8695091Z remote: Compressing objects:   3% (11/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9170765Z remote: Compressing objects:   4% (14/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9172564Z remote: Compressing objects:   5% (18/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9174334Z remote: Compressing objects:   6% (21/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9175617Z remote: Compressing objects:   7% (25/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9176713Z remote: Compressing objects:   8% (28/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9177816Z remote: Compressing objects:   9% (32/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9178923Z remote: Compressing objects:  10% (35/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9180016Z remote: Compressing objects:  11% (39/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9181274Z remote: Compressing objects:  12% (42/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9182375Z remote: Compressing objects:  13% (46/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9183473Z remote: Compressing objects:  14% (49/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9184496Z remote: Compressing objects:  15% (53/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9185508Z remote: Compressing objects:  16% (56/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9186516Z remote: Compressing objects:  17% (60/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9187618Z remote: Compressing objects:  18% (63/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9188697Z remote: Compressing objects:  19% (67/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9189789Z remote: Compressing objects:  20% (70/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9190878Z remote: Compressing objects:  21% (74/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9192115Z remote: Compressing objects:  22% (77/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9193218Z remote: Compressing objects:  23% (81/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9194310Z remote: Compressing objects:  24% (84/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9195407Z remote: Compressing objects:  25% (88/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9196488Z remote: Compressing objects:  26% (91/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9197807Z remote: Compressing objects:  27% (95/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9198890Z remote: Compressing objects:  28% (98/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9199971Z remote: Compressing objects:  29% (102/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9201225Z remote: Compressing objects:  30% (105/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9202341Z remote: Compressing objects:  31% (109/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9203461Z remote: Compressing objects:  32% (112/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9204537Z remote: Compressing objects:  33% (116/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9205547Z remote: Compressing objects:  34% (119/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9206538Z remote: Compressing objects:  35% (123/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9207610Z remote: Compressing objects:  36% (126/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9208695Z remote: Compressing objects:  37% (130/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9209775Z remote: Compressing objects:  38% (133/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9210888Z remote: Compressing objects:  39% (137/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9212151Z remote: Compressing objects:  40% (140/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9213243Z remote: Compressing objects:  41% (144/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9214324Z remote: Compressing objects:  42% (147/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9215418Z remote: Compressing objects:  43% (151/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9216501Z remote: Compressing objects:  44% (154/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9217597Z remote: Compressing objects:  45% (158/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9218695Z remote: Compressing objects:  46% (161/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9219778Z remote: Compressing objects:  47% (165/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9220875Z remote: Compressing objects:  48% (168/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9222287Z remote: Compressing objects:  49% (172/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9223416Z remote: Compressing objects:  50% (175/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9224517Z remote: Compressing objects:  51% (179/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9225655Z remote: Compressing objects:  52% (182/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9226684Z remote: Compressing objects:  53% (186/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9227716Z remote: Compressing objects:  54% (189/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9228826Z remote: Compressing objects:  55% (193/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9229929Z remote: Compressing objects:  56% (196/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9231144Z remote: Compressing objects:  57% (200/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9232234Z remote: Compressing objects:  58% (203/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9233308Z remote: Compressing objects:  59% (207/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9234386Z remote: Compressing objects:  60% (210/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9235570Z remote: Compressing objects:  61% (214/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9236665Z remote: Compressing objects:  62% (217/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9237760Z remote: Compressing objects:  63% (221/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9238855Z remote: Compressing objects:  64% (224/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9239960Z remote: Compressing objects:  65% (228/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9241219Z remote: Compressing objects:  66% (231/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9242404Z remote: Compressing objects:  67% (235/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9243509Z remote: Compressing objects:  68% (238/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9244607Z remote: Compressing objects:  69% (242/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9245699Z remote: Compressing objects:  70% (245/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9246864Z remote: Compressing objects:  71% (249/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9248000Z remote: Compressing objects:  72% (252/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9249130Z remote: Compressing objects:  73% (256/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9249970Z remote: Compressing objects:  74% (259/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9250610Z remote: Compressing objects:  75% (263/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9251499Z remote: Compressing objects:  76% (266/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9252884Z remote: Compressing objects:  77% (270/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9253974Z remote: Compressing objects:  78% (273/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9255062Z remote: Compressing objects:  79% (277/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9256144Z remote: Compressing objects:  80% (280/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9257242Z remote: Compressing objects:  81% (284/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9258329Z remote: Compressing objects:  82% (287/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9259427Z remote: Compressing objects:  83% (291/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9260507Z remote: Compressing objects:  84% (294/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9261754Z remote: Compressing objects:  85% (298/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9262851Z remote: Compressing objects:  86% (301/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9263983Z remote: Compressing objects:  87% (305/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9265098Z remote: Compressing objects:  88% (308/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9266178Z remote: Compressing objects:  89% (312/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9267303Z remote: Compressing objects:  90% (315/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9268416Z remote: Compressing objects:  91% (319/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9269539Z remote: Compressing objects:  92% (322/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9270643Z remote: Compressing objects:  93% (326/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9271917Z remote: Compressing objects:  94% (329/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9272999Z remote: Compressing objects:  95% (333/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9273653Z remote: Compressing objects:  96% (336/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9274276Z remote: Compressing objects:  97% (340/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9274926Z remote: Compressing objects:  98% (343/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9275721Z remote: Compressing objects:  99% (347/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9276389Z remote: Compressing objects: 100% (350/350)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9277083Z remote: Compressing objects: 100% (350/350), done.        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9368373Z Receiving objects:   0% (1/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9885301Z Receiving objects:   1% (9/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:10.9891273Z Receiving objects:   2% (17/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.0048826Z Receiving objects:   3% (26/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.0052547Z Receiving objects:   4% (34/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.0058454Z Receiving objects:   5% (42/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.0816432Z Receiving objects:   6% (51/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.0817452Z Receiving objects:   7% (59/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.0818655Z Receiving objects:   8% (68/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.0819352Z Receiving objects:   9% (76/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.0820635Z Receiving objects:  10% (84/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.0821909Z Receiving objects:  11% (93/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1198408Z Receiving objects:  12% (101/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1199542Z Receiving objects:  13% (109/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1200407Z Receiving objects:  14% (118/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1201518Z Receiving objects:  15% (126/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1202103Z Receiving objects:  16% (135/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1348108Z Receiving objects:  17% (143/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1349563Z Receiving objects:  18% (151/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1350621Z Receiving objects:  19% (160/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1351949Z Receiving objects:  20% (168/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1352980Z Receiving objects:  21% (176/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1354026Z Receiving objects:  22% (185/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1355065Z Receiving objects:  23% (193/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1356109Z Receiving objects:  24% (202/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1357158Z Receiving objects:  25% (210/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1358210Z Receiving objects:  26% (218/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1359274Z Receiving objects:  27% (227/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1360327Z Receiving objects:  28% (235/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1361676Z Receiving objects:  29% (244/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1362730Z Receiving objects:  30% (252/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1363787Z Receiving objects:  31% (260/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1364842Z Receiving objects:  32% (269/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1366150Z Receiving objects:  33% (277/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1366689Z Receiving objects:  34% (285/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1367201Z Receiving objects:  35% (294/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1367728Z Receiving objects:  36% (302/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1368241Z Receiving objects:  37% (311/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1368756Z Receiving objects:  38% (319/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1369281Z Receiving objects:  39% (327/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1369796Z Receiving objects:  40% (336/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1370309Z Receiving objects:  41% (344/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1370831Z Receiving objects:  42% (352/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1371542Z Receiving objects:  43% (361/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1372052Z Receiving objects:  44% (369/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1372611Z Receiving objects:  45% (378/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1373119Z Receiving objects:  46% (386/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1373630Z Receiving objects:  47% (394/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1374140Z Receiving objects:  48% (403/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1374654Z Receiving objects:  49% (411/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1375166Z Receiving objects:  50% (419/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1375680Z Receiving objects:  51% (428/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1376211Z Receiving objects:  52% (436/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1376766Z Receiving objects:  53% (445/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1377286Z Receiving objects:  54% (453/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1377792Z Receiving objects:  55% (461/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1378308Z Receiving objects:  56% (470/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1378818Z Receiving objects:  57% (478/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1379358Z Receiving objects:  58% (487/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1379883Z Receiving objects:  59% (495/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1380402Z Receiving objects:  60% (503/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1380926Z Receiving objects:  61% (512/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1381738Z Receiving objects:  62% (520/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1382296Z Receiving objects:  63% (528/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1382815Z Receiving objects:  64% (537/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1383336Z Receiving objects:  65% (545/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1383851Z Receiving objects:  66% (554/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1384373Z Receiving objects:  67% (562/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1384881Z Receiving objects:  68% (570/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1385398Z Receiving objects:  69% (579/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1385920Z Receiving objects:  70% (587/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1386425Z Receiving objects:  71% (595/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1386956Z Receiving objects:  72% (604/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1387477Z Receiving objects:  73% (612/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1387993Z Receiving objects:  74% (621/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1388502Z Receiving objects:  75% (629/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1389028Z Receiving objects:  76% (637/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1389540Z Receiving objects:  77% (646/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1390052Z Receiving objects:  78% (654/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1390566Z Receiving objects:  79% (663/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1391181Z Receiving objects:  80% (671/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1391707Z Receiving objects:  81% (679/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1392221Z Receiving objects:  82% (688/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1392737Z Receiving objects:  83% (696/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1473524Z Receiving objects:  84% (704/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1477125Z remote: Total 838 (delta 530), reused 713 (delta 465), pack-reused 0 (from 0)        
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1479150Z Receiving objects:  85% (713/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1480180Z Receiving objects:  86% (721/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1481268Z Receiving objects:  87% (730/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1482233Z Receiving objects:  88% (738/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1483101Z Receiving objects:  89% (746/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1483923Z Receiving objects:  90% (755/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1518418Z Receiving objects:  91% (763/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1519508Z Receiving objects:  92% (771/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1520515Z Receiving objects:  93% (780/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1521570Z Receiving objects:  94% (788/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1522553Z Receiving objects:  95% (797/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1523655Z Receiving objects:  96% (805/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1524974Z Receiving objects:  97% (813/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1525856Z Receiving objects:  98% (822/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1526866Z Receiving objects:  99% (830/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1527849Z Receiving objects: 100% (838/838)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1528941Z Receiving objects: 100% (838/838), 379.82 KiB | 1.75 MiB/s, done.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1530281Z Resolving deltas:   0% (0/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1531452Z Resolving deltas:   1% (6/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1532297Z Resolving deltas:   2% (11/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1533251Z Resolving deltas:   3% (16/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1534073Z Resolving deltas:   4% (22/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1535041Z Resolving deltas:   5% (27/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1536047Z Resolving deltas:   6% (32/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1536947Z Resolving deltas:   7% (38/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1537752Z Resolving deltas:   8% (43/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1538624Z Resolving deltas:   9% (48/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1539591Z Resolving deltas:  10% (53/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1540486Z Resolving deltas:  11% (59/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1541561Z Resolving deltas:  12% (64/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1542708Z Resolving deltas:  13% (69/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1543511Z Resolving deltas:  14% (75/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1544327Z Resolving deltas:  15% (80/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1545150Z Resolving deltas:  16% (85/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1546098Z Resolving deltas:  17% (91/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1574848Z Resolving deltas:  18% (96/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1575660Z Resolving deltas:  19% (101/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1576412Z Resolving deltas:  20% (106/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1577177Z Resolving deltas:  21% (112/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1577932Z Resolving deltas:  22% (117/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1578969Z Resolving deltas:  23% (122/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1579847Z Resolving deltas:  24% (128/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1580660Z Resolving deltas:  25% (133/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1581752Z Resolving deltas:  26% (138/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1582562Z Resolving deltas:  27% (144/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1583372Z Resolving deltas:  28% (149/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1584266Z Resolving deltas:  29% (154/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1585157Z Resolving deltas:  30% (159/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1585996Z Resolving deltas:  31% (165/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1586856Z Resolving deltas:  32% (170/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1587691Z Resolving deltas:  33% (175/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1588521Z Resolving deltas:  34% (181/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1589348Z Resolving deltas:  35% (186/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1590177Z Resolving deltas:  36% (191/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1591226Z Resolving deltas:  37% (197/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1592157Z Resolving deltas:  38% (202/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1593017Z Resolving deltas:  39% (207/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1593894Z Resolving deltas:  40% (212/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1594769Z Resolving deltas:  41% (218/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1595650Z Resolving deltas:  42% (223/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1596550Z Resolving deltas:  43% (228/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1597445Z Resolving deltas:  44% (234/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1598314Z Resolving deltas:  45% (239/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1599189Z Resolving deltas:  46% (244/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1600089Z Resolving deltas:  47% (250/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1600963Z Resolving deltas:  48% (255/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1602064Z Resolving deltas:  49% (260/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1602923Z Resolving deltas:  50% (265/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1603778Z Resolving deltas:  51% (271/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1604618Z Resolving deltas:  52% (276/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1605500Z Resolving deltas:  53% (281/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1606395Z Resolving deltas:  54% (287/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1607281Z Resolving deltas:  55% (292/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1679221Z Resolving deltas:  56% (297/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1680311Z Resolving deltas:  57% (303/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1681565Z Resolving deltas:  58% (308/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1682545Z Resolving deltas:  59% (313/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1684021Z Resolving deltas:  60% (318/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1685092Z Resolving deltas:  61% (324/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1686003Z Resolving deltas:  62% (329/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1686967Z Resolving deltas:  63% (334/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1687966Z Resolving deltas:  64% (340/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1688979Z Resolving deltas:  65% (345/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1690010Z Resolving deltas:  66% (350/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1691242Z Resolving deltas:  67% (356/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1692315Z Resolving deltas:  68% (361/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1693343Z Resolving deltas:  69% (366/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1694366Z Resolving deltas:  70% (371/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1695419Z Resolving deltas:  71% (377/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1696743Z Resolving deltas:  72% (382/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1697813Z Resolving deltas:  73% (387/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1698836Z Resolving deltas:  74% (393/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1699865Z Resolving deltas:  75% (398/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1700885Z Resolving deltas:  76% (403/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1702121Z Resolving deltas:  77% (409/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1703184Z Resolving deltas:  78% (415/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1704458Z Resolving deltas:  79% (419/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1705515Z Resolving deltas:  80% (424/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1706573Z Resolving deltas:  81% (430/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1707622Z Resolving deltas:  82% (435/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1708672Z Resolving deltas:  83% (440/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1709719Z Resolving deltas:  84% (446/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1710747Z Resolving deltas:  85% (451/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1712002Z Resolving deltas:  86% (456/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1713039Z Resolving deltas:  87% (462/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1714119Z Resolving deltas:  88% (467/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1715400Z Resolving deltas:  89% (472/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1716492Z Resolving deltas:  90% (477/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1717515Z Resolving deltas:  91% (483/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1718527Z Resolving deltas:  92% (488/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1719554Z Resolving deltas:  93% (493/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1720575Z Resolving deltas:  94% (499/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1721843Z Resolving deltas:  95% (504/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1722802Z Resolving deltas:  96% (510/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1723738Z Resolving deltas:  97% (515/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1724683Z Resolving deltas:  98% (520/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1725621Z Resolving deltas:  99% (525/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1726551Z Resolving deltas: 100% (530/530)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1727501Z Resolving deltas: 100% (530/530), done.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1728716Z From https://github.com/MALIEV-Co-Ltd/maliev-gitops
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1730255Z  * [new ref]         a52092d5236e0367d617ba8ed99681d43e67bc5f -> pull/228/merge
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1746962Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1750022Z ##[group]Determining the checkout info
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1751741Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1752954Z ##[group]Checking out the ref
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.1754517Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/228/merge
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2152100Z Note: switching to 'refs/remotes/pull/228/merge'.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2153084Z 
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2153678Z You are in 'detached HEAD' state. You can look around, make experimental
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2155075Z changes and commit them, and you can discard any commits you make in this
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2156461Z state without impacting any branches by switching back to a branch.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2157250Z 
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2157775Z If you want to create a new branch to retain commits you create, you may
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2159019Z do so (now or later) by using -c with the switch command. Example:
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2159736Z 
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2160180Z   git switch -c <new-branch-name>
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2160917Z 
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2161418Z Or undo this operation with:
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2161814Z 
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2162025Z   git switch -
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2162305Z 
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2162773Z Turn off this advice by setting config variable advice.detachedHead to false
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2163666Z 
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2164410Z HEAD is now at a52092d Merge bb295c396a2ed82e25170ef68ef62999524b0916 into f21801fc9424d9dfb8df87d90ac1e265dde17c0d
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2166533Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2194377Z [command]/usr/bin/git log -1 --format='%H'
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2215160Z 'a52092d5236e0367d617ba8ed99681d43e67bc5f'
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2412443Z ##[group]Run set -e
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2413026Z [36;1mset -e[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2414185Z [36;1mcurl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2415499Z [36;1msudo mv kustomize /usr/local/bin/[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2416148Z [36;1mkustomize version[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2452047Z shell: /usr/bin/bash -e {0}
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:11.2452630Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.4599992Z v5.8.0
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.4605788Z kustomize installed to /home/runner/work/maliev-gitops/maliev-gitops/kustomize
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.4797805Z v5.8.0
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.4884126Z ##[group]Run sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.4887942Z [36;1msudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.4890543Z [36;1msudo chmod +x /usr/local/bin/yq[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.4892094Z [36;1myq --version[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.4927969Z shell: /usr/bin/bash -e {0}
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.4929164Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9519035Z yq (https://github.com/mikefarah/yq/) version v4.50.1
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9550152Z ##[group]Run set -e
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9550435Z [36;1mset -e[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9550622Z [36;1mfound=0[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9550847Z [36;1mif [ -d "3-apps" ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9551331Z [36;1m  while IFS= read -r -d $'\0' file; do[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9551638Z [36;1m    dir=$(dirname "$file")[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9551915Z [36;1m    echo "Validating kustomization in $dir"[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9552249Z [36;1m    if ! kustomize build "$dir" > /dev/null; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9552564Z [36;1m      echo "kustomize build failed for $dir"[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9552845Z [36;1m      found=1[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9553048Z [36;1m    fi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9553343Z [36;1m  done < <(find 3-apps -name kustomization.yaml -print0)[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9553664Z [36;1melse[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9553963Z [36;1m  echo "No 3-apps directory found. Skipping kustomize overlay validation."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9554312Z [36;1mfi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9554520Z [36;1mif [ "$found" -ne 0 ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9554763Z [36;1m  exit 1[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9554948Z [36;1mfi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9586355Z shell: /usr/bin/bash -e {0}
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9586628Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9686474Z Validating kustomization in 3-apps/maliev-web/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:12.9802519Z Validating kustomization in 3-apps/maliev-web/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.0435592Z Validating kustomization in 3-apps/maliev-web/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.1208539Z Validating kustomization in 3-apps/maliev-web/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.1977303Z Validating kustomization in 3-apps/maliev-chat-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.2093775Z Validating kustomization in 3-apps/maliev-chat-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.2888227Z Validating kustomization in 3-apps/maliev-chat-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.3567239Z Validating kustomization in 3-apps/maliev-chat-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.4282094Z Validating kustomization in 3-apps/maliev-contact-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.4400412Z Validating kustomization in 3-apps/maliev-contact-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.5102916Z Validating kustomization in 3-apps/maliev-contact-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.5783215Z Validating kustomization in 3-apps/maliev-contact-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.6492659Z Validating kustomization in 3-apps/maliev-auth-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.6604379Z Validating kustomization in 3-apps/maliev-auth-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.7301190Z Validating kustomization in 3-apps/maliev-auth-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.8143986Z Validating kustomization in 3-apps/maliev-auth-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.8941865Z Validating kustomization in 3-apps/maliev-supplier-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.9054345Z Validating kustomization in 3-apps/maliev-supplier-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:13.9949739Z Validating kustomization in 3-apps/maliev-supplier-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.0705315Z Validating kustomization in 3-apps/maliev-supplier-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.1421728Z Validating kustomization in 3-apps/maliev-receipt-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.1551856Z Validating kustomization in 3-apps/maliev-receipt-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.2213274Z Validating kustomization in 3-apps/maliev-receipt-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.2974486Z Validating kustomization in 3-apps/maliev-receipt-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.3660039Z Validating kustomization in 3-apps/maliev-quotation-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.3773722Z Validating kustomization in 3-apps/maliev-quotation-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.4466409Z Validating kustomization in 3-apps/maliev-quotation-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.5191682Z Validating kustomization in 3-apps/maliev-quotation-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.5930991Z Validating kustomization in 3-apps/maliev-material-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.6040844Z Validating kustomization in 3-apps/maliev-material-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.6809391Z Validating kustomization in 3-apps/maliev-material-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.7469234Z Validating kustomization in 3-apps/maliev-material-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.8194087Z Validating kustomization in 3-apps/maliev-employee-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.8316747Z Validating kustomization in 3-apps/maliev-employee-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.9054632Z Validating kustomization in 3-apps/maliev-employee-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:14.9768507Z Validating kustomization in 3-apps/maliev-employee-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.0491367Z Validating kustomization in 3-apps/maliev-email-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.0600212Z Validating kustomization in 3-apps/maliev-email-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.1301839Z Validating kustomization in 3-apps/maliev-email-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.2033365Z Validating kustomization in 3-apps/maliev-email-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.2752716Z Validating kustomization in 3-apps/maliev-country-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.2869495Z Validating kustomization in 3-apps/maliev-country-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.3597585Z Validating kustomization in 3-apps/maliev-country-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.4325206Z Validating kustomization in 3-apps/maliev-country-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.5007246Z Validating kustomization in 3-apps/maliev-upload-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.5168903Z Validating kustomization in 3-apps/maliev-upload-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.5863153Z Validating kustomization in 3-apps/maliev-upload-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.6564618Z Validating kustomization in 3-apps/maliev-upload-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.7278564Z Validating kustomization in 3-apps/maliev-invoice-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.7389709Z Validating kustomization in 3-apps/maliev-invoice-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.8038836Z Validating kustomization in 3-apps/maliev-invoice-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.8736358Z Validating kustomization in 3-apps/maliev-invoice-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.9470240Z Validating kustomization in 3-apps/maliev-career-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:15.9580431Z Validating kustomization in 3-apps/maliev-career-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.0354182Z Validating kustomization in 3-apps/maliev-career-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.1044034Z Validating kustomization in 3-apps/maliev-career-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.1745752Z Validating kustomization in 3-apps/maliev-customer-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.1857605Z Validating kustomization in 3-apps/maliev-customer-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.2528677Z Validating kustomization in 3-apps/maliev-customer-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.3256200Z Validating kustomization in 3-apps/maliev-customer-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.4025205Z Validating kustomization in 3-apps/maliev-intranet/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.4134724Z Validating kustomization in 3-apps/maliev-intranet/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.4876665Z Validating kustomization in 3-apps/maliev-intranet/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.5574700Z Validating kustomization in 3-apps/maliev-intranet/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.6271702Z Validating kustomization in 3-apps/_common
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.6353384Z Validating kustomization in 3-apps/maliev-log-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.6461729Z Validating kustomization in 3-apps/maliev-log-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.7135233Z Validating kustomization in 3-apps/maliev-log-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.7828249Z Validating kustomization in 3-apps/maliev-log-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.8540066Z Validating kustomization in 3-apps/maliev-pdf-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.8668013Z Validating kustomization in 3-apps/maliev-pdf-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:16.9401839Z Validating kustomization in 3-apps/maliev-pdf-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.0072483Z Validating kustomization in 3-apps/maliev-pdf-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.0755748Z Validating kustomization in 3-apps/maliev-payment-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.0885317Z Validating kustomization in 3-apps/maliev-payment-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.1551868Z Validating kustomization in 3-apps/maliev-payment-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.2251636Z Validating kustomization in 3-apps/maliev-payment-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.2994690Z Validating kustomization in 3-apps/maliev-currency-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.3115332Z Validating kustomization in 3-apps/maliev-currency-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.3873925Z Validating kustomization in 3-apps/maliev-currency-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.4534717Z Validating kustomization in 3-apps/maliev-currency-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.5250026Z Validating kustomization in 3-apps/maliev-order-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.5364015Z Validating kustomization in 3-apps/maliev-order-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.6126351Z Validating kustomization in 3-apps/maliev-order-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.6855968Z Validating kustomization in 3-apps/maliev-order-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.7567211Z Validating kustomization in 3-apps/maliev-purchaseorder-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.7712408Z Validating kustomization in 3-apps/maliev-purchaseorder-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.8406703Z Validating kustomization in 3-apps/maliev-purchaseorder-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.9083783Z Validating kustomization in 3-apps/maliev-purchaseorder-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.9823242Z Validating kustomization in 3-apps/maliev-notification-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:17.9946858Z Validating kustomization in 3-apps/maliev-notification-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.0070006Z Validating kustomization in 3-apps/maliev-notification-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.0196531Z Validating kustomization in 3-apps/maliev-notification-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.0316164Z Validating kustomization in 3-apps/maliev-prediction-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.0444302Z Validating kustomization in 3-apps/maliev-prediction-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.1141438Z Validating kustomization in 3-apps/maliev-prediction-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.1827464Z Validating kustomization in 3-apps/maliev-prediction-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.2465475Z Validating kustomization in 3-apps/maliev-quotationrequest-service/base
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.2585376Z Validating kustomization in 3-apps/maliev-quotationrequest-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.3212600Z Validating kustomization in 3-apps/maliev-quotationrequest-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.3950296Z Validating kustomization in 3-apps/maliev-quotationrequest-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4689672Z ##[group]Run set -e
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4689945Z [36;1mset -e[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4690325Z [36;1m# exclude argocd directory where applications may reference secrets in other forms[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4690898Z [36;1mif grep -R --line-number --no-color --exclude-dir=argocd "kind:[[:space:]]*Secret" . ; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4691850Z [36;1m  echo "Error: Native Kubernetes Secrets are not allowed. Please use ExternalSecrets. See offending lines above."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4692320Z [36;1m  exit 1[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4692498Z [36;1melse[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4692755Z [36;1m  echo "No native Secret resources found (outside argocd)."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4693059Z [36;1mfi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4724145Z shell: /usr/bin/bash -e {0}
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4724382Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4782258Z grep: unrecognized option '--no-color'
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4782750Z Usage: grep [OPTION]... PATTERNS [FILE]...
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4783242Z Try 'grep --help' for more information.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4784000Z No native Secret resources found (outside argocd).
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4807139Z ##[group]Run set -euo pipefail
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4807441Z [36;1mset -euo pipefail[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4807678Z [36;1mif [ ! -d "3-apps" ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4808039Z [36;1m  echo "3-apps directory not present. Skipping structure validation."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4808387Z [36;1m  exit 0[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4808559Z [36;1mfi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4808726Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4808908Z [36;1mfor app_path in 3-apps/*; do[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4809163Z [36;1m  [ -d "$app_path" ] || continue[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4809421Z [36;1m  app_name=$(basename "$app_path")[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4809661Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4809930Z [36;1m  # Skip internal/shared directories (names starting with underscore)[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4810281Z [36;1m  case "$app_name" in[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4810491Z [36;1m    _*) [0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4810721Z [36;1m      echo "Skipping internal directory: $app_name"[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4811272Z [36;1m      continue[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4811525Z [36;1m      ;;[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4811697Z [36;1m  esac[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4811870Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4812084Z [36;1m  # Now validate expected layout for normal apps[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4812437Z [36;1m  if [ ! -d "$app_path/base" ] || [ ! -d "$app_path/overlays" ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4812862Z [36;1m    echo "Error: $app_path must have a 'base' and 'overlays' directory."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4813195Z [36;1m    exit 1[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4813378Z [36;1m  fi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4813539Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4813763Z [36;1m  for env in development staging production; do[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4814080Z [36;1m    if [ ! -d "$app_path/overlays/$env" ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4814396Z [36;1m      echo "Error: $app_path must have overlays/$env."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4814678Z [36;1m      exit 1[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4814860Z [36;1m    fi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4815209Z [36;1m  done[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4815373Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4815588Z [36;1m  echo "Validated structure for $app_name."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4815857Z [36;1mdone[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4816029Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4816254Z [36;1mecho "Repository structure validation complete."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4844039Z shell: /usr/bin/bash -e {0}
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4844270Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4900513Z Skipping internal directory: _common
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4912392Z Validated structure for maliev-auth-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4924027Z Validated structure for maliev-career-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4935729Z Validated structure for maliev-chat-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4947637Z Validated structure for maliev-contact-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4959316Z Validated structure for maliev-country-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4970791Z Validated structure for maliev-currency-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4982560Z Validated structure for maliev-customer-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.4993945Z Validated structure for maliev-email-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5005303Z Validated structure for maliev-employee-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5017082Z Validated structure for maliev-intranet.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5028649Z Validated structure for maliev-invoice-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5040192Z Validated structure for maliev-log-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5051872Z Validated structure for maliev-material-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5063551Z Validated structure for maliev-notification-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5074851Z Validated structure for maliev-order-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5086103Z Validated structure for maliev-payment-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5097419Z Validated structure for maliev-pdf-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5109477Z Validated structure for maliev-prediction-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5120637Z Validated structure for maliev-purchaseorder-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5132027Z Validated structure for maliev-quotation-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5144324Z Validated structure for maliev-quotationrequest-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5155384Z Validated structure for maliev-receipt-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5166577Z Validated structure for maliev-supplier-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5178050Z Validated structure for maliev-upload-service.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5189848Z Validated structure for maliev-web.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5190441Z Repository structure validation complete.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5213208Z ##[group]Run set -euo pipefail
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5213520Z [36;1mset -euo pipefail[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5213734Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5213907Z [36;1mYQ_BIN=/usr/local/bin/yq[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5214132Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5214407Z [36;1mecho "Validating ArgoCD Application manifests under argocd/..."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5214746Z [36;1merrors=0[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5214926Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5215119Z [36;1m# find all YAML files in argocd directory[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5215571Z [36;1mfind argocd -type f \( -iname '*.yml' -o -iname '*.yaml' \) -print0 | while IFS= read -r -d $'\0' file; do[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5216027Z [36;1m  kind=$($YQ_BIN -r '.kind // ""' "$file")[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5216316Z [36;1m  if [ "$kind" != "Application" ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5216604Z [36;1m    # skip non-Application manifests[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5216857Z [36;1m    continue[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5217076Z [36;1m  fi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5217247Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5217484Z [36;1m  name=$($YQ_BIN -r '.metadata.name // "<noname>"' "$file")[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5217835Z [36;1m  echo "Checking Application: $name (file: $file)"[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5218118Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5218288Z [36;1m  # Get source fields[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5218589Z [36;1m  source_path=$($YQ_BIN -r '.spec.source.path // ""' "$file")[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5218958Z [36;1m  chart=$($YQ_BIN -r '.spec.source.chart // ""' "$file")[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5219328Z [36;1m  repoURL=$($YQ_BIN -r '.spec.source.repoURL // ""' "$file")[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5219769Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5219968Z [36;1m  # Skip path check if using a Helm chart[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5220274Z [36;1m  if [ -n "$chart" ] && [ -z "$source_path" ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5220681Z [36;1m    echo "  Skipping path check for $name because it references a Helm chart ($chart)."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5221926Z [36;1m    continue[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5222136Z [36;1m  fi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5222309Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5222512Z [36;1m  # Fail if no path provided and not a chart[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5222841Z [36;1m  if [ -z "$source_path" ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5223254Z [36;1m    echo "  Error: Application $name has no spec.source.path and is not a chart. File: $file"[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5223638Z [36;1m    errors=1[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5223827Z [36;1m    continue[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5224002Z [36;1m  fi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5224166Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5224340Z [36;1m  # Check if path exists[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5224624Z [36;1m  if [ -d "$source_path" ] || [ -f "$source_path" ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5224963Z [36;1m    echo "  OK: referenced path exists: $source_path"[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5225233Z [36;1m  else[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5225445Z [36;1m    # try relative to the argocd directory[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5225753Z [36;1m    candidate="$(dirname "$file")/$source_path"[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5226068Z [36;1m    if [ -d "$candidate" ] || [ -f "$candidate" ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5226412Z [36;1m      echo "  OK: referenced path exists (relative): $candidate"[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5226713Z [36;1m    else[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5227075Z [36;1m      echo "  Error: Path '$source_path' referenced in Application $name (file: $file) does not exist."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5227501Z [36;1m      echo "    repoURL: $repoURL"[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5227751Z [36;1m      errors=1[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5227936Z [36;1m    fi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5228110Z [36;1m  fi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5228272Z [36;1mdone[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5228439Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5228606Z [36;1mif [ "$errors" -ne 0 ]; then[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5228903Z [36;1m  echo "ArgoCD Application path validation failed."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5229189Z [36;1m  exit 1[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5229359Z [36;1mfi[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5229692Z [36;1m[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5229911Z [36;1mecho "All ArgoCD Application paths are valid."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5257763Z shell: /usr/bin/bash -e {0}
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5258010Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5321665Z Validating ArgoCD Application manifests under argocd/...
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5544607Z Checking Application: maliev-prod-database (file: argocd/environments/prod/database.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5671198Z   OK: referenced path exists: 2-environments/3-production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5752455Z Checking Application: maliev-prod-environment (file: argocd/environments/prod/apps/environment.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5875253Z   OK: referenced path exists: 2-environments/3-production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.5952650Z Checking Application: maliev-prod-apps (file: argocd/environments/prod/maliev-prod-apps.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.6077676Z   OK: referenced path exists: argocd/environments/prod/apps
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.6157482Z Checking Application: maliev-prod-rabbitmq (file: argocd/environments/prod/rabbitmq.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.6280865Z   OK: referenced path exists: 1-cluster-infra/06-rabbitmq/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.6361330Z Checking Application: maliev-prod-redis (file: argocd/environments/prod/redis.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.6483445Z   OK: referenced path exists: 1-cluster-infra/04-redis/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.6569545Z Checking Application: maliev-live-environment (file: argocd/environments/live/maliev-live-environment.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.6688154Z   OK: referenced path exists: 2-environments/0-live-production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.6765939Z Checking Application: maliev-staging-database (file: argocd/environments/staging/database.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.6888191Z   OK: referenced path exists: 2-environments/2-staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.6965480Z Checking Application: maliev-staging-apps (file: argocd/environments/staging/maliev-staging-apps.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.7086065Z   OK: referenced path exists: argocd/environments/staging/apps
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.7164961Z Checking Application: maliev-staging-environment (file: argocd/environments/staging/apps/environment.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.7286965Z   OK: referenced path exists: 2-environments/2-staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.7367194Z Checking Application: maliev-staging-rabbitmq (file: argocd/environments/staging/rabbitmq.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.7491403Z   OK: referenced path exists: 1-cluster-infra/06-rabbitmq/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.7573926Z Checking Application: maliev-staging-redis (file: argocd/environments/staging/redis.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.7708189Z   OK: referenced path exists: 1-cluster-infra/04-redis/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.7797421Z Checking Application: maliev-quotation-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-quotation-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.7929505Z   OK: referenced path exists: 3-apps/maliev-quotation-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.8017907Z Checking Application: maliev-email-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-email-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.8135228Z   OK: referenced path exists: 3-apps/maliev-email-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.8213581Z Checking Application: maliev-customer-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-customer-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.8341658Z   OK: referenced path exists: 3-apps/maliev-customer-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.8424918Z Checking Application: maliev-country-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-country-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.8543658Z   OK: referenced path exists: 3-apps/maliev-country-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.8621719Z Checking Application: maliev-receipt-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-receipt-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.8744127Z   OK: referenced path exists: 3-apps/maliev-receipt-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.8824006Z Checking Application: maliev-payment-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-payment-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.8946378Z   OK: referenced path exists: 3-apps/maliev-payment-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9026420Z Checking Application: maliev-invoice-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-invoice-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9151761Z   OK: referenced path exists: 3-apps/maliev-invoice-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9238953Z Checking Application: maliev-intranet-prod (file: argocd/environments/_disabled_apps/prod/maliev-intranet.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9355876Z   OK: referenced path exists: 3-apps/maliev-intranet/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9429762Z Checking Application: maliev-upload-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-upload-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9547271Z   OK: referenced path exists: 3-apps/maliev-upload-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9626556Z Checking Application: maliev-order-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-order-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9747181Z   OK: referenced path exists: 3-apps/maliev-order-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9831494Z Checking Application: material-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-material-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9957103Z   Error: Path '3-apps/material-service/overlays/production' referenced in Application material-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-material-service.yaml) does not exist.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:18.9958512Z     repoURL: https://github.com/MALIEV-Co-Ltd/maliev-gitops.git
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0041194Z Checking Application: maliev-quotationrequest-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-quotationrequest-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0160614Z   OK: referenced path exists: 3-apps/maliev-quotationrequest-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0247733Z Checking Application: maliev-accounting-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-accounting-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0380424Z   Error: Path '3-apps/maliev-accounting-service/overlays/production' referenced in Application maliev-accounting-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-accounting-service.yaml) does not exist.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0381678Z     repoURL: https://github.com/MALIEV-Co-Ltd/maliev-gitops.git
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0459630Z Checking Application: maliev-pdf-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-pdf-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0585372Z   OK: referenced path exists: 3-apps/maliev-pdf-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0668649Z Checking Application: maliev-chat-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-line-chatbot-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0792551Z   OK: referenced path exists: 3-apps/maliev-chat-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0875764Z Checking Application: maliev-prediction-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-prediction-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.0999000Z   OK: referenced path exists: 3-apps/maliev-prediction-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.1085258Z Checking Application: maliev-currency-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-currency-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.1214901Z   OK: referenced path exists: 3-apps/maliev-currency-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.1302759Z Checking Application: maliev-notification-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-notification-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.1452199Z   OK: referenced path exists: 3-apps/maliev-notification-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.1538430Z Checking Application: maliev-employee-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-employee-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.1670350Z   OK: referenced path exists: 3-apps/maliev-employee-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.1761233Z Checking Application: maliev-auth-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-auth-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.1904707Z   OK: referenced path exists: 3-apps/maliev-auth-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.1988897Z Checking Application: maliev-log-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-log-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.2116114Z   OK: referenced path exists: 3-apps/maliev-log-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.2200739Z Checking Application: maliev-web-prod (file: argocd/environments/_disabled_apps/prod/maliev-web.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.2326919Z   OK: referenced path exists: 3-apps/maliev-web/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.2406875Z Checking Application: maliev-supplier-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-supplier-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.2532039Z   OK: referenced path exists: 3-apps/maliev-supplier-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.2616391Z Checking Application: maliev-career-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-career-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.2743058Z   OK: referenced path exists: 3-apps/maliev-career-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.2823201Z Checking Application: maliev-contact-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-contact-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.2940821Z   OK: referenced path exists: 3-apps/maliev-contact-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.3017587Z Checking Application: maliev-purchaseorder-service-prod (file: argocd/environments/_disabled_apps/prod/maliev-purchaseorder-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.3140890Z   OK: referenced path exists: 3-apps/maliev-purchaseorder-service/overlays/production
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.3230333Z Checking Application: maliev-quotation-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-quotation-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.3360203Z   OK: referenced path exists: 3-apps/maliev-quotation-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.3446926Z Checking Application: maliev-email-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-email-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.3569782Z   OK: referenced path exists: 3-apps/maliev-email-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.3648798Z Checking Application: maliev-customer-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-customer-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.3772860Z   OK: referenced path exists: 3-apps/maliev-customer-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.3852412Z Checking Application: maliev-country-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-country-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.3972288Z   OK: referenced path exists: 3-apps/maliev-country-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.4054944Z Checking Application: maliev-receipt-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-receipt-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.4175549Z   OK: referenced path exists: 3-apps/maliev-receipt-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.4258125Z Checking Application: maliev-payment-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-payment-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.4382056Z   OK: referenced path exists: 3-apps/maliev-payment-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.4464983Z Checking Application: maliev-invoice-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-invoice-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.4603732Z   OK: referenced path exists: 3-apps/maliev-invoice-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.4686625Z Checking Application: maliev-intranet-staging (file: argocd/environments/_disabled_apps/staging/maliev-intranet.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.4808242Z   OK: referenced path exists: 3-apps/maliev-intranet/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.4886462Z Checking Application: maliev-upload-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-upload-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5006371Z   OK: referenced path exists: 3-apps/maliev-upload-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5086069Z Checking Application: maliev-order-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-order-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5222306Z   OK: referenced path exists: 3-apps/maliev-order-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5302278Z Checking Application: material-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-material-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5433682Z   Error: Path '3-apps/material-service/overlays/staging' referenced in Application material-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-material-service.yaml) does not exist.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5434655Z     repoURL: https://github.com/MALIEV-Co-Ltd/maliev-gitops.git
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5518845Z Checking Application: maliev-quotationrequest-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-quotationrequest-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5640699Z   OK: referenced path exists: 3-apps/maliev-quotationrequest-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5730423Z Checking Application: maliev-accounting-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-accounting-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5865651Z   Error: Path '3-apps/maliev-accounting-service/overlays/staging' referenced in Application maliev-accounting-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-accounting-service.yaml) does not exist.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5866643Z     repoURL: https://github.com/MALIEV-Co-Ltd/maliev-gitops.git
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.5943035Z Checking Application: maliev-pdf-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-pdf-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.6065263Z   OK: referenced path exists: 3-apps/maliev-pdf-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.6143894Z Checking Application: maliev-chat-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-line-chatbot-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.6267763Z   OK: referenced path exists: 3-apps/maliev-chat-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.6348217Z Checking Application: maliev-prediction-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-prediction-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.6478934Z   OK: referenced path exists: 3-apps/maliev-prediction-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.6559456Z Checking Application: maliev-currency-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-currency-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.6684313Z   OK: referenced path exists: 3-apps/maliev-currency-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.6763496Z Checking Application: maliev-notification-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-notification-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.6882799Z   OK: referenced path exists: 3-apps/maliev-notification-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.6962476Z Checking Application: maliev-employee-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-employee-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.7080507Z   OK: referenced path exists: 3-apps/maliev-employee-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.7160011Z Checking Application: maliev-auth-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-auth-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.7283774Z   OK: referenced path exists: 3-apps/maliev-auth-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.7367702Z Checking Application: maliev-log-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-log-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.7491763Z   OK: referenced path exists: 3-apps/maliev-log-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.7574022Z Checking Application: maliev-web-staging (file: argocd/environments/_disabled_apps/staging/maliev-web.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.7699544Z   OK: referenced path exists: 3-apps/maliev-web/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.7782753Z Checking Application: maliev-supplier-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-supplier-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.7904709Z   OK: referenced path exists: 3-apps/maliev-supplier-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.7988980Z Checking Application: maliev-career-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-career-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.8110637Z   OK: referenced path exists: 3-apps/maliev-career-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.8188377Z Checking Application: maliev-contact-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-contact-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.8310169Z   OK: referenced path exists: 3-apps/maliev-contact-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.8392219Z Checking Application: maliev-purchaseorder-service-staging (file: argocd/environments/_disabled_apps/staging/maliev-purchaseorder-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.8510839Z   OK: referenced path exists: 3-apps/maliev-purchaseorder-service/overlays/staging
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.8592556Z Checking Application: maliev-quotation-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-quotation-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.8715210Z   OK: referenced path exists: 3-apps/maliev-quotation-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.8797250Z Checking Application: maliev-email-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-email-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.8932849Z   OK: referenced path exists: 3-apps/maliev-email-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.9014753Z Checking Application: maliev-customer-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-customer-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.9139194Z   OK: referenced path exists: 3-apps/maliev-customer-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.9217417Z Checking Application: maliev-country-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-country-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.9340671Z   OK: referenced path exists: 3-apps/maliev-country-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.9421822Z Checking Application: maliev-receipt-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-receipt-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.9543905Z   OK: referenced path exists: 3-apps/maliev-receipt-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.9626494Z Checking Application: maliev-payment-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-payment-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.9753509Z   OK: referenced path exists: 3-apps/maliev-payment-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.9832300Z Checking Application: maliev-invoice-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-invoice-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:19.9948727Z   OK: referenced path exists: 3-apps/maliev-invoice-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.0026237Z Checking Application: maliev-intranet-dev (file: argocd/environments/_disabled_apps/dev/maliev-intranet.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.0139043Z   OK: referenced path exists: 3-apps/maliev-intranet/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.0219849Z Checking Application: maliev-upload-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-upload-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.0344832Z   OK: referenced path exists: 3-apps/maliev-upload-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.0423419Z Checking Application: maliev-order-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-order-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.0549480Z   OK: referenced path exists: 3-apps/maliev-order-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.0633996Z Checking Application: maliev-material-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-material-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.0757576Z   OK: referenced path exists: 3-apps/maliev-material-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.0838875Z Checking Application: maliev-quotationrequest-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-quotationrequest-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.0961501Z   OK: referenced path exists: 3-apps/maliev-quotationrequest-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.1037984Z Checking Application: maliev-accounting-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-accounting-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.1171873Z   Error: Path '3-apps/maliev-accounting-service/overlays/development' referenced in Application maliev-accounting-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-accounting-service.yaml) does not exist.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.1172898Z     repoURL: https://github.com/MALIEV-Co-Ltd/maliev-gitops.git
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.1254839Z Checking Application: maliev-chat-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-chat-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.1380112Z   OK: referenced path exists: 3-apps/maliev-chat-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.1460888Z Checking Application: maliev-pdf-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-pdf-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.1585383Z   OK: referenced path exists: 3-apps/maliev-pdf-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.1669404Z Checking Application: maliev-prediction-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-prediction-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.1793341Z   OK: referenced path exists: 3-apps/maliev-prediction-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.1874193Z Checking Application: maliev-currency-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-currency-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.2003898Z   OK: referenced path exists: 3-apps/maliev-currency-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.2085988Z Checking Application: maliev-notification-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-notification-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.2207952Z   OK: referenced path exists: 3-apps/maliev-notification-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.2300449Z Checking Application: maliev-employee-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-employee-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.2422597Z   OK: referenced path exists: 3-apps/maliev-employee-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.2503536Z Checking Application: maliev-log-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-log-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.2629079Z   OK: referenced path exists: 3-apps/maliev-log-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.2711650Z Checking Application: maliev-web-dev (file: argocd/environments/_disabled_apps/dev/maliev-web.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.2833240Z   OK: referenced path exists: 3-apps/maliev-web/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.2918104Z Checking Application: maliev-supplier-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-supplier-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.3040345Z   OK: referenced path exists: 3-apps/maliev-supplier-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.3122414Z Checking Application: maliev-career-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-career-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.3243327Z   OK: referenced path exists: 3-apps/maliev-career-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.3317538Z Checking Application: maliev-contact-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-contact-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.3435778Z   OK: referenced path exists: 3-apps/maliev-contact-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.3512824Z Checking Application: maliev-purchaseorder-service-dev (file: argocd/environments/_disabled_apps/dev/maliev-purchaseorder-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.3639942Z   OK: referenced path exists: 3-apps/maliev-purchaseorder-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.3723460Z Checking Application: maliev-dev-database (file: argocd/environments/dev/database.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.3845305Z   OK: referenced path exists: 2-environments/1-development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.3922283Z Checking Application: maliev-dev-environment (file: argocd/environments/dev/apps/environment.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.4049081Z   OK: referenced path exists: 2-environments/1-development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.4129162Z Checking Application: maliev-auth-service-dev (file: argocd/environments/dev/apps/maliev-auth-service.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.4246149Z   OK: referenced path exists: 3-apps/maliev-auth-service/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.4323488Z Checking Application: maliev-dev-apps (file: argocd/environments/dev/maliev-dev-apps.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.4446787Z   OK: referenced path exists: argocd/environments/dev/apps
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.4525823Z Checking Application: maliev-dev-rabbitmq (file: argocd/environments/dev/rabbitmq.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.4651827Z   OK: referenced path exists: 1-cluster-infra/06-rabbitmq/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.4731596Z Checking Application: maliev-dev-redis (file: argocd/environments/dev/redis.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.4852611Z   OK: referenced path exists: 1-cluster-infra/04-redis/overlays/development
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.4970306Z Checking Application: root (file: argocd/root-app.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5090211Z   OK: referenced path exists: argocd
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5170858Z Checking Application: cert-manager (file: argocd/cluster-infra/cert-manager-app.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5295998Z   OK: referenced path exists: 1-cluster-infra/02-cert-manager
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5373908Z Checking Application: cloudnative-pg (file: argocd/cluster-infra/cloudnative-pg-app.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5492026Z   OK: referenced path exists: 1-cluster-infra/05-cloudnative-pg
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5612133Z Checking Application: external-secrets-config (file: argocd/cluster-infra/external-secrets-config-app.yaml)
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5730094Z   OK: referenced path exists: 1-cluster-infra/03-external-secrets
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5733187Z All ArgoCD Application paths are valid.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5761911Z ##[group]Run echo "Validation completed."
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5762274Z [36;1mecho "Validation completed."[0m
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5793771Z shell: /usr/bin/bash -e {0}
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5794006Z ##[endgroup]
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5840091Z Validation completed.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.5904495Z Post job cleanup.
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.6609671Z [command]/usr/bin/git version
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.6644314Z git version 2.52.0
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.6687685Z Temporarily overriding HOME='/home/runner/work/_temp/5ba5e95a-69d5-47e5-9ded-6c11b063e23d' before making global git config changes
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.6688990Z Adding repository directory to the temporary git global config as a safe directory
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.6692769Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/maliev-gitops/maliev-gitops
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.6723806Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.6752941Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.6974766Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.6994164Z http.https://github.com/.extraheader
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.7005708Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.7033886Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Kustomize, Structure and ArgoCD Validation	UNKNOWN STEP	2025-12-19T18:40:20.7346606Z Cleaning up orphan processes

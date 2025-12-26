@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maliev-receipt-service
+  name: maliev-iam-service
   labels:
-    app: maliev-receipt-service
+    app: maliev-iam-service
 spec:
   revisionHistoryLimit: 3
   strategy:
@@ -13,16 +13,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: maliev-receipt-service
+      app: maliev-iam-service
   template:
     metadata:
       labels:
-        app: maliev-receipt-service
+        app: maliev-iam-service
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-        - name: maliev-receipt-service
-          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-receipt-service
+        - name: maliev-iam-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-iam-service
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -30,12 +30,12 @@ spec:
             - secretRef:
                 name: maliev-shared-secrets
             - secretRef:
-                name: maliev-receipt-service-secrets
+                name: maliev-iam-service-secrets
           livenessProbe:
             httpGet:
-              path: /receipt/liveness
+              path: /iam/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: /receipt/readiness
+              path: /iam/readiness
               port: 8080

@@ -12,7 +12,8 @@ spec:
   replicas: 1
   
   # Use the official RabbitMQ image with management plugin
-  image: rabbitmq:4.2.1-management-alpine
+  # Aligned with Aspire AppHost configuration (4.2-alpine)
+  image: rabbitmq:4.2-management-alpine
   
   # Resource allocation per pod
   resources:
@@ -89,6 +90,14 @@ spec:
                       secretKeyRef:
                         name: maliev-shared-secrets
                         key: RabbitMq__Password
+                        optional: false
+                  # Erlang cookie for cluster formation security
+                  # Synced from Google Secret Manager (RabbitMQ:ErlangCookie parameter)
+                  - name: RABBITMQ_ERLANG_COOKIE
+                    valueFrom:
+                      secretKeyRef:
+                        name: maliev-shared-secrets
+                        key: RabbitMQ__ErlangCookie
                         optional: false
   
   # High availability: spread pods across different nodes

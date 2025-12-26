@@ -33,9 +33,9 @@ spec:
                 name: maliev-pdf-service-secrets
           livenessProbe:
             httpGet:
-              path: /pdfs/liveness
+              path: /pdf/liveness
               port: 8080
           readinessProbe:
             httpGet:
-              path: /pdfs/readiness
+              path: /pdf/readiness
               port: 8080
