@@ -22,18 +22,43 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: maliev-email-service
-          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-email-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-email-service:latest
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 3000
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "96Mi"
+            limits:
+              cpu: "25m"
+              memory: "128Mi"
           ports:
             - containerPort: 8080
           livenessProbe:
             httpGet:
               path: /emails/liveness
               port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /emails/readiness
               port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
           envFrom:
             - secretRef:
                 name: maliev-shared-secrets
