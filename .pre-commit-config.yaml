@@ -1,0 +1,35 @@
+# Pre-commit hooks for maliev-gitops repository
+# Install: pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # YAML linting
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args: [-c=.yamllint.yml]
+
+  # Kube-linter for Kubernetes manifests
+  - repo: local
+    hooks:
+      - id: kube-linter-base-deployments
+        name: Kube-linter (base deployments only)
+        entry: bash -c 'if command -v kube-linter &> /dev/null; then find 3-apps -name "deployment.yaml" -path "*/base/*" -print0 | xargs -0 kube-linter lint --config .kube-linter.yml; else echo "⚠️  kube-linter not installed - skipping (install: https://github.com/stackrox/kube-linter#installing-kubelinter)"; fi'
+        language: system
+        files: '^3-apps/.*/base/deployment\.yaml$'
+        pass_filenames: false
+
+  # Prevent commits to main branch
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: '^(1-cluster-infra|2-environments)/'  # Some CRDs have complex YAML
+      - id: check-added-large-files
+        args: [--maxkb=500]
