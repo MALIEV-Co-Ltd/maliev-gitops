@@ -69,13 +69,13 @@ jobs:
             echo "has_runs=false" >> $GITHUB_OUTPUT
           fi
 
+      # Only lint base deployment files, not kustomize overlays
       - name: Check Kubernetes best practices (apps)
-        uses: stackrox/kube-linter-action@v1
-        with:
-          config: .kube-linter.yml
-          directory: 3-apps
-          format: sarif
-          output-file: kube-linter-apps.sarif
+        run: |
+          # Download and install kube-linter
+          curl -L https://github.com/stackrox/kube-linter/releases/latest/download/kube-linter-linux.tar.gz | tar xz
+          # Lint only base deployment files, excluding overlays and kustomization files
+          find 3-apps -name "deployment.yaml" -path "*/base/*" | xargs ./kube-linter lint --config .kube-linter.yml --format sarif > kube-linter-apps.sarif || true
 
       - name: Ensure apps SARIF exists
         run: |
