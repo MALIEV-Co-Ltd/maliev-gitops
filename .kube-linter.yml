@@ -1,2 +1,8 @@
 checks:
   addAllBuiltIn: true
+
+# Ignore kustomization overlay files - they contain patches, not complete manifests
+# Kube-linter should only check complete manifests in base directories
+ignore:
+  - "**/overlays/**"
+  - "**/kustomization.yaml"
