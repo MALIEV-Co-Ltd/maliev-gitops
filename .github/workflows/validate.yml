@@ -27,11 +27,13 @@ jobs:
           file_or_dir: .
           config_file: .yamllint.yml
 
+      # Note: cluster-infra contains Helm releases and operator CRDs we don't control
+      # Only lint our custom Redis StatefulSet
       - name: Check Kubernetes best practices (cluster-infra)
         uses: stackrox/kube-linter-action@v1
         with:
           config: .kube-linter.yml
-          directory: 1-cluster-infra
+          directory: 1-cluster-infra/04-redis
           format: sarif
           output-file: kube-linter-cluster-infra.sarif
 
