@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      contents: write
       checks: read
 
     # For security, only run on PRs from the same repository, not from forks.
