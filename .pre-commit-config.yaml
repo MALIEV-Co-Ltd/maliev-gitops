@@ -15,7 +15,7 @@ repos:
     hooks:
       - id: kube-linter-base-deployments
         name: Kube-linter (base deployments only)
-        entry: bash -c 'if command -v kube-linter &> /dev/null; then find 3-apps -name "deployment.yaml" -path "*/base/*" -print0 | xargs -0 kube-linter lint --config .kube-linter.yml; else echo "⚠️  kube-linter not installed - skipping (install: https://github.com/stackrox/kube-linter#installing-kubelinter)"; fi'
+        entry: ./scripts/lint-base-deployments.sh
         language: system
         files: '^3-apps/.*/base/deployment\.yaml$'
         pass_filenames: false
