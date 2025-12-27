@@ -1,2 +1,13 @@
 checks:
   addAllBuiltIn: true
+
+# Exclude Helm-managed resources and operator CRDs that we don't directly control
+customChecks: []
+exclude:
+  # Exclude all resources in cluster-infra except for our custom deployments/statefulsets
+  # These are managed by Helm charts and operators
+  - "1-cluster-infra/01-ingress-nginx/**"
+  - "1-cluster-infra/02-cert-manager/**"
+  - "1-cluster-infra/03-external-secrets/**"
+  - "1-cluster-infra/05-cloudnative-pg/**"
+  - "1-cluster-infra/06-rabbitmq/**"
