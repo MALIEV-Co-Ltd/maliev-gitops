@@ -34,7 +34,6 @@ jobs:
           directory: 1-cluster-infra
           format: sarif
           output-file: kube-linter-cluster-infra.sarif
-        continue-on-error: true
 
       - name: Ensure cluster-infra SARIF exists
         run: |
@@ -57,7 +56,6 @@ jobs:
           directory: 2-environments
           format: sarif
           output-file: kube-linter-environments.sarif
-        continue-on-error: true
 
       - name: Ensure environments SARIF exists
         run: |
@@ -80,7 +78,6 @@ jobs:
           directory: 3-apps
           format: sarif
           output-file: kube-linter-apps.sarif
-        continue-on-error: true
 
       - name: Ensure apps SARIF exists
         run: |
