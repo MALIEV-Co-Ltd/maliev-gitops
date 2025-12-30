@@ -1,0 +1,5 @@
+﻿resources:
+- deployment.yaml
+- service.yaml
+- service-secrets.yaml
+- hpa.yaml

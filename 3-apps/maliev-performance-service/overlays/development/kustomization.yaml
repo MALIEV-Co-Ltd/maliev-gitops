@@ -1,0 +1,12 @@
+﻿apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: maliev-dev
+
+resources:
+- ../../base
+
+images:
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-performance-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-performance-service
+  newTag: latest
