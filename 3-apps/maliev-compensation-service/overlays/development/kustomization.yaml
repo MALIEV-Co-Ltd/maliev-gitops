@@ -1,4 +1,3 @@
-﻿apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: maliev-dev
@@ -9,4 +8,5 @@ resources:
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-compensation-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-compensation-service
-  newTag: latest
+  newTag: 450fbb9532eabee5d7298369609d93c01fb8eeee
+apiVersion: kustomize.config.k8s.io/v1beta1
