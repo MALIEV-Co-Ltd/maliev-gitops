@@ -12,4 +12,7 @@ resources:
 - ../../base
 
 patches:
+- path: environment-config-patch.yaml
+- path: resource-limits-patch.yaml
+- path: health-check-patch.yaml
 - path: service-secrets-patch.yaml

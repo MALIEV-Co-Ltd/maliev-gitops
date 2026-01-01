@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-chatbot-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-chatbot-service
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
