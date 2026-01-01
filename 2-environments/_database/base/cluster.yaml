@@ -5,7 +5,7 @@ metadata:
 spec:
   instances: 3
   # Use PostgreSQL Alpine image for minimal footprint and faster startup
-  imageName: ghcr.io/cloudnative-pg/postgresql:17
+  imageName: ghcr.io/cloudnative-pg/postgresql:17-bookworm
   primaryUpdateStrategy: unsupervised
 
   # Disable automatic PDB creation to allow custom PDB for maintenance
