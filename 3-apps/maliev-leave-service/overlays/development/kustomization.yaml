@@ -1,4 +1,3 @@
-﻿apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: maliev-dev
@@ -9,4 +8,5 @@ resources:
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-leave-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-leave-service
-  newTag: latest
+  newTag: 740412e9154d8640f053341d899a3b22b7e10806
+apiVersion: kustomize.config.k8s.io/v1beta1
