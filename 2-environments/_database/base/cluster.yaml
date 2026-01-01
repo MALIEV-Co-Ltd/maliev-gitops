@@ -3,7 +3,7 @@ kind: Cluster
 metadata:
   name: postgres-cluster
 spec:
-  instances: 3
+  instances: 1
   # Use PostgreSQL Alpine image for minimal footprint and faster startup
   imageName: ghcr.io/cloudnative-pg/postgresql:18.1-standard-bookworm
   primaryUpdateStrategy: unsupervised
