@@ -9,3 +9,8 @@ namespace: maliev-prod
 
 resources:
   - ../../base
+
+patches:
+  - path: service-secrets-patch.yaml
+  - path: resource-limits-patch.yaml
+  - path: health-check-patch.yaml

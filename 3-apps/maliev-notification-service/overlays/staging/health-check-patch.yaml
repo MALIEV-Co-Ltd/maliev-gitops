@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-notification-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-notification-service
+          livenessProbe:
+            httpGet:
+              path: /notification/liveness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /notification/readiness
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
