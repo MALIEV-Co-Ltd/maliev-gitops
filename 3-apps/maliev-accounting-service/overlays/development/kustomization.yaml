@@ -4,7 +4,7 @@ kind: Kustomization
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-accounting-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-accounting-service
-  newTag: 4a37ba9ee6285f9a6e19ff92973eb994527ff1d1
+  newTag: 37b87c1aee5c8a09d116eeee5785c276b54961ff
 
 namespace: maliev-dev
 
