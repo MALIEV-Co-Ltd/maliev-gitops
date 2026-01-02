@@ -4,7 +4,7 @@ kind: Kustomization
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-notification-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-notification-service
-  newTag: bf93d991d548c1590d49eb4f0d65f6e847c6ff5a
+  newTag: c2cb38d95eb372c32519b8d0c2e7eb9eeaadb3d2
 
 namespace: maliev-dev
 
