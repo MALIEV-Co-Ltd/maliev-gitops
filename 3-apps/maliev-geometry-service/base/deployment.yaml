@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-geometry-service
+  labels:
+    app: maliev-geometry-service
+spec:
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-geometry-service
+  template:
+    metadata:
+      labels:
+        app: maliev-geometry-service
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: maliev-geometry-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-geometry-service:latest
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 3000
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "512Mi"
+            limits:
+              cpu: "200m"
+              memory: "1024Mi"
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-geometry-service-secrets
+          livenessProbe:
+            httpGet:
+              path: /geometry/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /geometry/readiness
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
