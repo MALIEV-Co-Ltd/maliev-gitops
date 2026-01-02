@@ -1,5 +1,5 @@
 resources:
   - deployment.yaml
   - service.yaml
-  - hpa.yaml
+  - keda.yaml
   - service-secrets.yaml
