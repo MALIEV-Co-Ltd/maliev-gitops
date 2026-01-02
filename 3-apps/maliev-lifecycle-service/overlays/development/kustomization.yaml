@@ -8,5 +8,5 @@ resources:
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-lifecycle-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-lifecycle-service
-  newTag: b3d7926e1faf4ca2776712c2a51eaeaa63294155
+  newTag: 81159fac8387bd99853967a0a1f39c916ad59153
 apiVersion: kustomize.config.k8s.io/v1beta1
