@@ -2,13 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: maliev-notification-service
-  labels:
-    app: maliev-notification-service
 spec:
-  ports:
-    - port: 80
-      targetPort: 8080
-      protocol: TCP
-      name: http
   selector:
     app: maliev-notification-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

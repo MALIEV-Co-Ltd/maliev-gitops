@@ -1,22 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: maliev-email-service-staging
+  name: maliev-notification-service-staging
   namespace: argocd
-  labels:
-    app.kubernetes.io/name: maliev-email-service
-    app.kubernetes.io/part-of: maliev
-    app.kubernetes.io/environment: staging
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/name: maliev-notification-service
 spec:
   project: default
   source:
-    repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
-    targetRevision: main
-    path: 3-apps/maliev-email-service/overlays/staging
+    repoURL: https://github.com/natth/MALIEV-Co-Ltd.git
+    targetRevision: HEAD
+    path: 3-apps/maliev-notification-service/overlays/staging
   destination:
-    server: "https://kubernetes.default.svc"
+    server: https://kubernetes.default.svc
     namespace: maliev-staging
   syncPolicy:
     automated:
