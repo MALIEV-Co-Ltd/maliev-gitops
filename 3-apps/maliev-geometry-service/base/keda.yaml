@@ -1,0 +1,26 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: maliev-geometry-service-scaler
+spec:
+  scaleTargetRef:
+    name: maliev-geometry-service
+  minReplicaCount: 1
+  maxReplicaCount: 20
+  triggers:
+    - type: rabbitmq
+      metadata:
+        queueName: geometry-analysis-queue
+        value: "10"
+      authenticationRef:
+        name: rabbitmq-auth-trigger
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: rabbitmq-auth-trigger
+spec:
+  secretTargetRef:
+    - parameter: host
+      name: maliev-geometry-service-secrets
+      key: RABBITMQ_URI
