@@ -1,3 +1,9 @@
 resources:
-  - ../../base
+- ../../base
 namespace: maliev-dev
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+images:
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-geometry-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-geometry-service
+  newTag: 358695b7f61feb1da30b22772e61e296e5852853
