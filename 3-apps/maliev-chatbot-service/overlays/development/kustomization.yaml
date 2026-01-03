@@ -4,7 +4,7 @@ kind: Kustomization
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-chatbot-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-chatbot-service
-  newTag: c2b43eebd079bf996ef60534e820f39c6b50c497
+  newTag: 8f38fcd784bc0015bf94bce728572743f62af24c
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-chatbot-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-chatbot-service
   newTag: latest
