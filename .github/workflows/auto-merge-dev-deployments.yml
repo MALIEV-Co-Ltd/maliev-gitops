@@ -24,7 +24,9 @@ jobs:
       checks: read
 
     # Only auto-merge deployment PRs to development environment
-    if: startsWith(github.event.pull_request.title, 'Deploy') && contains(github.event.pull_request.title, 'to development')
+    if: >-
+      (startsWith(github.event.pull_request.title, 'Deploy') && contains(github.event.pull_request.title, 'to development')) || 
+      startsWith(github.event.pull_request.title, 'chore(dev): Update')
 
     steps:
       - name: Checkout
