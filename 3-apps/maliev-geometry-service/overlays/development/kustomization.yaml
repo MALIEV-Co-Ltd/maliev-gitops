@@ -6,4 +6,4 @@ kind: Kustomization
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-geometry-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-geometry-service
-  newTag: 73f8eb06d0e751d249dd6fdd3904ac67081d5ee0
+  newTag: abd8de5000d715bc048f58085a33e00854ddc935
