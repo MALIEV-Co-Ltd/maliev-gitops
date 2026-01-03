@@ -1,4 +1,4 @@
-name: Auto Review and Merge Main
+name: Auto Merge Dev Deployments
 
 on:
   pull_request_target:
