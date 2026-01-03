@@ -37,7 +37,7 @@ jobs:
           echo "Base Repo: ${{ github.repository }}"
 
       - name: 'Wait for validation checks to pass'
-        uses: lewagon/wait-on-check-action@v1.3.1
+        uses: lewagon/wait-on-check-action@v1.4.1
         timeout-minutes: 15
         with:
           ref: ${{ github.event.pull_request.head.sha }}
