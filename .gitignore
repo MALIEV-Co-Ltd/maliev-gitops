@@ -1,2 +1,5 @@
 gha-creds-*.json
 .claude/settings.local.json
+
+# Windows NUL device file (accidentally created by redirects)
+NUL
