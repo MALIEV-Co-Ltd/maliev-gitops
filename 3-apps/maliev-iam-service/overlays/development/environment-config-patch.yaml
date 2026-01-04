@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-iam-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-iam-service
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+            # Redis configuration (namespace-local)
+            - name: Redis__Configuration
+              value: "redis.maliev-dev.svc.cluster.local:6379"
+            # RabbitMQ configuration (namespace-local)
+            - name: RabbitMQ__Enabled
+              value: "true"
+            - name: RabbitMQ__Host
+              value: "rabbitmq.maliev-dev.svc.cluster.local"
+            - name: RabbitMQ__Port
+              value: "5672"
+            - name: RabbitMQ__Username
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-shared-secrets
+                  key: RabbitMq__Username
+                  optional: true
+            - name: RabbitMQ__Password
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-shared-secrets
+                  key: RabbitMq__Password
+                  optional: true
+            - name: RabbitMQ__VirtualHost
+              value: "/"

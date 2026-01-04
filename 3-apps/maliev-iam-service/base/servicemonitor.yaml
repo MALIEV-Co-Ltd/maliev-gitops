@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: maliev-iam-service
+  labels:
+    app: maliev-iam-service
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: maliev-iam-service
+  endpoints:
+    - port: http
+      path: /iam/metrics
+      interval: 30s
+      scrapeTimeout: 10s

@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-iam-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-iam-service
+          resources:
+            requests:
+              cpu: 15m
+              memory: 128Mi
+            limits:
+              cpu: 40m
+              memory: 192Mi
