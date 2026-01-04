@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: maliev-chat-service-staging
+  name: maliev-chatbot-service-staging
   namespace: argocd
   labels:
-    app.kubernetes.io/name: maliev-chat-service
+    app.kubernetes.io/name: maliev-chatbot-service
     app.kubernetes.io/part-of: maliev
     app.kubernetes.io/environment: staging
   finalizers:
@@ -14,7 +14,7 @@ spec:
   source:
     repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
     targetRevision: HEAD
-    path: 3-apps/maliev-chat-service/overlays/staging
+    path: 3-apps/maliev-chatbot-service/overlays/staging
   destination:
     server: "https://kubernetes.default.svc"
     namespace: maliev-staging
