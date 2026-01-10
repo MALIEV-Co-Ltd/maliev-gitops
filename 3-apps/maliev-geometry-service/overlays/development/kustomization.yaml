@@ -5,5 +5,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-geometry-service
-  newTag: 7c241d3ddeb01ed633bcd1a40e1ebb719d857014
+  newTag: eb206faebfe812d58b086300df50b939ef32b0ac
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-geometry-service
