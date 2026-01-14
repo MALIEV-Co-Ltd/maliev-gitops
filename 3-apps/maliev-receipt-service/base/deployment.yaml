@@ -27,11 +27,10 @@ spec:
             runAsNonRoot: true
             runAsUser: 1000
             runAsGroup: 3000
-            readOnlyRootFilesystem: false
+            readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
             capabilities:
-              drop:
-                - ALL
+
           imagePullPolicy: Always
           resources:
             requests:
