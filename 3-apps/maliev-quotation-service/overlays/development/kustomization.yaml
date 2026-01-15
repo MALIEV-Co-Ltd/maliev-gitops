@@ -4,7 +4,7 @@ kind: Kustomization
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-quotation-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-quotation-service
-  newTag: 381c69dd383d30d5ba8de6b2325e23ed55367d76
+  newTag: 4cdd3eb3e91ed450476880587186f6b37d37969a
 
 namespace: maliev-dev
 
