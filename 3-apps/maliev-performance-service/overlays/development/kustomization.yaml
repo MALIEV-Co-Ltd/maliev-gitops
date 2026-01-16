@@ -8,5 +8,5 @@ resources:
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-performance-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-performance-service
-  newTag: 3688cf01191fbb0e20514f2fbc06116a3488a399
+  newTag: 552ffb639183268b50335fcfde6b93ec48325cfc
 apiVersion: kustomize.config.k8s.io/v1beta1
