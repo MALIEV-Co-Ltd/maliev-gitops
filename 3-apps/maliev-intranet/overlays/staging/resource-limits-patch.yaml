@@ -9,8 +9,8 @@ spec:
         - name: maliev-intranet
           resources:
             requests:
-              cpu: 15m
-              memory: 192Mi
+              cpu: 10m
+              memory: 96Mi
             limits:
-              cpu: 40m
-              memory: 256Mi
+              cpu: 25m
+              memory: 128Mi
