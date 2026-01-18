@@ -8,12 +8,19 @@ spec:
       containers:
         - name: maliev-intranet
           livenessProbe:
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            timeoutSeconds: 3
+            httpGet:
+              path: /intranet/liveness
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            timeoutSeconds: 5
             failureThreshold: 3
           readinessProbe:
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            timeoutSeconds: 3
+            httpGet:
+              path: /intranet/liveness # Note: Changed from /intranet/readiness to /intranet/liveness.
+              port: 8080
+            initialDelaySeconds: 25
+            periodSeconds: 10
+            timeoutSeconds: 5
             failureThreshold: 3
+            successThreshold: 1
