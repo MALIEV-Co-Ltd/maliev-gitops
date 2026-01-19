@@ -7,7 +7,7 @@ images:
   newTag: 483c79d1337507cf18bab42e0b0372a8782dd42a
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-chatbot-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-chatbot-service
-  newTag: 0202ee009501dcdc9033179c3821db1d29a169c7
+  newTag: 1ec07653ecadcc1f38ae497eec59c046c6c1a297
 
 namespace: maliev-dev
 
