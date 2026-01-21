@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+images:
+  - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-registry-service
+    newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-registry-service
+    newTag: latest
+
+namespace: maliev-prod
+
+resources:
+  - ../../base
+
+patches:
+  - path: resource-limits-patch.yaml
+  - path: health-check-patch.yaml
+  - path: service-secrets-patch.yaml

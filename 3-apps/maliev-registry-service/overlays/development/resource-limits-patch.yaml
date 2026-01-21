@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-registry-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-registry-service
+          resources:
+            requests:
+              cpu: 5m
+              memory: 64Mi
+            limits:
+              cpu: 15m
+              memory: 96Mi

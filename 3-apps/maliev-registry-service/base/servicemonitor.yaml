@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: maliev-registry-service
+  labels:
+    app: maliev-registry-service
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: maliev-registry-service
+  endpoints:
+    - port: http
+      path: /registry/metrics
+      interval: 30s
+      scrapeTimeout: 10s
