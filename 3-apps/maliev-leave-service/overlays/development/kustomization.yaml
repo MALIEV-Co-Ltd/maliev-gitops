@@ -8,5 +8,5 @@ resources:
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-leave-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-leave-service
-  newTag: a2e4444ae9a10a69a05d650f5025d53c8460bcb3
+  newTag: 0fed4947851cdb1045b5f19d407eabe0af3fcc68
 apiVersion: kustomize.config.k8s.io/v1beta1
