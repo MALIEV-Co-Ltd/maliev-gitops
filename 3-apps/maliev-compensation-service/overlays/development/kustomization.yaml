@@ -8,5 +8,5 @@ resources:
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-compensation-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-compensation-service
-  newTag: 1c537cfb85ceabae8435cc174a246cfeea157847
+  newTag: 3b907da289e469fa2e625dcf9f5deb347c9dd0b2
 apiVersion: kustomize.config.k8s.io/v1beta1
