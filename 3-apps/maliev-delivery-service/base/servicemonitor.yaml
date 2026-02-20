@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: maliev-delivery-service
+  labels:
+    app: maliev-delivery-service
+spec:
+  selector:
+    matchLabels:
+      app: maliev-delivery-service
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s

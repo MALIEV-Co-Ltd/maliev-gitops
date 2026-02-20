@@ -1,12 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: maliev-registry-service-staging
+  name: maliev-delivery-service-prod
   namespace: argocd
   labels:
-    app.kubernetes.io/name: maliev-registry-service
+    app.kubernetes.io/name: maliev-delivery-service
     app.kubernetes.io/part-of: maliev
-    app.kubernetes.io/environment: staging
+    app.kubernetes.io/environment: production
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -14,10 +14,10 @@ spec:
   source:
     repoURL: "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
     targetRevision: main
-    path: 3-apps/maliev-registry-service/overlays/staging
+    path: 3-apps/maliev-delivery-service/overlays/production
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: maliev-staging
+    namespace: maliev-production
   syncPolicy:
     automated:
       prune: true
