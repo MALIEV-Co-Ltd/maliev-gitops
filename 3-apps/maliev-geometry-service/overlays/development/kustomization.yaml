@@ -7,6 +7,6 @@ images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-geometry-service
   newTag: e33cc85e929078af686ecd09edb25bc65d82906f
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-geometryservice
-  newTag: a8df829f37f540886ab234ef3da95e1d3fd7a5bd
+  newTag: 10182278363e0fe44fdc1b2e8018990b1e86f04e
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-geometry-service
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-geometryservice
