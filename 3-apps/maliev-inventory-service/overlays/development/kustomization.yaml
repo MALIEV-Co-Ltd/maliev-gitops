@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+images:
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-inventory-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-inventory-service
+  newTag: latest
+
+namespace: maliev-dev
+
+resources:
+- ../../base
+
+patches:
+- path: environment-config-patch.yaml

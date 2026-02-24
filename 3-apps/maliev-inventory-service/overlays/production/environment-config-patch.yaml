@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-inventory-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-inventory-service
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
