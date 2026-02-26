@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-facility-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-facility-service
+          env:
+            - name: Logging__LogLevel__Default
+              value: "Warning"
+            - name: Logging__LogLevel__Microsoft
+              value: "Warning"
+            - name: Logging__LogLevel__System
+              value: "Warning"
