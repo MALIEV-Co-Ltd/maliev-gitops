@@ -144,3 +144,23 @@ image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/mal
 - **2-environments:** Namespace configurations.
 - **3-apps:** Business logic applications.
 - **argocd:** The "App of Apps" definitions that point to the above directories.
+
+
+## Database & EF Core — Mandatory Rules
+
+### EF Core Design Package
+- ❌ `Microsoft.EntityFrameworkCore.Design` MUST NOT be in Api projects
+- ✅ It belongs ONLY in the Infrastructure (or Data) project where migrations live
+- Migration commands must target Infrastructure, not Api:
+  ```
+  dotnet ef migrations add <Name> --project Maliev.<Domain>Service.Infrastructure --startup-project ../Maliev.<Domain>Service.Api
+  ```
+
+### PostgreSQL xmin Concurrency — Mandatory Pattern
+Use shadow property ONLY. Never add a Xmin/xmin property to domain entities.
+```csharp
+entity.Property<uint>("xmin").HasColumnType("xid").IsRowVersion();
+```
+- ❌ Never use `UseXminAsConcurrencyToken()` (removed in Npgsql EF v7)
+- ❌ Never use entity property `public uint Xmin { get; set; }` or `public uint xmin { get; set; }`
+- ❌ Never use `.Ignore(e => e.Xmin)` — remove the entity property instead
