@@ -8,7 +8,7 @@ resources:
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-performance-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-performance-service
-  newTag: ab38ff39dd63a2b49bc71586e918566d2476174e
+  newTag: e2921bf5169d7649115524612a6c163ec9eaca98
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-performance-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-performance-service
   newTag: 2b055606200facee0437a75be5697dc9e1babd07
