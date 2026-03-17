@@ -4,7 +4,7 @@ kind: Kustomization
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-currency-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-currency-service
-  newTag: 54ff7bd2f144539982c72e5b8e3f1c3dd13abe1b
+  newTag: e795f19ca8b8bd186f3bbb4c997b9331ec462aa1
 
 namespace: maliev-dev
 
