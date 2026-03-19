@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-geometry-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-geometry-service
+          env:
+            - name: UPLOAD_SERVICE_URL
+              value: "http://maliev-upload-service:8080"
