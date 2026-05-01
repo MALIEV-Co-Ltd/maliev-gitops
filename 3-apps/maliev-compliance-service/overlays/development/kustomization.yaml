@@ -8,5 +8,5 @@ resources:
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-compliance-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-compliance-service
-  newTag: 43020dae4a2e79a0267803a503573c1afb48fcf3
+  newTag: eb7046bf47cb96198f2728149e2931d350ecda2f
 apiVersion: kustomize.config.k8s.io/v1beta1
