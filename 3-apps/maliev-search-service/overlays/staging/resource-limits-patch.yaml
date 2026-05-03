@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-search-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-search-service
+          resources:
+            requests:
+              cpu: 30m
+              memory: 160Mi
+            limits:
+              cpu: 150m
+              memory: 320Mi
