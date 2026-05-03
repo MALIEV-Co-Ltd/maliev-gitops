@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-search-service
+  labels:
+    app: maliev-search-service
+spec:
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-search-service
+  template:
+    metadata:
+      labels:
+        app: maliev-search-service
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: maliev-search-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-search-service:latest
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 3000
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "128Mi"
+            limits:
+              cpu: "100m"
+              memory: "256Mi"
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-search-service-secrets
+          livenessProbe:
+            httpGet:
+              path: /search/liveness
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /search/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
