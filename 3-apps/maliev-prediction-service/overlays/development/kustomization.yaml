@@ -4,7 +4,7 @@ kind: Kustomization
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-prediction-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-prediction-service
-  newTag: 952839a9ce5af787aacb8d9404f93feead3044c3
+  newTag: 744a0d1231d6aae9a0e716d2528e82b0b7a0090a
 
 namespace: maliev-dev
 
