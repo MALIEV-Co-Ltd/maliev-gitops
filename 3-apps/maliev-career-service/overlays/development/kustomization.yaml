@@ -4,7 +4,7 @@ kind: Kustomization
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-career-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-career-service
-  newTag: d6f92d30f2677452f3172925b15f35dd566affb7
+  newTag: 4af4f142d854ad3e4c49626bd96c14241e4b2d1e
 
 namespace: maliev-dev
 
