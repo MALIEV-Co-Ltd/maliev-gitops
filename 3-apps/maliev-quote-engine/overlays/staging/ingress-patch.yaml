@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: maliev-quote-engine-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+spec:
+  tls:
+    - hosts:
+        - quote-staging.maliev.com
+      secretName: maliev-com-wildcard-tls
+  rules:
+    - host: quote-staging.maliev.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: maliev-quote-engine
+                port:
+                  number: 8080

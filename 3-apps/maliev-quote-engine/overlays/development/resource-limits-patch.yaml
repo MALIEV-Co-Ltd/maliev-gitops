@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-quote-engine
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-quote-engine
+          resources:
+            requests:
+              cpu: 10m
+              memory: 160Mi
+            limits:
+              cpu: 35m
+              memory: 256Mi

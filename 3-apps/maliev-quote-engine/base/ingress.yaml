@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: maliev-quote-engine-ingress
+  annotations:
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.allow-http: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/issue-temporary-certificate: "true"
+spec:
+  tls:
+    - hosts:
+        - quote.maliev.com
+      secretName: maliev-com-wildcard-tls
+  rules:
+    - host: quote.maliev.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: maliev-quote-engine
+                port:
+                  number: 8080

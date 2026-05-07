@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-quote-engine
+  labels:
+    app: maliev-quote-engine
+spec:
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-quote-engine
+  template:
+    metadata:
+      labels:
+        app: maliev-quote-engine
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: maliev-quote-engine
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-quote-engine:latest
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 3000
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "15m"
+              memory: "160Mi"
+            limits:
+              cpu: "40m"
+              memory: "256Mi"
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-quote-engine-secrets
+          livenessProbe:
+            httpGet:
+              path: /quote/liveness
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /quote/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
