@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-commerce-service
+  labels:
+    app: maliev-commerce-service
+spec:
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-commerce-service
+  template:
+    metadata:
+      labels:
+        app: maliev-commerce-service
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: maliev-commerce-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-commerce-service:latest
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 3000
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "96Mi"
+            limits:
+              cpu: "25m"
+              memory: "128Mi"
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /commerce/liveness
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /commerce/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
+          envFrom:
+            - secretRef:
+                name: maliev-shared-secrets
+            - secretRef:
+                name: maliev-commerce-service-secrets
