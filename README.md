@@ -84,7 +84,7 @@ Configure `A` records in the DNS provider pointing to the cluster's static IP: *
 | `dev.api.maliev.com` | `YOUR_CLUSTER_STATIC_IP` |
 
 ### Production HTTPS Enforcement
-Production and live-production GCE ingress manifests must set `kubernetes.io/ingress.allow-http: "false"` so public hosts are not reachable over plaintext HTTP.
+Production and live-production GCE ingress manifests must set `kubernetes.io/ingress.allow-http: "false"` so public hosts are not reachable over plaintext HTTP. Production app overlays with public ingress, including `maliev-quote-engine`, are part of this check.
 
 Validate before committing ingress changes:
 ```powershell

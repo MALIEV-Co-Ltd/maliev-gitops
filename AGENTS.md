@@ -112,6 +112,7 @@ envFrom:
 
 #### 5. Network Exposure
 - Default internal services to `ClusterIP`. Use `NodePort` or ingress only when a public exposure requirement is documented and authenticated.
+- Public production ingress resources must set `kubernetes.io/ingress.allow-http: "false"`. Run `./scripts/check-production-ingress.ps1` after editing production environment ingresses or production app overlays with ingress.
 - Worker/internal compute services such as GeometryService must not be exposed directly; keep public access through BFF/API services that enforce platform authentication.
 - If a service validates JWTs outside .NET ServiceDefaults, map the required public key material through ExternalSecrets and document the exact environment variable names.
 
