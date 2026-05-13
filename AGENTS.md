@@ -115,7 +115,12 @@ envFrom:
 - Worker/internal compute services such as GeometryService must not be exposed directly; keep public access through BFF/API services that enforce platform authentication.
 - If a service validates JWTs outside .NET ServiceDefaults, map the required public key material through ExternalSecrets and document the exact environment variable names.
 
-#### 6. Image Naming
+#### 6. ArgoCD Project Scope
+- Environment AppProjects (`maliev-dev`, `maliev-staging`, `maliev-prod`) must only trust `https://github.com/MALIEV-Co-Ltd/maliev-gitops.git` as a source repository.
+- Keep environment projects scoped to their own namespace and `https://kubernetes.default.svc`; set `permitOnlyProjectScopedClusters: true` when editing these project manifests.
+- Do not use wildcard `clusterResourceWhitelist` entries. Add only the exact cluster-scoped kind required by an active application, and document the reason in the same change.
+
+#### 7. Image Naming
 Use the full artifact registry path.
 - **Base:** Use `latest` or a stable tag.
 - **Overlays:** Specific tags are injected by CI.
