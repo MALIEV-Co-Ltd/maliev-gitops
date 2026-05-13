@@ -110,7 +110,12 @@ envFrom:
       name: maliev-shared-secrets
 ```
 
-#### 5. Image Naming
+#### 5. Network Exposure
+- Default internal services to `ClusterIP`. Use `NodePort` or ingress only when a public exposure requirement is documented and authenticated.
+- Worker/internal compute services such as GeometryService must not be exposed directly; keep public access through BFF/API services that enforce platform authentication.
+- If a service validates JWTs outside .NET ServiceDefaults, map the required public key material through ExternalSecrets and document the exact environment variable names.
+
+#### 6. Image Naming
 Use the full artifact registry path.
 - **Base:** Use `latest` or a stable tag.
 - **Overlays:** Specific tags are injected by CI.

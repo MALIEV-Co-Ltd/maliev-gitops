@@ -5,7 +5,7 @@ metadata:
   labels:
     app: maliev-geometry-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: maliev-geometry-service
   ports:

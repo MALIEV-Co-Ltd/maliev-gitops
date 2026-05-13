@@ -91,6 +91,9 @@ Validate before committing ingress changes:
 ./scripts/check-production-ingress.ps1
 ```
 
+### Internal Compute Services
+Worker-style services such as `maliev-geometry-service` must stay `ClusterIP` unless an explicit ingress and authentication review proves public exposure is required. GeometryService HTTP analysis routes require platform bearer tokens and receive JWT key material through ExternalSecret mappings (`JWT_PUBLIC_KEY`, `JWT_PRIVATE_KEY`, issuer, and audience).
+
 ---
 
 ## 🏥 Health & Monitoring
