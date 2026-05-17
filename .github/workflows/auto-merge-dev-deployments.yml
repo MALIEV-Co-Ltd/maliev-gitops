@@ -52,6 +52,26 @@ jobs:
         run: gh --version
 
       - name: 'Merge pull request'
-        run: gh pr merge ${{ github.event.pull_request.number }} --merge --delete-branch
+        run: |
+          set -euo pipefail
+
+          pr_number="${{ github.event.pull_request.number }}"
+          head_sha="${{ github.event.pull_request.head.sha }}"
+
+          for attempt in 1 2 3 4 5; do
+            echo "Merge attempt ${attempt} for PR ${pr_number} at head ${head_sha}"
+            if gh pr merge "${pr_number}" --merge --delete-branch --match-head-commit "${head_sha}"; then
+              exit 0
+            fi
+
+            if [ "${attempt}" -eq 5 ]; then
+              echo "Failed to merge PR ${pr_number} after ${attempt} attempts."
+              exit 1
+            fi
+
+            delay=$((attempt * 20 + RANDOM % 15))
+            echo "Merge attempt ${attempt} failed, usually because the base branch changed. Retrying in ${delay}s."
+            sleep "${delay}"
+          done
         env:
           GH_TOKEN: ${{ github.token }}
