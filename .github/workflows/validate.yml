@@ -72,8 +72,12 @@ jobs:
       # Only lint base deployment files, not kustomize overlays
       - name: Check Kubernetes best practices (apps)
         run: |
-          # Download and install kube-linter
-          curl -L https://github.com/stackrox/kube-linter/releases/latest/download/kube-linter-linux.tar.gz | tar xz
+          # Download and install kube-linter from a pinned release. The latest/download
+          # URL has returned non-archive payloads and broken validation runs.
+          KUBE_LINTER_VERSION="v0.8.3"
+          curl --fail --location --retry 3 --output kube-linter-linux.tar.gz "https://github.com/stackrox/kube-linter/releases/download/${KUBE_LINTER_VERSION}/kube-linter-linux.tar.gz"
+          tar -xzf kube-linter-linux.tar.gz
+          chmod +x ./kube-linter
           # Lint only base deployment files, excluding overlays and kustomization files
           find 3-apps -name "deployment.yaml" -path "*/base/*" | xargs ./kube-linter lint --config .kube-linter.yml --format sarif > kube-linter-apps.sarif || true
 
@@ -154,7 +158,7 @@ jobs:
         run: |
           set -e
           # exclude argocd directory where applications may reference secrets in other forms
-          if grep -R --line-number --no-color --exclude-dir=argocd "kind:[[:space:]]*Secret" . ; then
+          if grep -R --line-number --exclude-dir=.git --exclude-dir=argocd --include='*.yaml' --include='*.yml' "^[[:space:]]*kind:[[:space:]]*Secret[[:space:]]*$" . ; then
             echo "Error: Native Kubernetes Secrets are not allowed. Please use ExternalSecrets. See offending lines above."
             exit 1
           else
