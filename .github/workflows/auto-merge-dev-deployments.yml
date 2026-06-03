@@ -3,75 +3,170 @@ name: Auto Merge Dev Deployments
 on:
   pull_request_target:
     types:
+      - edited
       - opened
-      - synchronize
+      - ready_for_review
       - reopened
+      - synchronize
     branches:
       - main
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
 
 permissions:
   pull-requests: write
   contents: write
   checks: read
 
+concurrency:
+  group: gitops-dev-deployment-auto-merge
+  cancel-in-progress: false
+
 jobs:
-  auto-review-and-merge:
-    name: Auto Review and Merge
+  auto-merge-dev-deployments:
+    name: Auto Merge Dev Deployments
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
       contents: write
       checks: read
 
-    # Only auto-merge deployment PRs to development environment
     if: >-
-      (startsWith(github.event.pull_request.title, 'Deploy') && contains(github.event.pull_request.title, 'to development')) || 
-      startsWith(github.event.pull_request.title, 'chore(dev): Update') ||
-      startsWith(github.event.pull_request.title, 'chore(development): Update')
+      github.event_name != 'pull_request_target' ||
+      (
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        github.event.pull_request.draft == false &&
+        (
+          (startsWith(github.event.pull_request.title, 'Deploy') && contains(github.event.pull_request.title, 'to development')) ||
+          startsWith(github.event.pull_request.title, 'chore(dev): Update') ||
+          startsWith(github.event.pull_request.title, 'chore(development): Update')
+        )
+      )
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: 'Log PR details'
+      - name: Verify GitHub CLI dependencies
         run: |
-          echo "PR Number: ${{ github.event.pull_request.number }}"
-          echo "PR Head Repo: ${{ github.event.pull_request.head.repo.full_name }}"
-          echo "Base Repo: ${{ github.repository }}"
+          gh --version
+          jq --version
 
-      - name: 'Wait for validation checks to pass'
-        uses: lewagon/wait-on-check-action@v1.7.0
-        timeout-minutes: 15
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          check-regexp: '^(Lint and Static Analysis|Kustomize, Structure and ArgoCD Validation)$'
-          allowed-conclusions: success,neutral
-
-      - name: Ensure gh is available
-        run: gh --version
-
-      - name: 'Merge pull request'
+      - name: Resolve eligible deployment pull requests
+        id: prs
         run: |
           set -euo pipefail
 
-          pr_number="${{ github.event.pull_request.number }}"
-          head_sha="${{ github.event.pull_request.head.sha }}"
+          is_deployment_pr() {
+            local title="$1"
+            [[ "$title" == chore\(dev\):\ Update* ]] ||
+              [[ "$title" == chore\(development\):\ Update* ]] ||
+              [[ "$title" == Deploy*"to development"* ]]
+          }
 
-          for attempt in 1 2 3 4 5; do
-            echo "Merge attempt ${attempt} for PR ${pr_number} at head ${head_sha}"
-            if gh pr merge "${pr_number}" --merge --delete-branch --match-head-commit "${head_sha}"; then
-              exit 0
+          if [[ "${{ github.event_name }}" == "pull_request_target" ]]; then
+            title="$PR_TITLE"
+            if is_deployment_pr "$title"; then
+              echo "numbers=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+            else
+              echo "numbers=" >> "$GITHUB_OUTPUT"
+            fi
+            exit 0
+          fi
+
+          mapfile -t numbers < <(
+            gh pr list \
+              --state open \
+              --limit 100 \
+              --json number,title,headRepositoryOwner,isDraft \
+              --jq '.[] | select(.isDraft | not) | select(.headRepositoryOwner.login == "MALIEV-Co-Ltd") | select(.title | test("^(Deploy.*to development|chore\\((dev|development)\\): Update)")) | .number'
+          )
+
+          echo "numbers=${numbers[*]}" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+
+      - name: Update, validate and merge deployment pull requests
+        if: steps.prs.outputs.numbers != ''
+        run: |
+          set -euo pipefail
+
+          wait_for_validation_checks() {
+            local pr_number="$1"
+            local checks_json
+            local check_count
+            local failed_count
+            local pending_count
+            local passed_count
+
+            for poll in $(seq 1 90); do
+              checks_json="$(
+                gh pr checks "$pr_number" \
+                  --json name,bucket \
+                  --jq '[.[] | select(.name == "Lint and Static Analysis" or .name == "Kustomize, Structure and ArgoCD Validation")]' || true
+              )"
+
+              check_count="$(jq 'length' <<< "$checks_json")"
+              failed_count="$(jq '[.[] | select(.bucket == "fail" or .bucket == "cancel")] | length' <<< "$checks_json")"
+              pending_count="$(jq '[.[] | select(.bucket == "pending")] | length' <<< "$checks_json")"
+              passed_count="$(jq '[.[] | select(.bucket == "pass" or .bucket == "skipping")] | length' <<< "$checks_json")"
+
+              if [[ "$failed_count" -gt 0 ]]; then
+                echo "Validation failed for PR ${pr_number}."
+                gh pr checks "$pr_number"
+                return 1
+              fi
+
+              if [[ "$check_count" -ge 2 && "$pending_count" -eq 0 && "$passed_count" -eq "$check_count" ]]; then
+                echo "Validation passed for PR ${pr_number}."
+                return 0
+              fi
+
+              echo "Waiting for validation checks on PR ${pr_number} (${poll}/90)."
+              sleep 10
+            done
+
+            echo "Timed out waiting for validation checks on PR ${pr_number}."
+            gh pr checks "$pr_number" || true
+            return 1
+          }
+
+          for pr_number in ${{ steps.prs.outputs.numbers }}; do
+            echo "Processing deployment PR ${pr_number}."
+
+            base_ref="$(gh pr view "$pr_number" --json baseRefName --jq .baseRefName)"
+            if [[ "$base_ref" != "main" ]]; then
+              echo "PR ${pr_number} targets ${base_ref}; retargeting to main."
+              gh pr edit "$pr_number" --base main
             fi
 
-            if [ "${attempt}" -eq 5 ]; then
-              echo "Failed to merge PR ${pr_number} after ${attempt} attempts."
-              exit 1
-            fi
+            for attempt in 1 2 3; do
+              echo "Refresh and merge attempt ${attempt} for PR ${pr_number}."
 
-            delay=$((attempt * 20 + RANDOM % 15))
-            echo "Merge attempt ${attempt} failed, usually because the base branch changed. Retrying in ${delay}s."
-            sleep "${delay}"
+              if ! gh pr update-branch "$pr_number"; then
+                echo "Could not update PR ${pr_number} from main. Leaving it open for manual conflict resolution."
+                gh pr comment "$pr_number" --body "Auto-merge could not update this deployment PR from the latest main branch. Please resolve the branch conflict or regenerate the deployment PR."
+                break
+              fi
+
+              if ! wait_for_validation_checks "$pr_number"; then
+                break
+              fi
+
+              head_sha="$(gh pr view "$pr_number" --json headRefOid --jq .headRefOid)"
+              if gh pr merge "$pr_number" --merge --delete-branch --match-head-commit "$head_sha"; then
+                echo "Merged PR ${pr_number}."
+                break
+              fi
+
+              if [[ "$attempt" -eq 3 ]]; then
+                echo "Failed to merge PR ${pr_number} after ${attempt} attempts."
+                exit 1
+              fi
+
+              delay=$((attempt * 20 + RANDOM % 15))
+              echo "Merge failed, usually because main changed. Retrying in ${delay}s after another branch refresh."
+              sleep "$delay"
+            done
           done
         env:
           GH_TOKEN: ${{ github.token }}
