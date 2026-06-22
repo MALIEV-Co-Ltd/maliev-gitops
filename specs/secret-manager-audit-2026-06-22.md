@@ -45,6 +45,13 @@ No secret values are stored in this file. Key presence and required follow-up on
 - Created `maliev-dev-quote-engine-config` with confirmed `Web__BaseUrl`, `QuoteEngine__BaseUrl`, and `Services__DeliveryService__BaseUrl`. Values were verified by key presence and string length only.
 - Confirmed canonical public base URLs for deployment config: Web `https://www.maliev.com`, QuoteEngine `https://make.maliev.com`, Intranet `https://intranet.maliev.com`, and public API endpoints under `https://api.maliev.com`.
 - Updated QuoteEngine base and disabled development ingress host rules from the older quote host names to the confirmed canonical host `make.maliev.com`. DNS for `make.maliev.com` still needs to exist before activation.
+- Corrected DeliveryService production overlay namespace from `maliev-production` to the existing production namespace `maliev-prod`.
+- Prepared the disabled production environment ingress for the confirmed public routes:
+  - `www.maliev.com` and `maliev.com` route to `maliev-web`
+  - `api.maliev.com/delivery` routes to `maliev-delivery-service`
+  - `make.maliev.com` routes to `maliev-quote-engine`
+  - `intranet.maliev.com` routes to `maliev-intranet`
+  The production environment still keeps `ingress.yaml` commented out in `2-environments/3-production/kustomization.yaml`; this is deployment preparation only, not an active GKE deployment.
 
 ## Verified Existing DeliveryService Dev Secret Keys
 
@@ -114,6 +121,7 @@ Live Kubernetes metadata and GitOps environment kustomizations currently show:
 - `2-environments/2-staging/kustomization.yaml` and `2-environments/3-production/kustomization.yaml` currently leave `secrets.yaml`, shared secrets, common apps, database, Redis, and RabbitMQ resources commented out.
 - `maliev-staging-pg-app-password`, `maliev-staging-pg-superuser-password`, `maliev-prod-pg-app-password`, and `maliev-prod-pg-superuser-password` are referenced by GitOps `secrets.yaml` files but do not currently exist in Google Secret Manager.
 - `kubectl kustomize 2-environments/2-staging` and `kubectl kustomize 2-environments/3-production` currently render without those PostgreSQL ExternalSecrets because the relevant resources are disabled in each environment kustomization.
+- `2-environments/3-production/ingress.yaml` now contains valid canonical host rules for `www.maliev.com`, `maliev.com`, `api.maliev.com`, `make.maliev.com`, and `intranet.maliev.com`, but it is still disabled by the production kustomization.
 - The missing staging/prod PostgreSQL Secret Manager entries are therefore activation prerequisites for those environment resources, not currently rendered live deployment dependencies.
 - `argocd/environments/dev/apps` currently includes only `maliev-dev-environment`, pointing at `2-environments/1-development`.
 - The active app-of-apps manifests under `argocd/environments/staging/apps` and `argocd/environments/prod/apps` currently include only each environment Application, pointing at `2-environments/2-staging` and `2-environments/3-production`.
@@ -393,6 +401,7 @@ Use this checklist before moving any service Application out of `argocd/environm
 - Create the 11 missing `maliev-prod-*-config` service config secrets with confirmed production values before enabling corresponding production service Applications.
 - For `maliev-prod-delivery-service-config`, confirm the production Delivery DB connection string and production SHIPPOP or GoShip credentials before creating the secret.
 - Decide whether `maliev-prod-shared-config` should include Redis, RabbitMQ, and CORS keys matching the dev shared-config shape before enabling app workloads.
+- Keep the prepared production ingress disabled until the target services exist in `maliev-prod`; Kubernetes Ingress backends must live in the same namespace as the Ingress.
 - Do not copy dev SHIPPOP credentials into production.
 
 ## Required Follow-Up

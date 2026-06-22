@@ -5,7 +5,7 @@ images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-delivery-service
   newTag: latest
 
-namespace: maliev-production
+namespace: maliev-prod
 
 resources:
 - ../../base

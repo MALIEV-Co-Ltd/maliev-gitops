@@ -16,13 +16,60 @@ spec:
         - maliev.com
       secretName: maliev-com-wildcard-tls
   rules:
+    - host: www.maliev.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: maliev-web
+                port:
+                  number: 8080
+    - host: maliev.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: maliev-web
+                port:
+                  number: 8080
     - host: api.maliev.com
       http:
         paths:
           - path: /auth
-        pathType: Prefix
-        backend:
-          service:
-            name: maliev-auth-service
-            port:
-              number: 8080
+            pathType: Prefix
+            backend:
+              service:
+                name: maliev-auth-service
+                port:
+                  number: 8080
+          - path: /delivery
+            pathType: Prefix
+            backend:
+              service:
+                name: maliev-delivery-service
+                port:
+                  number: 8080
+    - host: make.maliev.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: maliev-quote-engine
+                port:
+                  number: 8080
+    - host: intranet.maliev.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: maliev-intranet
+                port:
+                  number: 8080
