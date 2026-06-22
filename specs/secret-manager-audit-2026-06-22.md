@@ -10,6 +10,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 - Updated `maliev-dev-delivery-service-config` with the documented SHIPPOP dev public tracking base URL in `Shippop__InternationalBaseUrl`; secret values were preserved and not recorded.
 - Created and verified the live development database `delivery_app_db`, then updated `maliev-dev-delivery-service-config` with `ConnectionStrings__DeliveryDbContext`; secret values were preserved and not recorded.
 - Moved the dev DeliveryService ArgoCD Application out of `_disabled_apps` into `argocd/environments/dev/apps` after the development overlay rendered successfully and the referenced Secret Manager config was verified redacted.
+- Named the DeliveryService Kubernetes Service port `http` so the activated dev ServiceMonitor can resolve its `port: http` endpoint.
 - Added a reusable local redacted audit helper at `B:\maliev\.agents\skills\maliev-secret-manager-audit\scripts\audit-secret-refs.ps1` and documented it in the local `maliev-secret-manager-audit` skill. The helper compares names only and does not print secret payload values.
 - Corrected DeliveryService production overlay from `maliev-production-delivery-service-config` to `maliev-prod-delivery-service-config`.
 - Corrected NotificationService GitOps from legacy individual remote refs (`maliev-email-service-db-connection-string`, `redis-connection-string`, `rabbitmq-connection-string`) to environment-specific config extraction:
