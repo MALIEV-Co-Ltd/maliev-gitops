@@ -12,7 +12,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 - Updated `maliev-dev-delivery-service-config` with the documented HTTPS SHIPPOP dev domestic base URL in `Shippop__DomesticBaseUrl`; secret values were preserved and not recorded.
 - Verified a live SHIPPOP dev `/pricelist/` request with the stored dev key, HTTPS base URL, JSON payload, and string `courier_code`; SHIPPOP returned success for `EMST`.
 - Built and published dev DeliveryService image tag `bcefbbec021165c6f6e865649eed2850868aa2bb`, verified in Artifact Registry at digest `sha256:19ff346c90740919d8baab646654407f29275a72f1c0f4bf8e45999f7bbee6bf`.
-- Moved the dev DeliveryService ArgoCD Application back under `argocd/environments/dev/apps` after verifying the image includes the SHIPPOP integration commits.
+- Prepared the dev DeliveryService ArgoCD Application for later activation with a SHIPPOP-inclusive image, then moved it back under `argocd/environments/_disabled_apps/dev` after the deployment-hold instruction. No service Application should be auto-synced to GKE until development is complete.
 - Named the DeliveryService Kubernetes Service port `http` so the dev ServiceMonitor can resolve its `port: http` endpoint when the app is activated.
 - Applied the DeliveryService development overlay to the live `maliev-dev` namespace because ArgoCD Application resources were not present to reconcile it automatically. The live Deployment now runs image tag `bcefbbec021165c6f6e865649eed2850868aa2bb` at digest `sha256:19ff346c90740919d8baab646654407f29275a72f1c0f4bf8e45999f7bbee6bf`.
 - Added a DeliveryService development startup probe and raised the development CPU/memory requests and limits so the pod is not killed before .NET startup and EF migrations complete.
@@ -39,6 +39,7 @@ No secret values are stored in this file. Key presence and required follow-up on
   - `maliev-staging-line-chatbot-service-config`
   - `maliev-prod-line-chatbot-service-config`
 - Created and verified the live development database `notification_app_db`, then created `maliev-dev-notification-service-config` with `ConnectionStrings__NotificationDbContext` and `Encryption__DataProtectionKey`. Notification provider credentials were not added because provider-specific credentials are not confirmed and the service simulates outbound provider delivery when those credentials are absent.
+- Added explicit development environment patches for `maliev-web` and `maliev-quote-engine` overlays so they set `ASPNETCORE_ENVIRONMENT=Development` when their disabled Applications are later activated.
 
 ## Verified Existing DeliveryService Dev Secret Keys
 
@@ -102,14 +103,14 @@ Live Kubernetes metadata and GitOps environment kustomizations currently show:
 - `maliev-staging-pg-app-password`, `maliev-staging-pg-superuser-password`, `maliev-prod-pg-app-password`, and `maliev-prod-pg-superuser-password` are referenced by GitOps `secrets.yaml` files but do not currently exist in Google Secret Manager.
 - `kubectl kustomize 2-environments/2-staging` and `kubectl kustomize 2-environments/3-production` currently render without those PostgreSQL ExternalSecrets because the relevant resources are disabled in each environment kustomization.
 - The missing staging/prod PostgreSQL Secret Manager entries are therefore activation prerequisites for those environment resources, not currently rendered live deployment dependencies.
-- `argocd/environments/dev/apps` currently includes `maliev-dev-environment`, pointing at `2-environments/1-development`, and `maliev-delivery-service-dev`, pointing at `3-apps/maliev-delivery-service/overlays/development`.
+- `argocd/environments/dev/apps` currently includes only `maliev-dev-environment`, pointing at `2-environments/1-development`.
 - The active app-of-apps manifests under `argocd/environments/staging/apps` and `argocd/environments/prod/apps` currently include only each environment Application, pointing at `2-environments/2-staging` and `2-environments/3-production`.
-- Individual service Application manifests for DeliveryService staging/prod, GeometryService, NotificationService, QuoteEngine, AccountingService, CommerceService, FacilityService, IAMService, RegistryService, SearchService, and the other services are currently under `argocd/environments/_disabled_apps`. DeliveryService dev is active.
+- Individual service Application manifests for DeliveryService dev/staging/prod, GeometryService, NotificationService, QuoteEngine, AccountingService, CommerceService, FacilityService, IAMService, RegistryService, SearchService, and the other services are currently under `argocd/environments/_disabled_apps`.
 - `argocd/environments/live/maliev-live-environment.yaml` points to `2-environments/0-live-production`, and that kustomization currently renders namespace and ingress only. It does not render service deployments or ExternalSecrets.
 - A live cluster check returned zero ArgoCD `Application` resources through `kubectl get applications -n argocd`; treat this repo audit as desired-state evidence unless ArgoCD access/state is confirmed separately.
 - Disabled NotificationService manifests are now represented by `maliev-notification-service.yaml` only; stale duplicate `maliev-email-service.yaml` files were removed from dev/staging/prod disabled app folders.
 - Disabled app source paths were scanned for missing target overlays. The stale `maliev-quotationrequest-service` dev/staging/prod manifests were removed because there is no matching `3-apps/maliev-quotationrequest-service` directory and no `Maliev.QuotationRequestService` repo in the workspace.
-- `3-apps/_common` currently applies common labels only. It does not include service deployments. The dev environment renders namespace, ingress, configmap, environment/shared secrets, and database resources; DeliveryService dev is active through its individual Application and references a SHIPPOP-inclusive image.
+- `3-apps/_common` currently applies common labels only. It does not include service deployments. The dev environment renders namespace, ingress, configmap, environment/shared secrets, and database resources; no individual service Application is currently active through the app-of-apps path.
 - The legacy unreferenced `maliev-<env>-email-service-config` Secret Manager entries currently contain empty JSON objects and cannot be safely copied to satisfy `maliev-<env>-notification-service-config`. NotificationService requires a confirmed `ConnectionStrings__NotificationDbContext`, encryption key, and any intended provider keys before enablement.
 
 Current development PostgreSQL databases observed from the live `maliev-dev` Postgres cluster:
@@ -142,7 +143,7 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 - `supplier_service_db`
 - `upload_app_db`
 
-The live development cluster now has databases for Accounting, Commerce, Facility, IAM, Notification, Registry, and Search. These were created as dev-only activation prerequisites using the existing dev PostgreSQL credential source and the established underscore database naming convention used by deployed service connection strings. DeliveryService is no longer part of the missing development database list, and its dev ArgoCD Application is active with a SHIPPOP-inclusive image containing the verified `/pricelist/` payload fix.
+The live development cluster now has databases for Accounting, Commerce, Facility, IAM, Notification, Registry, and Search. These were created as dev-only activation prerequisites using the existing dev PostgreSQL credential source and the established underscore database naming convention used by deployed service connection strings. DeliveryService is no longer part of the missing development database list, and its dev overlay is prepared with a SHIPPOP-inclusive image containing the verified `/pricelist/` payload fix. Its ArgoCD Application remains disabled until development is complete.
 
 After creating the dev DB-backed service configs, the remaining development service config gap is:
 
@@ -218,9 +219,9 @@ These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not current
 
 Current GitOps desired-state structure separates the missing service config secrets into these operational buckets:
 
-Latest redacted validator run on 2026-06-22 reported:
+Latest redacted validator run on 2026-06-22 after the deployment-hold adjustment reported:
 
-- 4 active ArgoCD Applications.
+- 3 active ArgoCD Applications.
 - 0 active app overlay service config secret names missing in Secret Manager.
 - 23 disabled app overlay service config secret names missing in Secret Manager.
 - 23 missing app overlay service config secret names in Secret Manager.
