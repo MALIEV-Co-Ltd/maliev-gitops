@@ -8,6 +8,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 
 - Created `maliev-dev-delivery-service-config` in Google Secret Manager with SHIPPOP dev configuration keys only.
 - Updated `maliev-dev-delivery-service-config` with the documented SHIPPOP dev public tracking base URL in `Shippop__InternationalBaseUrl`; secret values were preserved and not recorded.
+- Created and verified the live development database `delivery_app_db`, then updated `maliev-dev-delivery-service-config` with `ConnectionStrings__DeliveryDbContext`; secret values were preserved and not recorded.
 - Added a reusable local redacted audit helper at `B:\maliev\.agents\skills\maliev-secret-manager-audit\scripts\audit-secret-refs.ps1` and documented it in the local `maliev-secret-manager-audit` skill. The helper compares names only and does not print secret payload values.
 - Corrected DeliveryService production overlay from `maliev-production-delivery-service-config` to `maliev-prod-delivery-service-config`.
 - Corrected NotificationService GitOps from legacy individual remote refs (`maliev-email-service-db-connection-string`, `redis-connection-string`, `rabbitmq-connection-string`) to environment-specific config extraction:
@@ -32,6 +33,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 
 `maliev-dev-delivery-service-config` currently contains:
 
+- `ConnectionStrings__DeliveryDbContext`
 - `Shippop__DomesticApiKey`
 - `Shippop__DomesticBaseUrl`
 - `Shippop__DomesticEmail`
@@ -40,7 +42,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 
 `Shippop__InternationalBearerToken` is currently empty. The public tracking endpoint does not require it, but shipment creation through SHIPPOP Inter still needs a confirmed bearer token before enablement.
 
-It still does not contain `ConnectionStrings__DeliveryDbContext`.
+It now contains `ConnectionStrings__DeliveryDbContext` for the verified development database `delivery_app_db`.
 
 ## Verified Shared Config Key Shape
 
@@ -107,6 +109,7 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 - `country_app_db`
 - `currency_app_db`
 - `customer_app_db`
+- `delivery_app_db`
 - `employee_app_db`
 - `employee_service_db`
 - `invoice_app_db`
@@ -119,7 +122,7 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 - `supplier_service_db`
 - `upload_app_db`
 
-The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, delivery, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed.
+The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed. DeliveryService is no longer part of this missing development database list.
 
 ## Confirmed Required Service-Specific Keys
 
@@ -268,8 +271,7 @@ Create these Secret Manager entries with confirmed database credentials before u
 ## Required Follow-Up
 
 - Populate confirmed DB connection-string keys for every missing service secret listed above.
-- Populate `ConnectionStrings__DeliveryDbContext` in `maliev-dev-delivery-service-config`.
-- Create or confirm the missing development databases before adding development connection strings for accounting, commerce, delivery, facility, IAM, registry, and search.
+- Create or confirm the missing development databases before adding development connection strings for accounting, commerce, facility, IAM, registry, and search.
 - Create or confirm staging/prod Postgres credential secrets before enabling their environment `secrets.yaml` resources.
 - Create staging/prod DeliveryService secrets only after real staging/prod SHIPPOP or GoShip credentials and Delivery DB connection strings are confirmed.
 - Decide whether staging/prod shared configs should include Redis/RabbitMQ/CORS keys, matching the development shared config shape.
