@@ -43,6 +43,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 - Added new dev Secret Manager versions for `maliev-dev-web-config` and `maliev-dev-intranet-config` with confirmed public base URL keys and `Services__DeliveryService__BaseUrl`, pointing their BFF shipping clients at the prepared in-cluster DeliveryService Service when those disabled Applications are later activated. Values were verified by key presence and string length only.
 - Created `maliev-dev-quote-engine-config` with confirmed `Web__BaseUrl`, `QuoteEngine__BaseUrl`, and `Services__DeliveryService__BaseUrl`. Values were verified by key presence and string length only.
 - Confirmed canonical public base URLs for deployment config: Web `https://www.maliev.com`, QuoteEngine `https://make.maliev.com`, Intranet `https://intranet.maliev.com`, and public API endpoints under `https://api.maliev.com`.
+- Updated QuoteEngine base and disabled development ingress host rules from the older quote host names to the confirmed canonical host `make.maliev.com`. DNS for `make.maliev.com` still needs to exist before activation.
 
 ## Verified Existing DeliveryService Dev Secret Keys
 
@@ -158,7 +159,7 @@ The live development cluster now has databases for Accounting, Commerce, Facilit
 After creating the dev DB-backed service configs and the QuoteEngine dev config, there are no missing development service config secrets in the current GitOps audit.
 
 - `maliev-dev-quote-engine-config` is not database-backed. It now contains the confirmed public `Web__BaseUrl` and `QuoteEngine__BaseUrl`, plus `Services__DeliveryService__BaseUrl` for shipping calls. Optional `GoogleMaps__BrowserApiKey`/map settings are still absent until a browser Maps key is confirmed.
-- The disabled QuoteEngine dev ingress still references `quote-dev.maliev.com`, but the confirmed QuoteEngine public base URL is `https://make.maliev.com`. Update the disabled dev ingress host before activating QuoteEngine if that overlay should match the canonical public host.
+- QuoteEngine base and disabled development ingress manifests now reference `make.maliev.com`, matching the confirmed QuoteEngine public base URL. A DNS check returned no record for `make.maliev.com`, so DNS remains an activation prerequisite.
 
 ## Confirmed Required Service-Specific Keys
 
@@ -315,7 +316,7 @@ Create these Secret Manager entries with confirmed database credentials before u
 
 ## Required Follow-Up
 
-- Align the disabled QuoteEngine development ingress host with the confirmed QuoteEngine public base URL before activation. The current disabled overlay still uses `quote-dev.maliev.com`, while the confirmed QuoteEngine base URL is `https://make.maliev.com`.
+- Create/confirm DNS for `make.maliev.com` before activating the QuoteEngine ingress.
 - Add Google Maps browser configuration only after the intended browser key and allowed referrers are confirmed.
 - Populate confirmed DB connection-string keys for every missing staging/prod service secret listed above.
 - Create or confirm staging/prod Postgres credential secrets before enabling their environment `secrets.yaml` resources.

@@ -10,10 +10,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - quote.maliev.com
+        - make.maliev.com
       secretName: maliev-com-wildcard-tls
   rules:
-    - host: quote.maliev.com
+    - host: make.maliev.com
       http:
         paths:
           - path: /
