@@ -7,6 +7,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 ## Changes Applied
 
 - Created `maliev-dev-delivery-service-config` in Google Secret Manager with SHIPPOP dev configuration keys only.
+- Added a reusable local redacted audit helper at `B:\maliev\.agents\skills\maliev-secret-manager-audit\scripts\audit-secret-refs.ps1` and documented it in the local `maliev-secret-manager-audit` skill. The helper compares names only and does not print secret payload values.
 - Corrected DeliveryService production overlay from `maliev-production-delivery-service-config` to `maliev-prod-delivery-service-config`.
 - Corrected NotificationService GitOps from legacy individual remote refs (`maliev-email-service-db-connection-string`, `redis-connection-string`, `rabbitmq-connection-string`) to environment-specific config extraction:
   - `maliev-dev-notification-service-config`
@@ -190,6 +191,14 @@ These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not current
 
 Current GitOps desired-state structure separates the missing service config secrets into these operational buckets:
 
+Latest redacted validator run on 2026-06-22 reported:
+
+- 31 missing app overlay service config secret names in Secret Manager.
+- 0 disabled ArgoCD app source paths missing.
+- 0 duplicate disabled ArgoCD app names.
+- 4 missing staging/prod PostgreSQL environment `remoteRef` secret names, all currently disabled by environment kustomizations.
+- 14 existing service config secrets in Secret Manager that are not referenced by current app overlays.
+
 ### Active Environment Prerequisites
 
 These are active environment-level prerequisites or rendered resources:
@@ -268,6 +277,15 @@ Create these Secret Manager entries with confirmed database credentials before u
 
 ```powershell
 gcloud secrets list --project maliev-website --format='value(name)'
+
+B:\maliev\.agents\skills\maliev-secret-manager-audit\scripts\audit-secret-refs.ps1 `
+  -GitOpsRoot B:\maliev\maliev-gitops `
+  -Project maliev-website
+
+B:\maliev\.agents\skills\maliev-secret-manager-audit\scripts\audit-secret-refs.ps1 `
+  -GitOpsRoot B:\maliev\maliev-gitops `
+  -Project maliev-website `
+  -Json
 
 Get-ChildItem -Path maliev-gitops\3-apps -Filter service-secrets-patch.yaml -Recurse |
   ForEach-Object {
