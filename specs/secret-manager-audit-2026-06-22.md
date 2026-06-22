@@ -76,6 +76,8 @@ Live Kubernetes metadata and GitOps environment kustomizations currently show:
 - `maliev-staging` and `maliev-prod` namespaces exist, but currently have no app/shared/database ExternalSecrets synced.
 - `2-environments/2-staging/kustomization.yaml` and `2-environments/3-production/kustomization.yaml` currently leave `secrets.yaml`, shared secrets, common apps, database, Redis, and RabbitMQ resources commented out.
 - `maliev-staging-pg-app-password`, `maliev-staging-pg-superuser-password`, `maliev-prod-pg-app-password`, and `maliev-prod-pg-superuser-password` are referenced by GitOps `secrets.yaml` files but do not currently exist in Google Secret Manager.
+- `kubectl kustomize 2-environments/2-staging` and `kubectl kustomize 2-environments/3-production` currently render without those PostgreSQL ExternalSecrets because the relevant resources are disabled in each environment kustomization.
+- The missing staging/prod PostgreSQL Secret Manager entries are therefore activation prerequisites for those environment resources, not currently rendered live deployment dependencies.
 
 Current development PostgreSQL databases observed from the live `maliev-dev` Postgres cluster:
 
@@ -205,6 +207,17 @@ These service config secrets exist but are not referenced by current app overlay
 - `maliev-staging-shared-config`
 - `maliev-prod-shared-config`
 
+## Disabled Environment Secret References
+
+The following GitOps `ExternalSecret` remote refs are present in staging/prod environment `secrets.yaml` files but are not rendered by the current environment kustomizations:
+
+- `maliev-staging-pg-app-password`
+- `maliev-staging-pg-superuser-password`
+- `maliev-prod-pg-app-password`
+- `maliev-prod-pg-superuser-password`
+
+Create these Secret Manager entries with confirmed database credentials before uncommenting `secrets.yaml`, database, Redis, RabbitMQ, shared secrets, or common app resources in staging or production.
+
 ## Required Follow-Up
 
 - Populate confirmed DB connection-string keys for every missing service secret listed above.
@@ -233,6 +246,8 @@ kubectl kustomize 3-apps\maliev-delivery-service\overlays\production
 kubectl kustomize 3-apps\maliev-chatbot-service\overlays\development
 kubectl kustomize 3-apps\maliev-chatbot-service\overlays\staging
 kubectl kustomize 3-apps\maliev-chatbot-service\overlays\production
+kubectl kustomize 2-environments\2-staging
+kubectl kustomize 2-environments\3-production
 
 Select-String over each missing service's `Program.cs`, options classes, and appsettings files for:
 `AddPostgresDbContext`, `GetConnectionString`, `Configure<TOptions>`, `GetSection`, `AddHttpClient`, and environment-specific provider sections.
