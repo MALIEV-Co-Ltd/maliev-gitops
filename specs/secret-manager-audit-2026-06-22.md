@@ -25,6 +25,7 @@ No secret values are stored in this file. Key presence and required follow-up on
   - `maliev-dev-geometry-service-config`
   - `maliev-staging-geometry-service-config`
   - `maliev-prod-geometry-service-config`
+- Created `maliev-dev-geometry-service-config` from existing `maliev-dev-shared-config` values, mapping them to GeometryService's uppercase environment variable names. The dev GeometryService secret includes `RABBITMQ_URI`, JWT validation keys, an intentionally empty `JWT_PRIVATE_KEY`, and `ASPNETCORE_ENVIRONMENT`/`ENVIRONMENT` set to `Development` so the service's own HS256 development fallback is allowed.
 - Removed stale disabled `maliev-email-service.yaml` Application manifests that duplicated NotificationService app names and paths while pointing at an old repository URL.
 - Corrected disabled Application source paths that pointed at nonexistent overlays:
   - production `maliev-compensation-service`, `maliev-compliance-service`, `maliev-leave-service`, `maliev-lifecycle-service`, and `maliev-performance-service` now use `overlays/production` instead of `overlays/prod`
@@ -155,6 +156,7 @@ Notes:
 - Existing `maliev-dev-contact-service-config` contains only `ConnectionStrings__ContactDbContext`, which matches the current minimum service-specific requirement.
 - Existing `maliev-dev-order-service-config` shows the established pattern of service-specific DB connection strings plus external service endpoint overrides.
 - Existing `maliev-dev-delivery-service-config` contains the keys required for DeliveryService database startup, SHIPPOP domestic rate quotes, SHIPPOP Inter public rates, and SHIPPOP public tracking. It does not contain GoShip fallback credentials.
+- Existing `maliev-dev-geometry-service-config` contains the keys required for GeometryService dev startup and auth: `RABBITMQ_URI`, `JWT_PUBLIC_KEY`, `JWT_SECURITY_KEY`, `JWT_ISSUER`, `JWT_AUDIENCE`, `JWT_PRIVATE_KEY`, `ASPNETCORE_ENVIRONMENT`, and `ENVIRONMENT`. `JWT_PRIVATE_KEY` is intentionally empty in dev because GeometryService allows HS256 service-account signing only when its environment is Development or Testing.
 - Existing `maliev-<env>-email-service-config` entries are empty JSON objects. They are stale placeholders, not migration sources for NotificationService.
 - `ConnectionStrings__IamDbContext` uses the casing from `Maliev.IAMService.Api/Program.cs`.
 - Do not infer DB names, usernames, or passwords from neighboring services. Create or update these Secret Manager entries only with confirmed environment-specific values.
@@ -168,7 +170,6 @@ These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not current
 - `maliev-dev-accounting-service-config`
 - `maliev-dev-commerce-service-config`
 - `maliev-dev-facility-service-config`
-- `maliev-dev-geometry-service-config`
 - `maliev-dev-iam-service-config`
 - `maliev-dev-notification-service-config`
 - `maliev-dev-quote-engine-config`
@@ -211,8 +212,8 @@ Latest redacted validator run on 2026-06-22 reported:
 
 - 4 active ArgoCD Applications.
 - 0 active app overlay service config secret names missing in Secret Manager.
-- 31 disabled app overlay service config secret names missing in Secret Manager.
-- 31 missing app overlay service config secret names in Secret Manager.
+- 30 disabled app overlay service config secret names missing in Secret Manager.
+- 30 missing app overlay service config secret names in Secret Manager.
 - 0 disabled ArgoCD app source paths missing.
 - 0 duplicate disabled ArgoCD app names.
 - 4 missing staging/prod PostgreSQL environment `remoteRef` secret names, all currently disabled by environment kustomizations.
