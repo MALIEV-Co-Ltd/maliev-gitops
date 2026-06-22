@@ -9,6 +9,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 - Created `maliev-dev-delivery-service-config` in Google Secret Manager with SHIPPOP dev configuration keys only.
 - Updated `maliev-dev-delivery-service-config` with the documented SHIPPOP dev public tracking base URL in `Shippop__InternationalBaseUrl`; secret values were preserved and not recorded.
 - Created and verified the live development database `delivery_app_db`, then updated `maliev-dev-delivery-service-config` with `ConnectionStrings__DeliveryDbContext`; secret values were preserved and not recorded.
+- Moved the dev DeliveryService ArgoCD Application out of `_disabled_apps` into `argocd/environments/dev/apps` after the development overlay rendered successfully and the referenced Secret Manager config was verified redacted.
 - Added a reusable local redacted audit helper at `B:\maliev\.agents\skills\maliev-secret-manager-audit\scripts\audit-secret-refs.ps1` and documented it in the local `maliev-secret-manager-audit` skill. The helper compares names only and does not print secret payload values.
 - Corrected DeliveryService production overlay from `maliev-production-delivery-service-config` to `maliev-prod-delivery-service-config`.
 - Corrected NotificationService GitOps from legacy individual remote refs (`maliev-email-service-db-connection-string`, `redis-connection-string`, `rabbitmq-connection-string`) to environment-specific config extraction:
@@ -91,16 +92,16 @@ Live Kubernetes metadata and GitOps environment kustomizations currently show:
 - `maliev-staging-pg-app-password`, `maliev-staging-pg-superuser-password`, `maliev-prod-pg-app-password`, and `maliev-prod-pg-superuser-password` are referenced by GitOps `secrets.yaml` files but do not currently exist in Google Secret Manager.
 - `kubectl kustomize 2-environments/2-staging` and `kubectl kustomize 2-environments/3-production` currently render without those PostgreSQL ExternalSecrets because the relevant resources are disabled in each environment kustomization.
 - The missing staging/prod PostgreSQL Secret Manager entries are therefore activation prerequisites for those environment resources, not currently rendered live deployment dependencies.
-- The active app-of-apps manifests under `argocd/environments/{dev,staging,prod}/apps` currently include only each environment Application:
-  - `2-environments/1-development`
-  - `2-environments/2-staging`
-  - `2-environments/3-production`
-- Individual service Application manifests for DeliveryService, GeometryService, NotificationService, QuoteEngine, AccountingService, CommerceService, FacilityService, IAMService, RegistryService, SearchService, and the other services are currently under `argocd/environments/_disabled_apps`.
+- `argocd/environments/dev/apps` now includes:
+  - `maliev-dev-environment`, pointing at `2-environments/1-development`
+  - `maliev-delivery-service-dev`, pointing at `3-apps/maliev-delivery-service/overlays/development`
+- The active app-of-apps manifests under `argocd/environments/staging/apps` and `argocd/environments/prod/apps` currently include only each environment Application, pointing at `2-environments/2-staging` and `2-environments/3-production`.
+- Individual service Application manifests for GeometryService, NotificationService, QuoteEngine, AccountingService, CommerceService, FacilityService, IAMService, RegistryService, SearchService, DeliveryService staging/prod, and the other services are currently under `argocd/environments/_disabled_apps`.
 - `argocd/environments/live/maliev-live-environment.yaml` points to `2-environments/0-live-production`, and that kustomization currently renders namespace and ingress only. It does not render service deployments or ExternalSecrets.
 - A live cluster check returned zero ArgoCD `Application` resources through `kubectl get applications -n argocd`; treat this repo audit as desired-state evidence unless ArgoCD access/state is confirmed separately.
 - Disabled NotificationService manifests are now represented by `maliev-notification-service.yaml` only; stale duplicate `maliev-email-service.yaml` files were removed from dev/staging/prod disabled app folders.
 - Disabled app source paths were scanned for missing target overlays. The stale `maliev-quotationrequest-service` dev/staging/prod manifests were removed because there is no matching `3-apps/maliev-quotationrequest-service` directory and no `Maliev.QuotationRequestService` repo in the workspace.
-- `3-apps/_common` currently applies common labels only. It does not include service deployments. The dev environment renders namespace, ingress, configmap, environment/shared secrets, and database resources, but not DeliveryService or other individual service deployments from `_disabled_apps`.
+- `3-apps/_common` currently applies common labels only. It does not include service deployments. The dev environment renders namespace, ingress, configmap, environment/shared secrets, and database resources; DeliveryService dev is now activated separately through the dev app-of-apps path.
 - The legacy unreferenced `maliev-<env>-email-service-config` Secret Manager entries currently contain empty JSON objects and cannot be safely copied to satisfy `maliev-<env>-notification-service-config`. NotificationService requires a confirmed `ConnectionStrings__NotificationDbContext`, encryption key, and any intended provider keys before enablement.
 
 Current development PostgreSQL databases observed from the live `maliev-dev` Postgres cluster:
@@ -126,7 +127,7 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 - `supplier_service_db`
 - `upload_app_db`
 
-The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed. DeliveryService is no longer part of this missing development database list.
+The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed. DeliveryService is no longer part of this missing development database list and its dev ArgoCD Application has been moved into the active dev app-of-apps path.
 
 ## Confirmed Required Service-Specific Keys
 
