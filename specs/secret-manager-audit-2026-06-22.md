@@ -143,7 +143,7 @@ The live development cluster now has databases for Accounting, Commerce, Facilit
 
 After creating the dev DB-backed service configs, the remaining development service config gap is:
 
-- `maliev-dev-quote-engine-config` is not database-backed, but its public `Web__BaseUrl`/`QuoteEngine__BaseUrl` and optional `GoogleMaps__BrowserApiKey`/map settings still need confirmation. GitOps confirms the QuoteEngine dev ingress host `quote-dev.maliev.com`, while existing `maliev-dev-web-config` and `maliev-dev-intranet-config` are empty JSON objects and cannot confirm the Web redirect base URL or browser Maps key.
+- `maliev-dev-quote-engine-config` is not database-backed, but its public `Web__BaseUrl`/`QuoteEngine__BaseUrl` and optional `GoogleMaps__BrowserApiKey`/map settings still need confirmation. GitOps contains a disabled QuoteEngine dev ingress host `quote-dev.maliev.com`, but a live DNS check returned no host for `quote-dev.maliev.com`, and the live `maliev-dev` ingress currently exposes only `dev.api.maliev.com`. Existing `maliev-dev-web-config` and `maliev-dev-intranet-config` are empty JSON objects and cannot confirm the Web redirect base URL or browser Maps key.
 
 ## Confirmed Required Service-Specific Keys
 
@@ -297,7 +297,7 @@ Create these Secret Manager entries with confirmed database credentials before u
 
 ## Required Follow-Up
 
-- Confirm QuoteEngine development public URLs and Google Maps browser configuration before creating `maliev-dev-quote-engine-config`.
+- Confirm and activate the QuoteEngine development public host before creating `maliev-dev-quote-engine-config`: `quote-dev.maliev.com` exists in the disabled GitOps overlay but did not resolve in DNS and was not present on the live `maliev-dev` ingress at the last check. Also confirm the dev Web redirect base URL and Google Maps browser configuration.
 - Populate confirmed DB connection-string keys for every missing staging/prod service secret listed above.
 - Create or confirm staging/prod Postgres credential secrets before enabling their environment `secrets.yaml` resources.
 - Create staging/prod DeliveryService secrets only after real staging/prod SHIPPOP or GoShip credentials and Delivery DB connection strings are confirmed.
