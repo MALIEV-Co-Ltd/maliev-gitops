@@ -230,6 +230,58 @@ These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not current
 - `maliev-prod-registry-service-config`
 - `maliev-prod-search-service-config`
 
+## Missing Service Config Key Templates
+
+These templates define the key names to create for the missing staging/prod Secret Manager payloads once exact environment-specific values are confirmed. They are not value templates. Do not copy development API keys, database passwords, or provider credentials into staging or production.
+
+### Staging
+
+| Secret Manager entry | Required keys before activation |
+| --- | --- |
+| `maliev-staging-accounting-service-config` | `ConnectionStrings__AccountingDbContext` |
+| `maliev-staging-commerce-service-config` | `ConnectionStrings__CommerceDbContext` |
+| `maliev-staging-contact-service-config` | `ConnectionStrings__ContactDbContext` |
+| `maliev-staging-delivery-service-config` | `ConnectionStrings__DeliveryDbContext`, `Shippop__DomesticBaseUrl`, `Shippop__DomesticApiKey`, `Shippop__DomesticEmail`, `Shippop__InternationalBaseUrl` |
+| `maliev-staging-facility-service-config` | `ConnectionStrings__FacilityDbContext` |
+| `maliev-staging-geometry-service-config` | `RABBITMQ_URI`, `JWT_PUBLIC_KEY`, `JWT_PRIVATE_KEY`, `JWT_SECURITY_KEY`, `JWT_ISSUER`, `JWT_AUDIENCE` |
+| `maliev-staging-iam-service-config` | `ConnectionStrings__IamDbContext` |
+| `maliev-staging-notification-service-config` | `ConnectionStrings__NotificationDbContext`, `Encryption__DataProtectionKey` |
+| `maliev-staging-quote-engine-config` | `Web__BaseUrl`, `QuoteEngine__BaseUrl`, `Services__DeliveryService__BaseUrl` |
+| `maliev-staging-registry-service-config` | `ConnectionStrings__RegistryDbContext` |
+| `maliev-staging-search-service-config` | `ConnectionStrings__SearchDbContext` |
+
+Conditional staging keys:
+
+- Add `Shippop__InternationalBearerToken` to `maliev-staging-delivery-service-config` only if authenticated SHIPPOP Inter shipment creation is enabled for staging.
+- Add `GoShip__BaseUrl`, `GoShip__AppId`, and `GoShip__Secret` to `maliev-staging-delivery-service-config` only after staging GoShip credentials are confirmed.
+- Add `GoogleMaps__BrowserApiKey` to `maliev-staging-quote-engine-config` only after the staging browser key and allowed referrers are confirmed.
+- Add NotificationService provider keys only after the intended staging provider accounts are confirmed.
+- Add `BDEX__ConsumerKey` and `BDEX__ConsumerSecret` to `maliev-staging-registry-service-config` only if BDEX is enabled for staging.
+
+### Production
+
+| Secret Manager entry | Required keys before activation |
+| --- | --- |
+| `maliev-prod-accounting-service-config` | `ConnectionStrings__AccountingDbContext` |
+| `maliev-prod-commerce-service-config` | `ConnectionStrings__CommerceDbContext` |
+| `maliev-prod-contact-service-config` | `ConnectionStrings__ContactDbContext` |
+| `maliev-prod-delivery-service-config` | `ConnectionStrings__DeliveryDbContext`, `Shippop__DomesticBaseUrl`, `Shippop__DomesticApiKey`, `Shippop__DomesticEmail`, `Shippop__InternationalBaseUrl` |
+| `maliev-prod-facility-service-config` | `ConnectionStrings__FacilityDbContext` |
+| `maliev-prod-geometry-service-config` | `RABBITMQ_URI`, `JWT_PUBLIC_KEY`, `JWT_PRIVATE_KEY`, `JWT_SECURITY_KEY`, `JWT_ISSUER`, `JWT_AUDIENCE` |
+| `maliev-prod-iam-service-config` | `ConnectionStrings__IamDbContext` |
+| `maliev-prod-notification-service-config` | `ConnectionStrings__NotificationDbContext`, `Encryption__DataProtectionKey` |
+| `maliev-prod-quote-engine-config` | `Web__BaseUrl`, `QuoteEngine__BaseUrl`, `Services__DeliveryService__BaseUrl` |
+| `maliev-prod-registry-service-config` | `ConnectionStrings__RegistryDbContext` |
+| `maliev-prod-search-service-config` | `ConnectionStrings__SearchDbContext` |
+
+Conditional production keys:
+
+- Add `Shippop__InternationalBearerToken` to `maliev-prod-delivery-service-config` only if authenticated SHIPPOP Inter shipment creation is enabled for production.
+- Add `GoShip__BaseUrl`, `GoShip__AppId`, and `GoShip__Secret` to `maliev-prod-delivery-service-config` only after production GoShip credentials are confirmed.
+- Add `GoogleMaps__BrowserApiKey` to `maliev-prod-quote-engine-config` only after the production browser key and allowed referrers are confirmed.
+- Add NotificationService provider keys only after the intended production provider accounts are confirmed.
+- Add `BDEX__ConsumerKey` and `BDEX__ConsumerSecret` to `maliev-prod-registry-service-config` only if BDEX is enabled for production.
+
 ## Deployment Activation Classification
 
 Current GitOps desired-state structure separates the missing service config secrets into these operational buckets:
@@ -238,8 +290,8 @@ Latest redacted validator run on 2026-06-22 after the deployment-hold adjustment
 
 - 3 active ArgoCD Applications.
 - 0 active app overlay service config secret names missing in Secret Manager.
-- 23 disabled app overlay service config secret names missing in Secret Manager.
-- 23 missing app overlay service config secret names in Secret Manager.
+- 22 disabled app overlay service config secret names missing in Secret Manager.
+- 22 missing app overlay service config secret names in Secret Manager.
 - 0 disabled ArgoCD app source paths missing.
 - 0 duplicate disabled ArgoCD app names.
 - 4 missing staging/prod PostgreSQL environment `remoteRef` secret names, all currently disabled by environment kustomizations.
