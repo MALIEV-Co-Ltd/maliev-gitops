@@ -9,10 +9,10 @@ No secret values are stored in this file. Key presence and required follow-up on
 - Created `maliev-dev-delivery-service-config` in Google Secret Manager with SHIPPOP dev configuration keys only.
 - Updated `maliev-dev-delivery-service-config` with the documented SHIPPOP dev public tracking base URL in `Shippop__InternationalBaseUrl`; secret values were preserved and not recorded.
 - Created and verified the live development database `delivery_app_db`, then updated `maliev-dev-delivery-service-config` with `ConnectionStrings__DeliveryDbContext`; secret values were preserved and not recorded.
-- Moved the dev DeliveryService ArgoCD Application back under `_disabled_apps/dev` after image ancestry verification showed the active dev image tag predates the SHIPPOP integration commits.
+- Built and published dev DeliveryService image tag `1d03d045ea20d005060662fd5294e97e5c4bac32`, verified in Artifact Registry at digest `sha256:a4c7f16e91d673ff150a64f51db6a3d330fe1710ccad864f257419323836d067`.
+- Moved the dev DeliveryService ArgoCD Application back under `argocd/environments/dev/apps` after verifying the image includes the SHIPPOP integration commits.
 - Named the DeliveryService Kubernetes Service port `http` so the dev ServiceMonitor can resolve its `port: http` endpoint when the app is activated.
-- Verified the previously referenced dev DeliveryService image tag exists in Artifact Registry and resolves to digest `sha256:a979969ccfc132693320c2a89222e2b2fb3ca9a93dd390a60aea22868a393c73`.
-- Verified all currently listed dev DeliveryService Artifact Registry tags predate the SHIPPOP gateway commits; no tag containing `1d03d04` was available at audit time.
+- Verified the previously referenced dev DeliveryService image tag `b4a0d4a9af701afb6da499c46e7bafba39f5fb3e` predates the SHIPPOP gateway commits; it has been replaced in the development overlay.
 - Added a reusable local redacted audit helper at `B:\maliev\.agents\skills\maliev-secret-manager-audit\scripts\audit-secret-refs.ps1` and documented it in the local `maliev-secret-manager-audit` skill. The helper compares names only and does not print secret payload values.
 - Corrected DeliveryService production overlay from `maliev-production-delivery-service-config` to `maliev-prod-delivery-service-config`.
 - Corrected NotificationService GitOps from legacy individual remote refs (`maliev-email-service-db-connection-string`, `redis-connection-string`, `rabbitmq-connection-string`) to environment-specific config extraction:
@@ -95,14 +95,14 @@ Live Kubernetes metadata and GitOps environment kustomizations currently show:
 - `maliev-staging-pg-app-password`, `maliev-staging-pg-superuser-password`, `maliev-prod-pg-app-password`, and `maliev-prod-pg-superuser-password` are referenced by GitOps `secrets.yaml` files but do not currently exist in Google Secret Manager.
 - `kubectl kustomize 2-environments/2-staging` and `kubectl kustomize 2-environments/3-production` currently render without those PostgreSQL ExternalSecrets because the relevant resources are disabled in each environment kustomization.
 - The missing staging/prod PostgreSQL Secret Manager entries are therefore activation prerequisites for those environment resources, not currently rendered live deployment dependencies.
-- `argocd/environments/dev/apps` currently includes only `maliev-dev-environment`, pointing at `2-environments/1-development`.
+- `argocd/environments/dev/apps` currently includes `maliev-dev-environment`, pointing at `2-environments/1-development`, and `maliev-delivery-service-dev`, pointing at `3-apps/maliev-delivery-service/overlays/development`.
 - The active app-of-apps manifests under `argocd/environments/staging/apps` and `argocd/environments/prod/apps` currently include only each environment Application, pointing at `2-environments/2-staging` and `2-environments/3-production`.
-- Individual service Application manifests for DeliveryService dev/staging/prod, GeometryService, NotificationService, QuoteEngine, AccountingService, CommerceService, FacilityService, IAMService, RegistryService, SearchService, and the other services are currently under `argocd/environments/_disabled_apps`.
+- Individual service Application manifests for DeliveryService staging/prod, GeometryService, NotificationService, QuoteEngine, AccountingService, CommerceService, FacilityService, IAMService, RegistryService, SearchService, and the other services are currently under `argocd/environments/_disabled_apps`. DeliveryService dev is active.
 - `argocd/environments/live/maliev-live-environment.yaml` points to `2-environments/0-live-production`, and that kustomization currently renders namespace and ingress only. It does not render service deployments or ExternalSecrets.
 - A live cluster check returned zero ArgoCD `Application` resources through `kubectl get applications -n argocd`; treat this repo audit as desired-state evidence unless ArgoCD access/state is confirmed separately.
 - Disabled NotificationService manifests are now represented by `maliev-notification-service.yaml` only; stale duplicate `maliev-email-service.yaml` files were removed from dev/staging/prod disabled app folders.
 - Disabled app source paths were scanned for missing target overlays. The stale `maliev-quotationrequest-service` dev/staging/prod manifests were removed because there is no matching `3-apps/maliev-quotationrequest-service` directory and no `Maliev.QuotationRequestService` repo in the workspace.
-- `3-apps/_common` currently applies common labels only. It does not include service deployments. The dev environment renders namespace, ingress, configmap, environment/shared secrets, and database resources; DeliveryService dev is ready at the secret/database level but remains disabled until a SHIPPOP-inclusive image is built.
+- `3-apps/_common` currently applies common labels only. It does not include service deployments. The dev environment renders namespace, ingress, configmap, environment/shared secrets, and database resources; DeliveryService dev is active through its individual Application and references a SHIPPOP-inclusive image.
 - The legacy unreferenced `maliev-<env>-email-service-config` Secret Manager entries currently contain empty JSON objects and cannot be safely copied to satisfy `maliev-<env>-notification-service-config`. NotificationService requires a confirmed `ConnectionStrings__NotificationDbContext`, encryption key, and any intended provider keys before enablement.
 
 Current development PostgreSQL databases observed from the live `maliev-dev` Postgres cluster:
@@ -128,7 +128,7 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 - `supplier_service_db`
 - `upload_app_db`
 
-The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed. DeliveryService is no longer part of this missing development database list, but its dev ArgoCD Application remains disabled until a SHIPPOP-inclusive image is built and referenced.
+The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed. DeliveryService is no longer part of this missing development database list, and its dev ArgoCD Application is active with a SHIPPOP-inclusive image.
 
 ## Confirmed Required Service-Specific Keys
 
@@ -207,6 +207,7 @@ Current GitOps desired-state structure separates the missing service config secr
 
 Latest redacted validator run on 2026-06-22 reported:
 
+- 4 active ArgoCD Applications.
 - 0 active app overlay service config secret names missing in Secret Manager.
 - 31 disabled app overlay service config secret names missing in Secret Manager.
 - 31 missing app overlay service config secret names in Secret Manager.
