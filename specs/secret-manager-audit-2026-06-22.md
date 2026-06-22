@@ -111,8 +111,10 @@ Live Kubernetes metadata and GitOps environment kustomizations currently show:
 Current development PostgreSQL databases observed from the live `maliev-dev` Postgres cluster:
 
 - `app_db`
+- `accounting_app_db`
 - `auth_app_db`
 - `career_app_db`
+- `commerce_app_db`
 - `contact_app_db`
 - `contact_app_test_db`
 - `country_app_db`
@@ -121,21 +123,25 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 - `delivery_app_db`
 - `employee_app_db`
 - `employee_service_db`
+- `facility_app_db`
+- `iam_app_db`
 - `invoice_app_db`
 - `material_app_db`
 - `order_app_db`
 - `payment_app_db`
 - `postgres`
 - `purchaseorder_app_db`
+- `registry_app_db`
+- `search_app_db`
 - `supplier_app_db`
 - `supplier_service_db`
 - `upload_app_db`
 
-The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed. DeliveryService is no longer part of this missing development database list, and its dev ArgoCD Application is active with a SHIPPOP-inclusive image containing the verified `/pricelist/` payload fix.
+The live development cluster now has databases for Accounting, Commerce, Facility, IAM, Registry, and Search. These were created as dev-only activation prerequisites using the existing dev PostgreSQL credential source and the established underscore database naming convention used by deployed service connection strings. DeliveryService is no longer part of the missing development database list, and its dev ArgoCD Application is active with a SHIPPOP-inclusive image containing the verified `/pricelist/` payload fix.
 
-After creating `maliev-dev-geometry-service-config`, the remaining development service config gaps are not safe to auto-create from current evidence:
+After creating the six simple dev DB-backed service configs, the remaining development service config gaps are:
 
-- `maliev-dev-accounting-service-config`, `maliev-dev-commerce-service-config`, `maliev-dev-facility-service-config`, `maliev-dev-iam-service-config`, `maliev-dev-notification-service-config`, `maliev-dev-registry-service-config`, and `maliev-dev-search-service-config` require service-specific database connection strings, but the live `maliev-dev` PostgreSQL cluster does not currently show corresponding service databases.
+- `maliev-dev-notification-service-config` requires `ConnectionStrings__NotificationDbContext` plus `Encryption__DataProtectionKey` and any intended provider keys. The encryption key and provider configuration are not confirmed, so this config was not created.
 - `maliev-dev-quote-engine-config` is not database-backed, but its public `Web__BaseUrl`/`QuoteEngine__BaseUrl` and optional `GoogleMaps__BrowserApiKey`/map settings still need confirmation. GitOps confirms the QuoteEngine dev ingress host `quote-dev.maliev.com`, while existing `maliev-dev-web-config` and `maliev-dev-intranet-config` are empty JSON objects and cannot confirm the Web redirect base URL or browser Maps key.
 
 ## Confirmed Required Service-Specific Keys
@@ -162,6 +168,7 @@ Notes:
 - Existing `maliev-dev-order-service-config` shows the established pattern of service-specific DB connection strings plus external service endpoint overrides.
 - Existing `maliev-dev-delivery-service-config` contains the keys required for DeliveryService database startup, SHIPPOP domestic rate quotes, SHIPPOP Inter public rates, and SHIPPOP public tracking. It does not contain GoShip fallback credentials.
 - Existing `maliev-dev-geometry-service-config` contains the keys required for GeometryService dev startup and auth: `RABBITMQ_URI`, `JWT_PUBLIC_KEY`, `JWT_SECURITY_KEY`, `JWT_ISSUER`, `JWT_AUDIENCE`, `JWT_PRIVATE_KEY`, `ASPNETCORE_ENVIRONMENT`, and `ENVIRONMENT`. `JWT_PRIVATE_KEY` is intentionally empty in dev because GeometryService allows HS256 service-account signing only when its environment is Development or Testing.
+- Existing `maliev-dev-accounting-service-config`, `maliev-dev-commerce-service-config`, `maliev-dev-facility-service-config`, `maliev-dev-iam-service-config`, `maliev-dev-registry-service-config`, and `maliev-dev-search-service-config` each contain only the expected `ConnectionStrings__*DbContext` key for their corresponding dev database.
 - Existing `maliev-<env>-email-service-config` entries are empty JSON objects. They are stale placeholders, not migration sources for NotificationService.
 - `ConnectionStrings__IamDbContext` uses the casing from `Maliev.IAMService.Api/Program.cs`.
 - Do not infer DB names, usernames, or passwords from neighboring services. Create or update these Secret Manager entries only with confirmed environment-specific values.
@@ -172,14 +179,8 @@ These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not current
 
 ### Development
 
-- `maliev-dev-accounting-service-config`
-- `maliev-dev-commerce-service-config`
-- `maliev-dev-facility-service-config`
-- `maliev-dev-iam-service-config`
 - `maliev-dev-notification-service-config`
 - `maliev-dev-quote-engine-config`
-- `maliev-dev-registry-service-config`
-- `maliev-dev-search-service-config`
 
 ### Staging
 
@@ -217,8 +218,8 @@ Latest redacted validator run on 2026-06-22 reported:
 
 - 4 active ArgoCD Applications.
 - 0 active app overlay service config secret names missing in Secret Manager.
-- 30 disabled app overlay service config secret names missing in Secret Manager.
-- 30 missing app overlay service config secret names in Secret Manager.
+- 24 disabled app overlay service config secret names missing in Secret Manager.
+- 24 missing app overlay service config secret names in Secret Manager.
 - 0 disabled ArgoCD app source paths missing.
 - 0 duplicate disabled ArgoCD app names.
 - 4 missing staging/prod PostgreSQL environment `remoteRef` secret names, all currently disabled by environment kustomizations.
