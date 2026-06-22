@@ -13,6 +13,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 - Verified a live SHIPPOP dev `/pricelist/` request with the stored dev key, HTTPS base URL, JSON payload, and string `courier_code`; SHIPPOP returned success for `EMST`.
 - Built and published dev DeliveryService image tag `bcefbbec021165c6f6e865649eed2850868aa2bb`, verified in Artifact Registry at digest `sha256:19ff346c90740919d8baab646654407f29275a72f1c0f4bf8e45999f7bbee6bf`.
 - Prepared the dev DeliveryService ArgoCD Application for later activation with a SHIPPOP-inclusive image, then moved it back under `argocd/environments/_disabled_apps/dev` after the deployment-hold instruction. No service Application should be auto-synced to GKE until development is complete.
+- DeliveryService commit `32928d4` added startup validation that fails closed in Development/Testing unless SHIPPOP base URLs use HTTPS `.shippop.dev` hosts. The previously prepared dev image above predates this guard; build and publish a new dev DeliveryService image from `32928d4` or newer before activation.
 - Named the DeliveryService Kubernetes Service port `http` so the dev ServiceMonitor can resolve its `port: http` endpoint when the app is activated.
 - Applied the DeliveryService development overlay to the live `maliev-dev` namespace because ArgoCD Application resources were not present to reconcile it automatically. The live Deployment now runs image tag `bcefbbec021165c6f6e865649eed2850868aa2bb` at digest `sha256:19ff346c90740919d8baab646654407f29275a72f1c0f4bf8e45999f7bbee6bf`.
 - Added a DeliveryService development startup probe and raised the development CPU/memory requests and limits so the pod is not killed before .NET startup and EF migrations complete.
@@ -154,7 +155,7 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 - `supplier_service_db`
 - `upload_app_db`
 
-The live development cluster now has databases for Accounting, Commerce, Facility, IAM, Notification, Registry, and Search. These were created as dev-only activation prerequisites using the existing dev PostgreSQL credential source and the established underscore database naming convention used by deployed service connection strings. DeliveryService is no longer part of the missing development database list, and its dev overlay is prepared with a SHIPPOP-inclusive image containing the verified `/pricelist/` payload fix. Its ArgoCD Application remains disabled until development is complete.
+The live development cluster now has databases for Accounting, Commerce, Facility, IAM, Notification, Registry, and Search. These were created as dev-only activation prerequisites using the existing dev PostgreSQL credential source and the established underscore database naming convention used by deployed service connection strings. DeliveryService is no longer part of the missing development database list, and its disabled dev overlay points at a SHIPPOP-inclusive image containing the verified `/pricelist/` payload fix. That image predates the later SHIPPOP dev endpoint startup guard in DeliveryService commit `32928d4`, so a newer dev image is required before activation. Its ArgoCD Application remains disabled until development is complete.
 
 After creating the dev DB-backed service configs and the QuoteEngine dev config, there are no missing development service config secrets in the current GitOps audit.
 
@@ -375,7 +376,7 @@ Use this checklist before moving any service Application out of `argocd/environm
 - Keep all individual service Applications disabled until development activation is explicitly approved. Current active app-of-apps entries are environment Applications only.
 - Confirm DNS for `make.maliev.com`; current checks returned no record, while `www.maliev.com`, `api.maliev.com`, and `intranet.maliev.com` resolve through Cloudflare.
 - Confirm the intended Cloudflare/GCP target for `make.maliev.com`; GCP global static IPs currently include `maliev-ip` (`35.244.249.173`) and `maliev-www-ip` (`35.244.136.255`).
-- Activate DeliveryService only after confirming the prepared dev image tag `bcefbbec021165c6f6e865649eed2850868aa2bb` is still the intended SHIPPOP dev image.
+- Activate DeliveryService only after building and publishing a new dev image from DeliveryService commit `32928d4` or newer, then updating the disabled dev overlay to that image tag. Do not activate the older prepared image tag `bcefbbec021165c6f6e865649eed2850868aa2bb` unless the missing SHIPPOP dev endpoint guard is intentionally accepted.
 - Activate Web, Intranet, and QuoteEngine only after DeliveryService is available because their shipping BFF clients use `Services__DeliveryService__BaseUrl`.
 - Add `GoogleMaps__BrowserApiKey` only after the browser key and allowed referrers are confirmed.
 
