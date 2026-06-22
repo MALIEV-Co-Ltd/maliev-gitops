@@ -7,6 +7,13 @@ spec:
     spec:
       containers:
         - name: maliev-delivery-service
+          startupProbe:
+            httpGet:
+              path: /delivery/liveness
+              port: 8080
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 36
           livenessProbe:
             httpGet:
               path: /delivery/liveness
