@@ -20,6 +20,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 - Corrected disabled Application source paths that pointed at nonexistent overlays:
   - production `maliev-compensation-service`, `maliev-compliance-service`, `maliev-leave-service`, `maliev-lifecycle-service`, and `maliev-performance-service` now use `overlays/production` instead of `overlays/prod`
   - staging/production MaterialService now uses `3-apps/maliev-material-service` instead of `3-apps/material-service`
+- Removed disabled `maliev-quotationrequest-service` Application manifests because the `Maliev.QuotationRequestService` repo and `3-apps/maliev-quotationrequest-service` GitOps app directory are absent. Existing `maliev-<env>-quotationrequest-service-config` Secret Manager entries remain as unreferenced legacy configs pending an explicit retention/deletion decision.
 - Corrected chatbot overlays to consume existing LINE chatbot secrets:
   - `maliev-dev-line-chatbot-service-config`
   - `maliev-staging-line-chatbot-service-config`
@@ -90,7 +91,7 @@ Live Kubernetes metadata and GitOps environment kustomizations currently show:
 - `argocd/environments/live/maliev-live-environment.yaml` points to `2-environments/0-live-production`, and that kustomization currently renders namespace and ingress only. It does not render service deployments or ExternalSecrets.
 - A live cluster check returned zero ArgoCD `Application` resources through `kubectl get applications -n argocd`; treat this repo audit as desired-state evidence unless ArgoCD access/state is confirmed separately.
 - Disabled NotificationService manifests are now represented by `maliev-notification-service.yaml` only; stale duplicate `maliev-email-service.yaml` files were removed from dev/staging/prod disabled app folders.
-- Disabled app source paths were scanned for missing target overlays. The remaining missing source paths are `maliev-quotationrequest-service` dev/staging/prod, because there is no matching `3-apps/maliev-quotationrequest-service` directory. Do not reactivate those manifests without deciding whether the old QuotationRequest service should be restored or retired.
+- Disabled app source paths were scanned for missing target overlays. The stale `maliev-quotationrequest-service` dev/staging/prod manifests were removed because there is no matching `3-apps/maliev-quotationrequest-service` directory and no `Maliev.QuotationRequestService` repo in the workspace.
 
 Current development PostgreSQL databases observed from the live `maliev-dev` Postgres cluster:
 
