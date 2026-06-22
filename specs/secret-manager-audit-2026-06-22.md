@@ -35,6 +35,7 @@ No secret values are stored in this file. Key presence and required follow-up on
   - `maliev-dev-line-chatbot-service-config`
   - `maliev-staging-line-chatbot-service-config`
   - `maliev-prod-line-chatbot-service-config`
+- Created and verified the live development database `notification_app_db`, then created `maliev-dev-notification-service-config` with `ConnectionStrings__NotificationDbContext` and `Encryption__DataProtectionKey`. Notification provider credentials were not added because provider-specific credentials are not confirmed and the service simulates outbound provider delivery when those credentials are absent.
 
 ## Verified Existing DeliveryService Dev Secret Keys
 
@@ -127,6 +128,7 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 - `iam_app_db`
 - `invoice_app_db`
 - `material_app_db`
+- `notification_app_db`
 - `order_app_db`
 - `payment_app_db`
 - `postgres`
@@ -137,11 +139,10 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 - `supplier_service_db`
 - `upload_app_db`
 
-The live development cluster now has databases for Accounting, Commerce, Facility, IAM, Registry, and Search. These were created as dev-only activation prerequisites using the existing dev PostgreSQL credential source and the established underscore database naming convention used by deployed service connection strings. DeliveryService is no longer part of the missing development database list, and its dev ArgoCD Application is active with a SHIPPOP-inclusive image containing the verified `/pricelist/` payload fix.
+The live development cluster now has databases for Accounting, Commerce, Facility, IAM, Notification, Registry, and Search. These were created as dev-only activation prerequisites using the existing dev PostgreSQL credential source and the established underscore database naming convention used by deployed service connection strings. DeliveryService is no longer part of the missing development database list, and its dev ArgoCD Application is active with a SHIPPOP-inclusive image containing the verified `/pricelist/` payload fix.
 
-After creating the six simple dev DB-backed service configs, the remaining development service config gaps are:
+After creating the dev DB-backed service configs, the remaining development service config gap is:
 
-- `maliev-dev-notification-service-config` requires `ConnectionStrings__NotificationDbContext` plus `Encryption__DataProtectionKey` and any intended provider keys. The encryption key and provider configuration are not confirmed, so this config was not created.
 - `maliev-dev-quote-engine-config` is not database-backed, but its public `Web__BaseUrl`/`QuoteEngine__BaseUrl` and optional `GoogleMaps__BrowserApiKey`/map settings still need confirmation. GitOps confirms the QuoteEngine dev ingress host `quote-dev.maliev.com`, while existing `maliev-dev-web-config` and `maliev-dev-intranet-config` are empty JSON objects and cannot confirm the Web redirect base URL or browser Maps key.
 
 ## Confirmed Required Service-Specific Keys
@@ -169,6 +170,7 @@ Notes:
 - Existing `maliev-dev-delivery-service-config` contains the keys required for DeliveryService database startup, SHIPPOP domestic rate quotes, SHIPPOP Inter public rates, and SHIPPOP public tracking. It does not contain GoShip fallback credentials.
 - Existing `maliev-dev-geometry-service-config` contains the keys required for GeometryService dev startup and auth: `RABBITMQ_URI`, `JWT_PUBLIC_KEY`, `JWT_SECURITY_KEY`, `JWT_ISSUER`, `JWT_AUDIENCE`, `JWT_PRIVATE_KEY`, `ASPNETCORE_ENVIRONMENT`, and `ENVIRONMENT`. `JWT_PRIVATE_KEY` is intentionally empty in dev because GeometryService allows HS256 service-account signing only when its environment is Development or Testing.
 - Existing `maliev-dev-accounting-service-config`, `maliev-dev-commerce-service-config`, `maliev-dev-facility-service-config`, `maliev-dev-iam-service-config`, `maliev-dev-registry-service-config`, and `maliev-dev-search-service-config` each contain only the expected `ConnectionStrings__*DbContext` key for their corresponding dev database.
+- Existing `maliev-dev-notification-service-config` contains `ConnectionStrings__NotificationDbContext` and `Encryption__DataProtectionKey`. Provider credentials are intentionally absent until confirmed; NotificationService providers simulate outbound delivery when their provider credentials are not configured.
 - Existing `maliev-<env>-email-service-config` entries are empty JSON objects. They are stale placeholders, not migration sources for NotificationService.
 - `ConnectionStrings__IamDbContext` uses the casing from `Maliev.IAMService.Api/Program.cs`.
 - Do not infer DB names, usernames, or passwords from neighboring services. Create or update these Secret Manager entries only with confirmed environment-specific values.
@@ -179,7 +181,6 @@ These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not current
 
 ### Development
 
-- `maliev-dev-notification-service-config`
 - `maliev-dev-quote-engine-config`
 
 ### Staging
@@ -218,8 +219,8 @@ Latest redacted validator run on 2026-06-22 reported:
 
 - 4 active ArgoCD Applications.
 - 0 active app overlay service config secret names missing in Secret Manager.
-- 24 disabled app overlay service config secret names missing in Secret Manager.
-- 24 missing app overlay service config secret names in Secret Manager.
+- 23 disabled app overlay service config secret names missing in Secret Manager.
+- 23 missing app overlay service config secret names in Secret Manager.
 - 0 disabled ArgoCD app source paths missing.
 - 0 duplicate disabled ArgoCD app names.
 - 4 missing staging/prod PostgreSQL environment `remoteRef` secret names, all currently disabled by environment kustomizations.
@@ -296,12 +297,11 @@ Create these Secret Manager entries with confirmed database credentials before u
 
 ## Required Follow-Up
 
-- Populate confirmed DB connection-string keys for every missing service secret listed above.
-- Create or confirm the missing development databases before adding development connection strings for accounting, commerce, facility, IAM, registry, and search.
-- Confirm whether NotificationService should use a new development database name before creating `maliev-dev-notification-service-config`.
 - Confirm QuoteEngine development public URLs and Google Maps browser configuration before creating `maliev-dev-quote-engine-config`.
+- Populate confirmed DB connection-string keys for every missing staging/prod service secret listed above.
 - Create or confirm staging/prod Postgres credential secrets before enabling their environment `secrets.yaml` resources.
 - Create staging/prod DeliveryService secrets only after real staging/prod SHIPPOP or GoShip credentials and Delivery DB connection strings are confirmed.
+- Add NotificationService provider credentials only after the intended provider accounts and environment-specific keys are confirmed.
 - Decide whether staging/prod shared configs should include Redis/RabbitMQ/CORS keys, matching the development shared config shape.
 - Decide whether missing service configs should be created or whether the corresponding GitOps app overlays are ahead of currently deployed services.
 - Decide whether unreferenced service config secrets belong to removed services, disabled apps, or renamed services.
