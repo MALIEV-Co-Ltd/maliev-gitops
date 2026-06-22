@@ -9,10 +9,12 @@ No secret values are stored in this file. Key presence and required follow-up on
 - Created `maliev-dev-delivery-service-config` in Google Secret Manager with SHIPPOP dev configuration keys only.
 - Updated `maliev-dev-delivery-service-config` with the documented SHIPPOP dev public tracking base URL in `Shippop__InternationalBaseUrl`; secret values were preserved and not recorded.
 - Created and verified the live development database `delivery_app_db`, then updated `maliev-dev-delivery-service-config` with `ConnectionStrings__DeliveryDbContext`; secret values were preserved and not recorded.
-- Built and published dev DeliveryService image tag `1d03d045ea20d005060662fd5294e97e5c4bac32`, verified in Artifact Registry at digest `sha256:a4c7f16e91d673ff150a64f51db6a3d330fe1710ccad864f257419323836d067`.
+- Updated `maliev-dev-delivery-service-config` with the documented HTTPS SHIPPOP dev domestic base URL in `Shippop__DomesticBaseUrl`; secret values were preserved and not recorded.
+- Verified a live SHIPPOP dev `/pricelist/` request with the stored dev key, HTTPS base URL, JSON payload, and string `courier_code`; SHIPPOP returned success for `EMST`.
+- Built and published dev DeliveryService image tag `bcefbbec021165c6f6e865649eed2850868aa2bb`, verified in Artifact Registry at digest `sha256:19ff346c90740919d8baab646654407f29275a72f1c0f4bf8e45999f7bbee6bf`.
 - Moved the dev DeliveryService ArgoCD Application back under `argocd/environments/dev/apps` after verifying the image includes the SHIPPOP integration commits.
 - Named the DeliveryService Kubernetes Service port `http` so the dev ServiceMonitor can resolve its `port: http` endpoint when the app is activated.
-- Verified the previously referenced dev DeliveryService image tag `b4a0d4a9af701afb6da499c46e7bafba39f5fb3e` predates the SHIPPOP gateway commits; it has been replaced in the development overlay.
+- Verified the previously referenced dev DeliveryService image tags `b4a0d4a9af701afb6da499c46e7bafba39f5fb3e` and `1d03d045ea20d005060662fd5294e97e5c4bac32` should not be used for current SHIPPOP dev testing; the first predates the SHIPPOP gateway commits, and the second predates the `/pricelist/` payload fix.
 - Added a reusable local redacted audit helper at `B:\maliev\.agents\skills\maliev-secret-manager-audit\scripts\audit-secret-refs.ps1` and documented it in the local `maliev-secret-manager-audit` skill. The helper compares names only and does not print secret payload values.
 - Corrected DeliveryService production overlay from `maliev-production-delivery-service-config` to `maliev-prod-delivery-service-config`.
 - Corrected NotificationService GitOps from legacy individual remote refs (`maliev-email-service-db-connection-string`, `redis-connection-string`, `rabbitmq-connection-string`) to environment-specific config extraction:
@@ -48,7 +50,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 
 It now contains `ConnectionStrings__DeliveryDbContext` for the verified development database `delivery_app_db`.
 
-DeliveryService code currently uses `Shippop__DomesticApiKey` for SHIPPOP domestic rates, `Shippop__InternationalBaseUrl` for SHIPPOP Inter public price/tracking endpoints, and does not require `Shippop__InternationalBearerToken` for those public endpoints. `GoShip__AppId` and `GoShip__Secret` are only required when GoShip fallback calls are invoked.
+DeliveryService code currently uses `Shippop__DomesticApiKey` and `Shippop__DomesticBaseUrl` for SHIPPOP domestic rates, `Shippop__InternationalBaseUrl` for SHIPPOP Inter public price/tracking endpoints, and does not require `Shippop__InternationalBearerToken` for those public endpoints. `GoShip__AppId` and `GoShip__Secret` are only required when GoShip fallback calls are invoked.
 
 ## Verified Shared Config Key Shape
 
@@ -128,7 +130,7 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 - `supplier_service_db`
 - `upload_app_db`
 
-The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed. DeliveryService is no longer part of this missing development database list, and its dev ArgoCD Application is active with a SHIPPOP-inclusive image.
+The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed. DeliveryService is no longer part of this missing development database list, and its dev ArgoCD Application is active with a SHIPPOP-inclusive image containing the verified `/pricelist/` payload fix.
 
 ## Confirmed Required Service-Specific Keys
 
