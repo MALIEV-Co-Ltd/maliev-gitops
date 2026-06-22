@@ -44,6 +44,8 @@ No secret values are stored in this file. Key presence and required follow-up on
 
 It now contains `ConnectionStrings__DeliveryDbContext` for the verified development database `delivery_app_db`.
 
+DeliveryService code currently uses `Shippop__DomesticApiKey` for SHIPPOP domestic rates, `Shippop__InternationalBaseUrl` for SHIPPOP Inter public price/tracking endpoints, and does not require `Shippop__InternationalBearerToken` for those public endpoints. `GoShip__AppId` and `GoShip__Secret` are only required when GoShip fallback calls are invoked.
+
 ## Verified Shared Config Key Shape
 
 The app deployments generally consume both `maliev-shared-secrets` and their service-specific secret through `envFrom`.
@@ -135,7 +137,7 @@ These keys were derived from each service's startup/configuration code and curre
 | `maliev-<env>-accounting-service-config` | `ConnectionStrings__AccountingDbContext` |
 | `maliev-<env>-commerce-service-config` | `ConnectionStrings__CommerceDbContext` |
 | `maliev-<env>-contact-service-config` | `ConnectionStrings__ContactDbContext` |
-| `maliev-<env>-delivery-service-config` | `ConnectionStrings__DeliveryDbContext`, `Shippop__DomesticBaseUrl`, `Shippop__DomesticApiKey`, `Shippop__DomesticEmail`, `Shippop__InternationalBaseUrl`, `Shippop__InternationalBearerToken`, `GoShip__BaseUrl`, `GoShip__AppId`, `GoShip__Secret` |
+| `maliev-<env>-delivery-service-config` | Startup and SHIPPOP dev quotes/tracking: `ConnectionStrings__DeliveryDbContext`, `Shippop__DomesticBaseUrl`, `Shippop__DomesticApiKey`, `Shippop__DomesticEmail`, `Shippop__InternationalBaseUrl`. SHIPPOP Inter authenticated shipment creation: `Shippop__InternationalBearerToken`. GoShip fallback: `GoShip__BaseUrl`, `GoShip__AppId`, `GoShip__Secret`. |
 | `maliev-<env>-facility-service-config` | `ConnectionStrings__FacilityDbContext` |
 | `maliev-<env>-geometry-service-config` | `RABBITMQ_URI`, `JWT_PUBLIC_KEY`, `JWT_PRIVATE_KEY`, `JWT_SECURITY_KEY`, `JWT_ISSUER`, `JWT_AUDIENCE` |
 | `maliev-<env>-iam-service-config` | `ConnectionStrings__IamDbContext` |
@@ -148,6 +150,7 @@ Notes:
 
 - Existing `maliev-dev-contact-service-config` contains only `ConnectionStrings__ContactDbContext`, which matches the current minimum service-specific requirement.
 - Existing `maliev-dev-order-service-config` shows the established pattern of service-specific DB connection strings plus external service endpoint overrides.
+- Existing `maliev-dev-delivery-service-config` contains the keys required for DeliveryService database startup, SHIPPOP domestic rate quotes, SHIPPOP Inter public rates, and SHIPPOP public tracking. It does not contain GoShip fallback credentials.
 - Existing `maliev-<env>-email-service-config` entries are empty JSON objects. They are stale placeholders, not migration sources for NotificationService.
 - `ConnectionStrings__IamDbContext` uses the casing from `Maliev.IAMService.Api/Program.cs`.
 - Do not infer DB names, usernames, or passwords from neighboring services. Create or update these Secret Manager entries only with confirmed environment-specific values.
