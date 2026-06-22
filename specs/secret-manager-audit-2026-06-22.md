@@ -16,6 +16,7 @@ No secret values are stored in this file. Key presence and required follow-up on
   - `maliev-dev-geometry-service-config`
   - `maliev-staging-geometry-service-config`
   - `maliev-prod-geometry-service-config`
+- Removed stale disabled `maliev-email-service.yaml` Application manifests that duplicated NotificationService app names and paths while pointing at an old repository URL.
 - Corrected chatbot overlays to consume existing LINE chatbot secrets:
   - `maliev-dev-line-chatbot-service-config`
   - `maliev-staging-line-chatbot-service-config`
@@ -85,6 +86,7 @@ Live Kubernetes metadata and GitOps environment kustomizations currently show:
 - Individual service Application manifests for DeliveryService, GeometryService, NotificationService, QuoteEngine, AccountingService, CommerceService, FacilityService, IAMService, RegistryService, SearchService, and the other services are currently under `argocd/environments/_disabled_apps`.
 - `argocd/environments/live/maliev-live-environment.yaml` points to `2-environments/0-live-production`, and that kustomization currently renders namespace and ingress only. It does not render service deployments or ExternalSecrets.
 - A live cluster check returned zero ArgoCD `Application` resources through `kubectl get applications -n argocd`; treat this repo audit as desired-state evidence unless ArgoCD access/state is confirmed separately.
+- Disabled NotificationService manifests are now represented by `maliev-notification-service.yaml` only; stale duplicate `maliev-email-service.yaml` files were removed from dev/staging/prod disabled app folders.
 
 Current development PostgreSQL databases observed from the live `maliev-dev` Postgres cluster:
 
