@@ -7,6 +7,7 @@ No secret values are stored in this file. Key presence and required follow-up on
 ## Changes Applied
 
 - Created `maliev-dev-delivery-service-config` in Google Secret Manager with SHIPPOP dev configuration keys only.
+- Updated `maliev-dev-delivery-service-config` with the documented SHIPPOP dev public tracking base URL in `Shippop__InternationalBaseUrl`; secret values were preserved and not recorded.
 - Added a reusable local redacted audit helper at `B:\maliev\.agents\skills\maliev-secret-manager-audit\scripts\audit-secret-refs.ps1` and documented it in the local `maliev-secret-manager-audit` skill. The helper compares names only and does not print secret payload values.
 - Corrected DeliveryService production overlay from `maliev-production-delivery-service-config` to `maliev-prod-delivery-service-config`.
 - Corrected NotificationService GitOps from legacy individual remote refs (`maliev-email-service-db-connection-string`, `redis-connection-string`, `rabbitmq-connection-string`) to environment-specific config extraction:
@@ -36,6 +37,8 @@ No secret values are stored in this file. Key presence and required follow-up on
 - `Shippop__DomesticEmail`
 - `Shippop__InternationalBaseUrl`
 - `Shippop__InternationalBearerToken`
+
+`Shippop__InternationalBearerToken` is currently empty. The public tracking endpoint does not require it, but shipment creation through SHIPPOP Inter still needs a confirmed bearer token before enablement.
 
 It still does not contain `ConnectionStrings__DeliveryDbContext`.
 
