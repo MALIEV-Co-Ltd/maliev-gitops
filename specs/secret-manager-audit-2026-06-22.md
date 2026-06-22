@@ -98,6 +98,8 @@ Live Kubernetes metadata and GitOps environment kustomizations currently show:
 - A live cluster check returned zero ArgoCD `Application` resources through `kubectl get applications -n argocd`; treat this repo audit as desired-state evidence unless ArgoCD access/state is confirmed separately.
 - Disabled NotificationService manifests are now represented by `maliev-notification-service.yaml` only; stale duplicate `maliev-email-service.yaml` files were removed from dev/staging/prod disabled app folders.
 - Disabled app source paths were scanned for missing target overlays. The stale `maliev-quotationrequest-service` dev/staging/prod manifests were removed because there is no matching `3-apps/maliev-quotationrequest-service` directory and no `Maliev.QuotationRequestService` repo in the workspace.
+- `3-apps/_common` currently applies common labels only. It does not include service deployments. The dev environment renders namespace, ingress, configmap, environment/shared secrets, and database resources, but not DeliveryService or other individual service deployments from `_disabled_apps`.
+- The legacy unreferenced `maliev-<env>-email-service-config` Secret Manager entries currently contain empty JSON objects and cannot be safely copied to satisfy `maliev-<env>-notification-service-config`. NotificationService requires a confirmed `ConnectionStrings__NotificationDbContext`, encryption key, and any intended provider keys before enablement.
 
 Current development PostgreSQL databases observed from the live `maliev-dev` Postgres cluster:
 
@@ -146,6 +148,7 @@ Notes:
 
 - Existing `maliev-dev-contact-service-config` contains only `ConnectionStrings__ContactDbContext`, which matches the current minimum service-specific requirement.
 - Existing `maliev-dev-order-service-config` shows the established pattern of service-specific DB connection strings plus external service endpoint overrides.
+- Existing `maliev-<env>-email-service-config` entries are empty JSON objects. They are stale placeholders, not migration sources for NotificationService.
 - `ConnectionStrings__IamDbContext` uses the casing from `Maliev.IAMService.Api/Program.cs`.
 - Do not infer DB names, usernames, or passwords from neighboring services. Create or update these Secret Manager entries only with confirmed environment-specific values.
 
@@ -248,6 +251,8 @@ These service config secrets exist but are not referenced by current app overlay
 - `maliev-prod-message-service-config`
 - `maliev-prod-orderstatus-service-config`
 - `maliev-prod-quotationrequest-service-config`
+
+The `maliev-<env>-email-service-config` entries above are empty JSON objects and should not be treated as valid NotificationService config.
 
 ### Expected Non-App References
 
