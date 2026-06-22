@@ -207,6 +207,8 @@ Current GitOps desired-state structure separates the missing service config secr
 
 Latest redacted validator run on 2026-06-22 reported:
 
+- 0 active app overlay service config secret names missing in Secret Manager.
+- 31 disabled app overlay service config secret names missing in Secret Manager.
 - 31 missing app overlay service config secret names in Secret Manager.
 - 0 disabled ArgoCD app source paths missing.
 - 0 duplicate disabled ArgoCD app names.
@@ -226,7 +228,7 @@ Development shared/PostgreSQL secrets are synced in the live `maliev-dev` namesp
 
 ### Disabled App Prerequisites
 
-The missing service config secrets listed in the Development, Staging, and Production sections above are referenced by app overlay manifests, but the corresponding individual ArgoCD service Application manifests are currently under `argocd/environments/_disabled_apps`.
+The missing service config secrets listed in the Development, Staging, and Production sections above are referenced by app overlay manifests, but none are currently referenced by active app-of-apps service Applications. They are disabled-app prerequisites: the corresponding individual ArgoCD service Application manifests are currently under `argocd/environments/_disabled_apps`.
 
 Create those service config secrets before moving the corresponding Application manifest out of `_disabled_apps` or adding the app overlay to an active app-of-apps path.
 
