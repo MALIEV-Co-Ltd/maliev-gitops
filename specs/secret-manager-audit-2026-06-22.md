@@ -53,6 +53,46 @@ Redacted key inspection showed:
 
 Staging and production shared config may still need Redis/RabbitMQ/CORS keys if the cluster deployments are expected to start the same way as development.
 
+## Verified Environment Deployment State
+
+Live Kubernetes metadata and GitOps environment kustomizations currently show:
+
+- `maliev-dev` has synced ExternalSecrets for:
+  - `postgres-app-credentials`
+  - `postgres-superuser-credentials`
+  - `maliev-shared-secrets`
+- `maliev-dev` has live service aliases for:
+  - `postgres-cluster-rw`
+  - `redis`
+  - `rabbitmq`
+- `maliev-staging` and `maliev-prod` namespaces exist, but currently have no app/shared/database ExternalSecrets synced.
+- `2-environments/2-staging/kustomization.yaml` and `2-environments/3-production/kustomization.yaml` currently leave `secrets.yaml`, shared secrets, common apps, database, Redis, and RabbitMQ resources commented out.
+- `maliev-staging-pg-app-password`, `maliev-staging-pg-superuser-password`, `maliev-prod-pg-app-password`, and `maliev-prod-pg-superuser-password` are referenced by GitOps `secrets.yaml` files but do not currently exist in Google Secret Manager.
+
+Current development PostgreSQL databases observed from the live `maliev-dev` Postgres cluster:
+
+- `app_db`
+- `auth_app_db`
+- `career_app_db`
+- `contact_app_db`
+- `contact_app_test_db`
+- `country_app_db`
+- `currency_app_db`
+- `customer_app_db`
+- `employee_app_db`
+- `employee_service_db`
+- `invoice_app_db`
+- `material_app_db`
+- `order_app_db`
+- `payment_app_db`
+- `postgres`
+- `purchaseorder_app_db`
+- `supplier_app_db`
+- `supplier_service_db`
+- `upload_app_db`
+
+The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, delivery, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed.
+
 ## Confirmed Required Service-Specific Keys
 
 These keys were derived from each service's startup/configuration code and current appsettings shape. Values are intentionally not recorded here.
@@ -153,6 +193,8 @@ These service config secrets exist but are not referenced by current app overlay
 
 - Populate confirmed DB connection-string keys for every missing service secret listed above.
 - Populate `ConnectionStrings__DeliveryDbContext` in `maliev-dev-delivery-service-config`.
+- Create or confirm the missing development databases before adding development connection strings for accounting, commerce, delivery, facility, IAM, registry, and search.
+- Create or confirm staging/prod Postgres credential secrets before enabling their environment `secrets.yaml` resources.
 - Create staging/prod DeliveryService secrets only after real staging/prod SHIPPOP or GoShip credentials and Delivery DB connection strings are confirmed.
 - Decide whether staging/prod shared configs should include Redis/RabbitMQ/CORS keys, matching the development shared config shape.
 - Decide whether missing service configs should be created or whether the corresponding GitOps app overlays are ahead of currently deployed services.
