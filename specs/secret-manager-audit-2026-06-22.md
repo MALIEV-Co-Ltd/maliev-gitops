@@ -133,6 +133,11 @@ Current development PostgreSQL databases observed from the live `maliev-dev` Pos
 
 The live development cluster does not currently show databases for the missing service config families listed below, including accounting, commerce, facility, IAM, registry, and search. Do not create connection strings for those services until the target databases and credentials are created or otherwise confirmed. DeliveryService is no longer part of this missing development database list, and its dev ArgoCD Application is active with a SHIPPOP-inclusive image containing the verified `/pricelist/` payload fix.
 
+After creating `maliev-dev-geometry-service-config`, the remaining development service config gaps are not safe to auto-create from current evidence:
+
+- `maliev-dev-accounting-service-config`, `maliev-dev-commerce-service-config`, `maliev-dev-facility-service-config`, `maliev-dev-iam-service-config`, `maliev-dev-notification-service-config`, `maliev-dev-registry-service-config`, and `maliev-dev-search-service-config` require service-specific database connection strings, but the live `maliev-dev` PostgreSQL cluster does not currently show corresponding service databases.
+- `maliev-dev-quote-engine-config` is not database-backed, but its public `Web__BaseUrl`/`QuoteEngine__BaseUrl` and optional `GoogleMaps__BrowserApiKey`/map settings still need confirmation. GitOps confirms the QuoteEngine dev ingress host `quote-dev.maliev.com`, while existing `maliev-dev-web-config` and `maliev-dev-intranet-config` are empty JSON objects and cannot confirm the Web redirect base URL or browser Maps key.
+
 ## Confirmed Required Service-Specific Keys
 
 These keys were derived from each service's startup/configuration code and current appsettings shape. Values are intentionally not recorded here.
@@ -292,6 +297,8 @@ Create these Secret Manager entries with confirmed database credentials before u
 
 - Populate confirmed DB connection-string keys for every missing service secret listed above.
 - Create or confirm the missing development databases before adding development connection strings for accounting, commerce, facility, IAM, registry, and search.
+- Confirm whether NotificationService should use a new development database name before creating `maliev-dev-notification-service-config`.
+- Confirm QuoteEngine development public URLs and Google Maps browser configuration before creating `maliev-dev-quote-engine-config`.
 - Create or confirm staging/prod Postgres credential secrets before enabling their environment `secrets.yaml` resources.
 - Create staging/prod DeliveryService secrets only after real staging/prod SHIPPOP or GoShip credentials and Delivery DB connection strings are confirmed.
 - Decide whether staging/prod shared configs should include Redis/RabbitMQ/CORS keys, matching the development shared config shape.
