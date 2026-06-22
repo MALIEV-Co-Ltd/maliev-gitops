@@ -262,7 +262,11 @@ These service config secrets exist but are not referenced by current app overlay
 - `maliev-prod-orderstatus-service-config`
 - `maliev-prod-quotationrequest-service-config`
 
-The `maliev-<env>-email-service-config` entries above are empty JSON objects and should not be treated as valid NotificationService config.
+Redacted payload inspection of the unreferenced service config secrets showed:
+
+- `maliev-<env>-email-service-config` entries are empty JSON objects and should not be treated as valid NotificationService config.
+- `maliev-<env>-log-service-config`, `maliev-<env>-message-service-config`, and `maliev-<env>-orderstatus-service-config` entries that exist are empty JSON objects.
+- `maliev-<env>-quotationrequest-service-config` entries contain QuotationRequest connection-string and UploadService keys, but the `Maliev.QuotationRequestService` repo and matching `3-apps/maliev-quotationrequest-service` app overlay are absent. Treat these as legacy retained payloads pending a retention/deletion decision, not as reusable QuotationService config.
 
 ### Expected Non-App References
 
