@@ -25,6 +25,57 @@ No secret values are stored in this file. Key presence and required follow-up on
 
 It still does not contain `ConnectionStrings__DeliveryDbContext`.
 
+## Verified Shared Config Key Shape
+
+The app deployments generally consume both `maliev-shared-secrets` and their service-specific secret through `envFrom`.
+
+Redacted key inspection showed:
+
+- `maliev-dev-shared-config` contains Redis, RabbitMQ, CORS, and JWT keys:
+  - `ConnectionStrings__rabbitmq`
+  - `ConnectionStrings__redis`
+  - `CORS__AllowedOrigins`
+  - `Jwt__Audience`
+  - `Jwt__Issuer`
+  - `Jwt__PublicKey`
+  - `Jwt__SecurityKey`
+  - `RABBITMQ_ERLANG_COOKIE`
+  - `RabbitMq__Password`
+  - `RabbitMq__Username`
+- `maliev-staging-shared-config` currently contains only JWT keys:
+  - `Jwt__Audience`
+  - `Jwt__Issuer`
+  - `Jwt__SecurityKey`
+- `maliev-prod-shared-config` currently contains only JWT keys:
+  - `Jwt__Audience`
+  - `Jwt__Issuer`
+  - `Jwt__SecurityKey`
+
+Staging and production shared config may still need Redis/RabbitMQ/CORS keys if the cluster deployments are expected to start the same way as development.
+
+## Confirmed Required Service-Specific Keys
+
+These keys were derived from each service's startup/configuration code and current appsettings shape. Values are intentionally not recorded here.
+
+| Service secret family | Confirmed service-specific keys |
+| --- | --- |
+| `maliev-<env>-accounting-service-config` | `ConnectionStrings__AccountingDbContext` |
+| `maliev-<env>-commerce-service-config` | `ConnectionStrings__CommerceDbContext` |
+| `maliev-<env>-contact-service-config` | `ConnectionStrings__ContactDbContext` |
+| `maliev-<env>-delivery-service-config` | `ConnectionStrings__DeliveryDbContext`, `Shippop__DomesticBaseUrl`, `Shippop__DomesticApiKey`, `Shippop__DomesticEmail`, `Shippop__InternationalBaseUrl`, `Shippop__InternationalBearerToken`, `GoShip__BaseUrl`, `GoShip__AppId`, `GoShip__Secret` |
+| `maliev-<env>-facility-service-config` | `ConnectionStrings__FacilityDbContext` |
+| `maliev-<env>-iam-service-config` | `ConnectionStrings__IamDbContext` |
+| `maliev-<env>-quote-engine-config` | `Web__BaseUrl`, `QuoteEngine__BaseUrl`, `GoogleMaps__BrowserApiKey` if Google Maps is enabled for that environment; service endpoint overrides may also be needed when Aspire service discovery is not available |
+| `maliev-<env>-registry-service-config` | `ConnectionStrings__RegistryDbContext`, optional provider keys `BDEX__ConsumerKey` and `BDEX__ConsumerSecret` if BDEX is enabled |
+| `maliev-<env>-search-service-config` | `ConnectionStrings__SearchDbContext` |
+
+Notes:
+
+- Existing `maliev-dev-contact-service-config` contains only `ConnectionStrings__ContactDbContext`, which matches the current minimum service-specific requirement.
+- Existing `maliev-dev-order-service-config` shows the established pattern of service-specific DB connection strings plus external service endpoint overrides.
+- `ConnectionStrings__IamDbContext` uses the casing from `Maliev.IAMService.Api/Program.cs`.
+- Do not infer DB names, usernames, or passwords from neighboring services. Create or update these Secret Manager entries only with confirmed environment-specific values.
+
 ## Missing GitOps References In Google Secret Manager
 
 These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not currently exist in Google Secret Manager:
@@ -100,11 +151,10 @@ These service config secrets exist but are not referenced by current app overlay
 
 ## Required Follow-Up
 
-- Populate `ConnectionStrings__DeliveryDbContext` for:
-  - `maliev-dev-delivery-service-config`
-  - `maliev-staging-delivery-service-config`
-  - `maliev-prod-delivery-service-config`
-- Create staging/prod DeliveryService secrets only after real staging/prod SHIPPOP credentials and Delivery DB connection strings are confirmed.
+- Populate confirmed DB connection-string keys for every missing service secret listed above.
+- Populate `ConnectionStrings__DeliveryDbContext` in `maliev-dev-delivery-service-config`.
+- Create staging/prod DeliveryService secrets only after real staging/prod SHIPPOP or GoShip credentials and Delivery DB connection strings are confirmed.
+- Decide whether staging/prod shared configs should include Redis/RabbitMQ/CORS keys, matching the development shared config shape.
 - Decide whether missing service configs should be created or whether the corresponding GitOps app overlays are ahead of currently deployed services.
 - Decide whether unreferenced service config secrets belong to removed services, disabled apps, or renamed services.
 
@@ -125,4 +175,7 @@ kubectl kustomize 3-apps\maliev-delivery-service\overlays\production
 kubectl kustomize 3-apps\maliev-chatbot-service\overlays\development
 kubectl kustomize 3-apps\maliev-chatbot-service\overlays\staging
 kubectl kustomize 3-apps\maliev-chatbot-service\overlays\production
+
+Select-String over each missing service's `Program.cs`, options classes, and appsettings files for:
+`AddPostgresDbContext`, `GetConnectionString`, `Configure<TOptions>`, `GetSection`, `AddHttpClient`, and environment-specific provider sections.
 ```
