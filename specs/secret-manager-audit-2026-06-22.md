@@ -78,6 +78,13 @@ Live Kubernetes metadata and GitOps environment kustomizations currently show:
 - `maliev-staging-pg-app-password`, `maliev-staging-pg-superuser-password`, `maliev-prod-pg-app-password`, and `maliev-prod-pg-superuser-password` are referenced by GitOps `secrets.yaml` files but do not currently exist in Google Secret Manager.
 - `kubectl kustomize 2-environments/2-staging` and `kubectl kustomize 2-environments/3-production` currently render without those PostgreSQL ExternalSecrets because the relevant resources are disabled in each environment kustomization.
 - The missing staging/prod PostgreSQL Secret Manager entries are therefore activation prerequisites for those environment resources, not currently rendered live deployment dependencies.
+- The active app-of-apps manifests under `argocd/environments/{dev,staging,prod}/apps` currently include only each environment Application:
+  - `2-environments/1-development`
+  - `2-environments/2-staging`
+  - `2-environments/3-production`
+- Individual service Application manifests for DeliveryService, GeometryService, NotificationService, QuoteEngine, AccountingService, CommerceService, FacilityService, IAMService, RegistryService, SearchService, and the other services are currently under `argocd/environments/_disabled_apps`.
+- `argocd/environments/live/maliev-live-environment.yaml` points to `2-environments/0-live-production`, and that kustomization currently renders namespace and ingress only. It does not render service deployments or ExternalSecrets.
+- A live cluster check returned zero ArgoCD `Application` resources through `kubectl get applications -n argocd`; treat this repo audit as desired-state evidence unless ArgoCD access/state is confirmed separately.
 
 Current development PostgreSQL databases observed from the live `maliev-dev` Postgres cluster:
 
@@ -172,6 +179,27 @@ These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not current
 - `maliev-prod-registry-service-config`
 - `maliev-prod-search-service-config`
 
+## Deployment Activation Classification
+
+Current GitOps desired-state structure separates the missing service config secrets into these operational buckets:
+
+### Active Environment Prerequisites
+
+These are active environment-level prerequisites or rendered resources:
+
+- `maliev-dev-shared-config`
+- `maliev-dev-pg-credentials`
+- `maliev-staging-shared-config`
+- `maliev-prod-shared-config`
+
+Development shared/PostgreSQL secrets are synced in the live `maliev-dev` namespace. Staging/prod shared configs exist in Secret Manager, but staging/prod environment kustomizations currently do not render shared/database/app resources.
+
+### Disabled App Prerequisites
+
+The missing service config secrets listed in the Development, Staging, and Production sections above are referenced by app overlay manifests, but the corresponding individual ArgoCD service Application manifests are currently under `argocd/environments/_disabled_apps`.
+
+Create those service config secrets before moving the corresponding Application manifest out of `_disabled_apps` or adding the app overlay to an active app-of-apps path.
+
 ## Existing Secret Manager Entries Not Referenced By App Overlays
 
 These service config secrets exist but are not referenced by current app overlay `service-secrets-patch.yaml` files:
@@ -248,6 +276,8 @@ kubectl kustomize 3-apps\maliev-chatbot-service\overlays\staging
 kubectl kustomize 3-apps\maliev-chatbot-service\overlays\production
 kubectl kustomize 2-environments\2-staging
 kubectl kustomize 2-environments\3-production
+kubectl kustomize 2-environments\0-live-production
+kubectl get applications -n argocd -o custom-columns=NAME:.metadata.name,SYNC:.status.sync.status,HEALTH:.status.health.status,PATH:.spec.source.path --no-headers
 
 Select-String over each missing service's `Program.cs`, options classes, and appsettings files for:
 `AddPostgresDbContext`, `GetConnectionString`, `Configure<TOptions>`, `GetSection`, `AddHttpClient`, and environment-specific provider sections.
