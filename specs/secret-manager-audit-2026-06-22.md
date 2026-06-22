@@ -40,6 +40,7 @@ No secret values are stored in this file. Key presence and required follow-up on
   - `maliev-prod-line-chatbot-service-config`
 - Created and verified the live development database `notification_app_db`, then created `maliev-dev-notification-service-config` with `ConnectionStrings__NotificationDbContext` and `Encryption__DataProtectionKey`. Notification provider credentials were not added because provider-specific credentials are not confirmed and the service simulates outbound provider delivery when those credentials are absent.
 - Added explicit development environment patches for `maliev-web` and `maliev-quote-engine` overlays so they set `ASPNETCORE_ENVIRONMENT=Development` when their disabled Applications are later activated.
+- Added new dev Secret Manager versions for `maliev-dev-web-config` and `maliev-dev-intranet-config` with `Services__DeliveryService__BaseUrl`, pointing their BFF shipping clients at the prepared in-cluster DeliveryService Service when those disabled Applications are later activated. Values were verified by key presence and string length only.
 
 ## Verified Existing DeliveryService Dev Secret Keys
 
@@ -61,6 +62,13 @@ DeliveryService code currently uses `Shippop__DomesticApiKey` and `Shippop__Dome
 ## Verified Shared Config Key Shape
 
 The app deployments generally consume both `maliev-shared-secrets` and their service-specific secret through `envFrom`.
+
+Web, QuoteEngine, and Intranet BFF shipping calls all target DeliveryService through the shared service-client contract:
+
+- `Services__DeliveryService__BaseUrl` maps to `Services:DeliveryService:BaseUrl`.
+- The prepared development in-cluster target is the `maliev-delivery-service` Kubernetes Service on port `8080`.
+- `maliev-dev-web-config` and `maliev-dev-intranet-config` now contain this key.
+- `maliev-dev-quote-engine-config` is still intentionally absent because QuoteEngine also needs confirmed `Web__BaseUrl` and `QuoteEngine__BaseUrl` before activation.
 
 Redacted key inspection showed:
 
@@ -147,7 +155,7 @@ The live development cluster now has databases for Accounting, Commerce, Facilit
 
 After creating the dev DB-backed service configs, the remaining development service config gap is:
 
-- `maliev-dev-quote-engine-config` is not database-backed, but its public `Web__BaseUrl`/`QuoteEngine__BaseUrl` and optional `GoogleMaps__BrowserApiKey`/map settings still need confirmation. GitOps contains a disabled QuoteEngine dev ingress host `quote-dev.maliev.com`, but a live DNS check returned no host for `quote-dev.maliev.com`, and the live `maliev-dev` ingress currently exposes only `dev.api.maliev.com`. Existing `maliev-dev-web-config` and `maliev-dev-intranet-config` are empty JSON objects and cannot confirm the Web redirect base URL or browser Maps key.
+- `maliev-dev-quote-engine-config` is not database-backed, but its public `Web__BaseUrl`/`QuoteEngine__BaseUrl` and optional `GoogleMaps__BrowserApiKey`/map settings still need confirmation. GitOps contains a disabled QuoteEngine dev ingress host `quote-dev.maliev.com`, but a live DNS check returned no host for `quote-dev.maliev.com`, and the live `maliev-dev` ingress currently exposes only `dev.api.maliev.com`. `maliev-dev-web-config` and `maliev-dev-intranet-config` now contain the DeliveryService base URL needed for shipping calls, but they do not confirm the QuoteEngine Web redirect base URL or browser Maps key.
 
 ## Confirmed Required Service-Specific Keys
 
@@ -175,6 +183,7 @@ Notes:
 - Existing `maliev-dev-geometry-service-config` contains the keys required for GeometryService dev startup and auth: `RABBITMQ_URI`, `JWT_PUBLIC_KEY`, `JWT_SECURITY_KEY`, `JWT_ISSUER`, `JWT_AUDIENCE`, `JWT_PRIVATE_KEY`, `ASPNETCORE_ENVIRONMENT`, and `ENVIRONMENT`. `JWT_PRIVATE_KEY` is intentionally empty in dev because GeometryService allows HS256 service-account signing only when its environment is Development or Testing.
 - Existing `maliev-dev-accounting-service-config`, `maliev-dev-commerce-service-config`, `maliev-dev-facility-service-config`, `maliev-dev-iam-service-config`, `maliev-dev-registry-service-config`, and `maliev-dev-search-service-config` each contain only the expected `ConnectionStrings__*DbContext` key for their corresponding dev database.
 - Existing `maliev-dev-notification-service-config` contains `ConnectionStrings__NotificationDbContext` and `Encryption__DataProtectionKey`. Provider credentials are intentionally absent until confirmed; NotificationService providers simulate outbound delivery when their provider credentials are not configured.
+- Existing `maliev-dev-web-config` and `maliev-dev-intranet-config` contain `Services__DeliveryService__BaseUrl` for SHIPPOP-backed shipping calls through DeliveryService when their disabled dev Applications are later activated.
 - Existing `maliev-<env>-email-service-config` entries are empty JSON objects. They are stale placeholders, not migration sources for NotificationService.
 - `ConnectionStrings__IamDbContext` uses the casing from `Maliev.IAMService.Api/Program.cs`.
 - Do not infer DB names, usernames, or passwords from neighboring services. Create or update these Secret Manager entries only with confirmed environment-specific values.
@@ -301,7 +310,7 @@ Create these Secret Manager entries with confirmed database credentials before u
 
 ## Required Follow-Up
 
-- Confirm and activate the QuoteEngine development public host before creating `maliev-dev-quote-engine-config`: `quote-dev.maliev.com` exists in the disabled GitOps overlay but did not resolve in DNS and was not present on the live `maliev-dev` ingress at the last check. Also confirm the dev Web redirect base URL and Google Maps browser configuration.
+- Confirm and activate the QuoteEngine development public host before creating `maliev-dev-quote-engine-config`: `quote-dev.maliev.com` exists in the disabled GitOps overlay but did not resolve in DNS and was not present on the live `maliev-dev` ingress at the last check. Also confirm the dev Web redirect base URL and Google Maps browser configuration. When created, include `Services__DeliveryService__BaseUrl` so QuoteEngine shipping calls use the prepared DeliveryService Service.
 - Populate confirmed DB connection-string keys for every missing staging/prod service secret listed above.
 - Create or confirm staging/prod Postgres credential secrets before enabling their environment `secrets.yaml` resources.
 - Create staging/prod DeliveryService secrets only after real staging/prod SHIPPOP or GoShip credentials and Delivery DB connection strings are confirmed.
