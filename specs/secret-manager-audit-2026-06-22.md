@@ -8,6 +8,10 @@ No secret values are stored in this file. Key presence and required follow-up on
 
 - Created `maliev-dev-delivery-service-config` in Google Secret Manager with SHIPPOP dev configuration keys only.
 - Corrected DeliveryService production overlay from `maliev-production-delivery-service-config` to `maliev-prod-delivery-service-config`.
+- Corrected NotificationService GitOps from legacy individual remote refs (`maliev-email-service-db-connection-string`, `redis-connection-string`, `rabbitmq-connection-string`) to environment-specific config extraction:
+  - `maliev-dev-notification-service-config`
+  - `maliev-staging-notification-service-config`
+  - `maliev-prod-notification-service-config`
 - Corrected chatbot overlays to consume existing LINE chatbot secrets:
   - `maliev-dev-line-chatbot-service-config`
   - `maliev-staging-line-chatbot-service-config`
@@ -105,6 +109,7 @@ These keys were derived from each service's startup/configuration code and curre
 | `maliev-<env>-delivery-service-config` | `ConnectionStrings__DeliveryDbContext`, `Shippop__DomesticBaseUrl`, `Shippop__DomesticApiKey`, `Shippop__DomesticEmail`, `Shippop__InternationalBaseUrl`, `Shippop__InternationalBearerToken`, `GoShip__BaseUrl`, `GoShip__AppId`, `GoShip__Secret` |
 | `maliev-<env>-facility-service-config` | `ConnectionStrings__FacilityDbContext` |
 | `maliev-<env>-iam-service-config` | `ConnectionStrings__IamDbContext` |
+| `maliev-<env>-notification-service-config` | `ConnectionStrings__NotificationDbContext` |
 | `maliev-<env>-quote-engine-config` | `Web__BaseUrl`, `QuoteEngine__BaseUrl`, `GoogleMaps__BrowserApiKey` if Google Maps is enabled for that environment; service endpoint overrides may also be needed when Aspire service discovery is not available |
 | `maliev-<env>-registry-service-config` | `ConnectionStrings__RegistryDbContext`, optional provider keys `BDEX__ConsumerKey` and `BDEX__ConsumerSecret` if BDEX is enabled |
 | `maliev-<env>-search-service-config` | `ConnectionStrings__SearchDbContext` |
@@ -126,6 +131,7 @@ These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not current
 - `maliev-dev-commerce-service-config`
 - `maliev-dev-facility-service-config`
 - `maliev-dev-iam-service-config`
+- `maliev-dev-notification-service-config`
 - `maliev-dev-quote-engine-config`
 - `maliev-dev-registry-service-config`
 - `maliev-dev-search-service-config`
@@ -138,6 +144,7 @@ These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not current
 - `maliev-staging-delivery-service-config`
 - `maliev-staging-facility-service-config`
 - `maliev-staging-iam-service-config`
+- `maliev-staging-notification-service-config`
 - `maliev-staging-quote-engine-config`
 - `maliev-staging-registry-service-config`
 - `maliev-staging-search-service-config`
@@ -150,6 +157,7 @@ These `3-apps/*/overlays/*/service-secrets-patch.yaml` references do not current
 - `maliev-prod-delivery-service-config`
 - `maliev-prod-facility-service-config`
 - `maliev-prod-iam-service-config`
+- `maliev-prod-notification-service-config`
 - `maliev-prod-quote-engine-config`
 - `maliev-prod-registry-service-config`
 - `maliev-prod-search-service-config`
