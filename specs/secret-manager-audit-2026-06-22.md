@@ -314,6 +314,34 @@ The following GitOps `ExternalSecret` remote refs are present in staging/prod en
 
 Create these Secret Manager entries with confirmed database credentials before uncommenting `secrets.yaml`, database, Redis, RabbitMQ, shared secrets, or common app resources in staging or production.
 
+## Deployment Activation Checklist
+
+Use this checklist before moving any service Application out of `argocd/environments/_disabled_apps` or uncommenting staging/prod environment resources.
+
+### Development
+
+- Keep all individual service Applications disabled until development activation is explicitly approved. Current active app-of-apps entries are environment Applications only.
+- Confirm DNS for `make.maliev.com`; current checks returned no record, while `www.maliev.com`, `api.maliev.com`, and `intranet.maliev.com` resolve through Cloudflare.
+- Confirm the intended Cloudflare/GCP target for `make.maliev.com`; GCP global static IPs currently include `maliev-ip` (`35.244.249.173`) and `maliev-www-ip` (`35.244.136.255`).
+- Activate DeliveryService only after confirming the prepared dev image tag `bcefbbec021165c6f6e865649eed2850868aa2bb` is still the intended SHIPPOP dev image.
+- Activate Web, Intranet, and QuoteEngine only after DeliveryService is available because their shipping BFF clients use `Services__DeliveryService__BaseUrl`.
+- Add `GoogleMaps__BrowserApiKey` only after the browser key and allowed referrers are confirmed.
+
+### Staging
+
+- Do not enable staging environment `secrets.yaml`, database, Redis, RabbitMQ, shared secrets, or common app resources until the missing staging PostgreSQL credential refs exist.
+- Create the 11 missing `maliev-staging-*-config` service config secrets with confirmed values before enabling corresponding staging service Applications.
+- For `maliev-staging-delivery-service-config`, confirm the staging Delivery DB connection string and staging SHIPPOP or GoShip credentials before creating the secret.
+- Decide whether `maliev-staging-shared-config` should include Redis, RabbitMQ, and CORS keys matching the dev shared-config shape before enabling app workloads.
+
+### Production
+
+- Do not enable production environment `secrets.yaml`, database, Redis, RabbitMQ, shared secrets, or common app resources until the missing production PostgreSQL credential refs exist.
+- Create the 11 missing `maliev-prod-*-config` service config secrets with confirmed production values before enabling corresponding production service Applications.
+- For `maliev-prod-delivery-service-config`, confirm the production Delivery DB connection string and production SHIPPOP or GoShip credentials before creating the secret.
+- Decide whether `maliev-prod-shared-config` should include Redis, RabbitMQ, and CORS keys matching the dev shared-config shape before enabling app workloads.
+- Do not copy dev SHIPPOP credentials into production.
+
 ## Required Follow-Up
 
 - Create/confirm DNS for `make.maliev.com` before activating the QuoteEngine ingress. Current public hosts resolve through Cloudflare, while GCP global static IP inventory shows `maliev-ip` at `35.244.249.173` and `maliev-www-ip` at `35.244.136.255`; choose the intended Cloudflare/GCP target deliberately instead of guessing during activation.
