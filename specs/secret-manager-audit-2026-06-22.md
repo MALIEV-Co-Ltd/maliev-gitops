@@ -159,7 +159,7 @@ The live development cluster now has databases for Accounting, Commerce, Facilit
 After creating the dev DB-backed service configs and the QuoteEngine dev config, there are no missing development service config secrets in the current GitOps audit.
 
 - `maliev-dev-quote-engine-config` is not database-backed. It now contains the confirmed public `Web__BaseUrl` and `QuoteEngine__BaseUrl`, plus `Services__DeliveryService__BaseUrl` for shipping calls. Optional `GoogleMaps__BrowserApiKey`/map settings are still absent until a browser Maps key is confirmed.
-- QuoteEngine base and disabled development ingress manifests now reference `make.maliev.com`, matching the confirmed QuoteEngine public base URL. A DNS check returned no record for `make.maliev.com`, so DNS remains an activation prerequisite.
+- QuoteEngine base and disabled development ingress manifests now reference `make.maliev.com`, matching the confirmed QuoteEngine public base URL. A DNS check returned no record for `make.maliev.com`, so DNS remains an activation prerequisite. Current canonical public hosts `www.maliev.com`, `api.maliev.com`, and `intranet.maliev.com` resolve through Cloudflare addresses, so `make.maliev.com` should be added consistently with that public DNS path before activating the ingress.
 
 ## Confirmed Required Service-Specific Keys
 
@@ -316,7 +316,7 @@ Create these Secret Manager entries with confirmed database credentials before u
 
 ## Required Follow-Up
 
-- Create/confirm DNS for `make.maliev.com` before activating the QuoteEngine ingress.
+- Create/confirm DNS for `make.maliev.com` before activating the QuoteEngine ingress. Current public hosts resolve through Cloudflare, while GCP global static IP inventory shows `maliev-ip` at `35.244.249.173` and `maliev-www-ip` at `35.244.136.255`; choose the intended Cloudflare/GCP target deliberately instead of guessing during activation.
 - Add Google Maps browser configuration only after the intended browser key and allowed referrers are confirmed.
 - Populate confirmed DB connection-string keys for every missing staging/prod service secret listed above.
 - Create or confirm staging/prod Postgres credential secrets before enabling their environment `secrets.yaml` resources.
