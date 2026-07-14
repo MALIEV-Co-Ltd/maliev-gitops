@@ -22,6 +22,13 @@ spec:
         app.kubernetes.io/part-of: maliev-legacy
     spec:
       automountServiceAccountToken: false
+      nodeSelector:
+        cloud.google.com/gke-nodepool: legacy-pool
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: legacy
+          effect: NoSchedule
       securityContext:
         runAsNonRoot: true
         seccompProfile:
