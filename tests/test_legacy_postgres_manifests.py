@@ -193,6 +193,19 @@ class LegacyPostgresManifestTests(unittest.TestCase):
         )
 
         cluster = resources_by_kind(self.legacy, "Cluster")[0]
+        self.assertEqual(
+            cluster["spec"]["affinity"]["nodeSelector"],
+            {"cloud.google.com/gke-nodepool": "legacy-pool"},
+        )
+        self.assertIn(
+            {
+                "key": "workload",
+                "operator": "Equal",
+                "value": "legacy",
+                "effect": "NoSchedule",
+            },
+            cluster["spec"]["affinity"]["tolerations"],
+        )
         roles = cluster["spec"]["managed"]["roles"]
         self.assertEqual({role["name"] for role in roles}, set(ACTIVE_DATABASES.values()))
         self.assertTrue(all(role["login"] for role in roles))
