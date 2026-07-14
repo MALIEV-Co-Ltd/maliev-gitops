@@ -3,4 +3,4 @@ kind: Kustomization
 namespace: maliev-legacy
 resources:
   - namespace.yaml
-  - ../../3-apps/legacy-postgres/overlays/legacy
+  - ../../3-apps/_legacy-postgres/overlays/legacy
