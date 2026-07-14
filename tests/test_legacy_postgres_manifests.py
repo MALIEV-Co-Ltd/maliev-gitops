@@ -74,6 +74,12 @@ class LegacyPostgresManifestTests(unittest.TestCase):
         first_render = render(PLUGIN_INFRA)
         second_render = render(PLUGIN_INFRA)
         self.assertEqual(first_render, second_render)
+        self.assertEqual(resources_by_kind(first_render, "Secret"), [])
+        sidecar_config = resources_by_kind(first_render, "ConfigMap")
+        self.assertIn(
+            "plugin-barman-cloud-m5m67kfh8f",
+            {resource["metadata"]["name"] for resource in sidecar_config},
+        )
 
         crds = resources_by_kind(first_render, "CustomResourceDefinition")
         self.assertIn(
@@ -89,6 +95,11 @@ class LegacyPostgresManifestTests(unittest.TestCase):
             deployment["spec"]["template"]["spec"]["containers"][0]["image"],
             PLUGIN_IMAGE,
         )
+        sidecar_source = deployment["spec"]["template"]["spec"]["containers"][0]["env"][0][
+            "valueFrom"
+        ]
+        self.assertIn("configMapKeyRef", sidecar_source)
+        self.assertNotIn("secretKeyRef", sidecar_source)
         self.assertFalse(
             any(resource["metadata"]["name"] == "cnpg-controller-manager" for resource in deployments)
         )
