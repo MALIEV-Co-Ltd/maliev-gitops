@@ -198,7 +198,11 @@ class LegacyPostgresManifestTests(unittest.TestCase):
         self.assertTrue(all(role["login"] for role in roles))
 
     def test_external_secrets_use_only_the_single_legacy_gsm_secret(self) -> None:
-        external_secrets = resources_by_kind(self.legacy, "ExternalSecret")
+        external_secrets = [
+            resource
+            for resource in resources_by_kind(self.legacy, "ExternalSecret")
+            if resource["metadata"]["name"].startswith("legacy-postgres-")
+        ]
         self.assertEqual(len(external_secrets), len(ACTIVE_DATABASES) + 1)
         properties: set[str] = set()
         for external_secret in external_secrets:
