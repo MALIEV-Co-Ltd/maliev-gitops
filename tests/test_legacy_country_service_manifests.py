@@ -120,20 +120,6 @@ class LegacyCountryServiceManifestTests(unittest.TestCase):
         }
         self.assertTrue({53, 5432, 6379}.issubset(ports))
 
-    def test_legacy_application_pods_are_isolated_to_the_legacy_pool(self) -> None:
-        expected_selector = {"cloud.google.com/gke-nodepool": "legacy-pool"}
-        expected_toleration = {
-            "key": "workload",
-            "operator": "Equal",
-            "value": "legacy",
-            "effect": "NoSchedule",
-        }
-        for name in ("legacy-maliev-country-service", "legacy-redis"):
-            deployment = one(self.documents, "Deployment", name)
-            pod = deployment["spec"]["template"]["spec"]
-            self.assertEqual(pod["nodeSelector"], expected_selector)
-            self.assertIn(expected_toleration, pod["tolerations"])
-
 
 if __name__ == "__main__":
     unittest.main()

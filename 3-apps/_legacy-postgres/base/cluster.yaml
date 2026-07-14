@@ -36,13 +36,6 @@ spec:
       memory: 1Gi
   affinity:
     podAntiAffinityType: required
-    nodeSelector:
-      cloud.google.com/gke-nodepool: legacy-pool
-    tolerations:
-      - key: workload
-        operator: Equal
-        value: legacy
-        effect: NoSchedule
   postgresql:
     parameters:
       effective_cache_size: 768MB
