@@ -122,6 +122,7 @@ class LegacyPostgresManifestTests(unittest.TestCase):
         cluster = resources_by_kind(self.legacy, "Cluster")[0]
         self.assertEqual(cluster["metadata"]["name"], "legacy-postgres-main")
         self.assertEqual(cluster["spec"]["instances"], 2)
+        self.assertEqual(cluster["spec"]["affinity"]["podAntiAffinityType"], "required")
         self.assertTrue(cluster["spec"]["enablePDB"])
         self.assertEqual(cluster["spec"]["storage"]["storageClass"], "standard-rwo")
         self.assertIn("requests", cluster["spec"]["resources"])

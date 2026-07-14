@@ -108,6 +108,10 @@ Create the GCP service account
 
 ## Required `maliev-legacy-secrets` properties
 
+`legacy-postgres-superuser-username` must be exactly `postgres`; CloudNativePG
+requires that username for `spec.superuserSecret`. Generate a unique high-entropy
+value for every password property.
+
 - `legacy-postgres-superuser-username`
 - `legacy-postgres-superuser-password`
 - `legacy-postgres-country-username`
