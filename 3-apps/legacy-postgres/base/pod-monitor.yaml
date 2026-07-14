@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: legacy-postgres-monitor
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: legacy-postgres-main
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
