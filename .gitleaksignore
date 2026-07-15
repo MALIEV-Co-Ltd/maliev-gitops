@@ -1,0 +1,2 @@
+# Upstream Barman v0.13.0 release Secret stores only the public sidecar image name.
+1-cluster-infra/07-barman-cloud-plugin/release.yaml:kubernetes-secret-yaml:963
