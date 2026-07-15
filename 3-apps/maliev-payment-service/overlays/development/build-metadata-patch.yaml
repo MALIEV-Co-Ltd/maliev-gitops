@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-payment-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-payment-service
+          env:
+            - name: BuildMetadata__ImageDigest
+              value: "sha256:fbad98a201d646fc6b85a971dfd12827020a05929d229a4f393e544797748fb6"
