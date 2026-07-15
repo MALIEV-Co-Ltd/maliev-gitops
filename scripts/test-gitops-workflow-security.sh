@@ -18,4 +18,25 @@ if [[ "$checkout_count" -eq 0 || "$credential_opt_out_count" -ne "$checkout_coun
   exit 1
 fi
 
+lint_job="$(sed -n '/^  lint:/,/^  validate:/p' "$workflow")"
+validate_job="$(sed -n '/^  validate:/,$p' "$workflow")"
+
+if ! grep -Eq '^      security-events: write$' <<< "$lint_job"; then
+  echo "Lint job must receive security-events write permission for SARIF upload." >&2
+  exit 1
+fi
+
+if grep -Eq '^[[:space:]]+security-events:' <<< "$validate_job"; then
+  echo "Validate job must inherit read-only contents permission without security-events write." >&2
+  exit 1
+fi
+
+upload_count="$(grep -Ec '^[[:space:]]+- name: Upload SARIF' "$workflow")"
+safe_upload_count="$(grep -Ec "if: .*github.event.pull_request.head.repo.full_name == github.repository.*github.actor != 'dependabot\[bot\]'" "$workflow")"
+
+if [[ "$upload_count" -eq 0 || "$safe_upload_count" -ne "$upload_count" ]]; then
+  echo "Every SARIF upload must skip fork and Dependabot pull requests ($safe_upload_count/$upload_count)." >&2
+  exit 1
+fi
+
 echo "GitOps validation workflow security contract passed."

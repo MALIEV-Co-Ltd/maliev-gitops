@@ -11,6 +11,9 @@ permissions:
 jobs:
   lint:
     name: Lint and Static Analysis
+    permissions:
+      contents: read
+      security-events: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -101,21 +104,21 @@ jobs:
           fi
 
       - name: Upload SARIF (cluster-infra)
-        if: steps.cluster_runs.outputs.has_runs == 'true'
+        if: steps.cluster_runs.outputs.has_runs == 'true' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: kube-linter-cluster-infra.sarif
           category: kube-linter-cluster-infra
 
       - name: Upload SARIF (environments)
-        if: steps.env_runs.outputs.has_runs == 'true'
+        if: steps.env_runs.outputs.has_runs == 'true' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: kube-linter-environments.sarif
           category: kube-linter-environments
 
       - name: Upload SARIF (apps)
-        if: steps.apps_runs.outputs.has_runs == 'true'
+        if: steps.apps_runs.outputs.has_runs == 'true' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: kube-linter-apps.sarif
