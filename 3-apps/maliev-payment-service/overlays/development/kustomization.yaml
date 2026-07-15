@@ -2,9 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 images:
-- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-payment-service
-  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-payment-service
-  newTag: b4f432959bab579e662d4830045b70eaccc88775
+- digest: sha256:fbad98a201d646fc6b85a971dfd12827020a05929d229a4f393e544797748fb6
+  name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-payment-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-payment-artifact-dev/maliev-payment-service
 
 namespace: maliev-dev
 
@@ -16,3 +16,4 @@ patches:
 - path: resource-limits-patch.yaml
 - path: health-check-patch.yaml
 - path: service-secrets-patch.yaml
+- path: build-metadata-patch.yaml
