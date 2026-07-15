@@ -1,0 +1,19 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: legacy-postgres-backup-main
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  configuration:
+    destinationPath: gs://maliev.com/database/legacy-postgres/main/
+    googleCredentials:
+      gkeEnvironment: true
+    data:
+      compression: gzip
+      immediateCheckpoint: false
+      jobs: 1
+    wal:
+      compression: gzip
+      maxParallel: 1
+  retentionPolicy: 14d

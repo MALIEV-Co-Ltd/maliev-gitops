@@ -2,15 +2,17 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 images:
-  - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-web
-    newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-web
+- digest: sha256:bd2092c3135d4134851181669fbba28626e145c7fe02c086540e0d097680f147
+  name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-web
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-web-artifact-staging/maliev-web
 
 namespace: maliev-staging
 
 resources:
-  - ../../base
+- ../../base
 
 patches:
-  - path: resource-limits-patch.yaml
-  - path: health-check-patch.yaml
-  - path: service-secrets-patch.yaml
+- path: resource-limits-patch.yaml
+- path: health-check-patch.yaml
+- path: service-secrets-patch.yaml
+- path: build-metadata-patch.yaml
