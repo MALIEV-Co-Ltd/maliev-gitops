@@ -8,7 +8,9 @@ spec:
     kind: Deployment
     name: maliev-quote-engine
   minReplicas: 1
-  maxReplicas: 4
+  # QuoteAgentSessionStore still has process-local action state. Keep one pod
+  # until cross-pod session/action persistence tests prove horizontal safety.
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:
