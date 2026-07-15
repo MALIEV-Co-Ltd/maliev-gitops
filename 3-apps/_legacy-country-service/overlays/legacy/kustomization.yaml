@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: maliev-legacy
+resources:
+- ../../base
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/environment: legacy
+images:
+- name: legacy-maliev-country-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/legacy-maliev-country-service
+  newTag: 8edb92507edf02ac49faf3b51bc33708f9a44cdf
