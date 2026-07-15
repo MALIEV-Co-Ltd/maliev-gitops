@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # Barman Cloud plugin v0.13.0, pinned to the release commit.
+  # Release asset SHA-256: d2e71e7b06822448f1a421f05781846cfdb9cc621e7ef32eef5e20c5133213b0
+  - release.yaml
+
+images:
+  - name: ghcr.io/cloudnative-pg/plugin-barman-cloud
+    newTag: v0.13.0
+    digest: sha256:71589dbac582333442812b07b31f7ea4d00324a8358aac7ca507dabf9f4b6c96
