@@ -11,5 +11,6 @@ rules:
 ignore: |
   /1-cluster-infra/02-cert-manager/
   /1-cluster-infra/05-cloudnative-pg/
+  /1-cluster-infra/07-barman-cloud-plugin/release.yaml
   /.github/workflows/
   3-apps/*/overlays/**/kustomization.yaml

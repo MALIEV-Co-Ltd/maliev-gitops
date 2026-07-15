@@ -27,6 +27,8 @@ jobs:
   auto-merge-dev-deployments:
     name: Auto Merge Dev Deployments
     runs-on: ubuntu-latest
+    env:
+      GH_REPO: ${{ github.repository }}
     permissions:
       pull-requests: write
       contents: write

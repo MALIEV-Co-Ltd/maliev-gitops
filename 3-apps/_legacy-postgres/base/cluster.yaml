@@ -1,0 +1,160 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: legacy-postgres-main
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+    app.kubernetes.io/part-of: maliev-legacy
+spec:
+  instances: 2
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-standard-bookworm
+  primaryUpdateStrategy: unsupervised
+  enablePDB: true
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: legacy-postgres-superuser
+  serviceAccountTemplate:
+    metadata:
+      name: legacy-postgres-main
+      annotations:
+        iam.gke.io/gcp-service-account: legacy-postgres-main@maliev-website.iam.gserviceaccount.com
+  bootstrap:
+    initdb:
+      database: Country
+      owner: legacy_country_owner
+      secret:
+        name: legacy-postgres-country
+  storage:
+    size: 20Gi
+    storageClass: standard-rwo
+  resources:
+    requests:
+      cpu: 150m
+      memory: 512Mi
+    limits:
+      cpu: 750m
+      memory: 1Gi
+  affinity:
+    podAntiAffinityType: required
+  postgresql:
+    parameters:
+      effective_cache_size: 768MB
+      maintenance_work_mem: 64MB
+      max_connections: "100"
+      shared_buffers: 256MB
+      wal_compression: "on"
+      work_mem: 2MB
+  managed:
+    roles:
+      - name: legacy_country_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-country
+      - name: legacy_currency_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-currency
+      - name: legacy_customer_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-customer
+      - name: legacy_customer_identity_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-customer-identity
+      - name: legacy_data_protection_keys_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-data-protection-keys
+      - name: legacy_data_protection_keys_employee_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-data-protection-keys-employee
+      - name: legacy_employee_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-employee
+      - name: legacy_employee_identity_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-employee-identity
+      - name: legacy_invoice_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-invoice
+      - name: legacy_job_offers_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-job-offers
+      - name: legacy_material_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-material
+      - name: legacy_message_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-message
+      - name: legacy_order_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-order
+      - name: legacy_order_status_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-order-status
+      - name: legacy_payment_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-payment
+      - name: legacy_purchase_order_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-purchase-order
+      - name: legacy_quotation_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-quotation
+      - name: legacy_quotation_request_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-quotation-request
+      - name: legacy_receipt_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-receipt
+      - name: legacy_supplier_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-supplier
+      - name: legacy_upload_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-upload
+  monitoring:
+    enablePodMonitor: false
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: legacy-postgres-backup-main
