@@ -20,6 +20,29 @@ cp -R "$repo_root/3-apps/maliev-payment-service" "$fixture_root/3-apps/"
 cp -R "$repo_root/3-apps/_common" "$fixture_root/3-apps/"
 
 digest="sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+mock_dir="$fixture_root/mock-bin"
+mkdir -p "$mock_dir"
+
+printf '%s\n' \
+  '#!/usr/bin/env bash' \
+  'set -euo pipefail' \
+  'for argument in "$@"; do' \
+  '  if [[ "$argument" == *@sha256:* ]]; then' \
+  '    printf "%s\n" "${argument##*@}"' \
+  '    exit 0' \
+  '  fi' \
+  'done' \
+  'exit 1' > "$mock_dir/registry-success"
+
+printf '%s\n' \
+  '#!/usr/bin/env bash' \
+  'exit 1' > "$mock_dir/registry-query-failure"
+
+printf '%s\n' \
+  '#!/usr/bin/env bash' \
+  'exit 0' > "$mock_dir/registry-missing-digest"
+
+chmod +x "$mock_dir/registry-success" "$mock_dir/registry-query-failure" "$mock_dir/registry-missing-digest"
 
 for environment in development staging production; do
   case "$environment" in
@@ -32,8 +55,10 @@ for environment in development staging production; do
   overlay="$fixture_root/3-apps/maliev-payment-service/overlays/$environment"
 
   MALIEV_GITOPS_ROOT="$fixture_root" \
+    PAYMENT_REGISTRY_INSPECTOR="$mock_dir/registry-success" \
     "$repo_root/scripts/update-paymentservice-image.sh" "$environment" "$image" "$digest"
   MALIEV_GITOPS_ROOT="$fixture_root" \
+    PAYMENT_REGISTRY_INSPECTOR="$mock_dir/registry-success" \
     "$repo_root/scripts/update-paymentservice-image.sh" "$environment" "$image" "$digest" >/dev/null
 
   grep -Fq "newName: $image" "$overlay/kustomization.yaml"
@@ -64,6 +89,7 @@ development_overlay="$fixture_root/3-apps/maliev-payment-service/overlays/develo
 before_rejection="$(sha256sum "$development_overlay/kustomization.yaml")"
 
 if MALIEV_GITOPS_ROOT="$fixture_root" \
+  PAYMENT_REGISTRY_INSPECTOR="$mock_dir/registry-success" \
   "$repo_root/scripts/update-paymentservice-image.sh" development \
   "asia-southeast1-docker.pkg.dev/maliev-website/maliev-payment-artifact-prod/maliev-payment-service" \
   "$digest" >/dev/null 2>&1; then
@@ -72,12 +98,24 @@ if MALIEV_GITOPS_ROOT="$fixture_root" \
 fi
 
 if MALIEV_GITOPS_ROOT="$fixture_root" \
+  PAYMENT_REGISTRY_INSPECTOR="$mock_dir/registry-success" \
   "$repo_root/scripts/update-paymentservice-image.sh" development \
   "asia-southeast1-docker.pkg.dev/maliev-website/maliev-payment-artifact-dev/maliev-payment-service" \
   "release-v1.2.3" >/dev/null 2>&1; then
   echo "Updater accepted a tag instead of an immutable digest." >&2
   exit 1
 fi
+
+for unavailable_inspector in registry-query-failure registry-missing-digest; do
+  if MALIEV_GITOPS_ROOT="$fixture_root" \
+    PAYMENT_REGISTRY_INSPECTOR="$mock_dir/$unavailable_inspector" \
+    "$repo_root/scripts/update-paymentservice-image.sh" development \
+    "asia-southeast1-docker.pkg.dev/maliev-website/maliev-payment-artifact-dev/maliev-payment-service" \
+    "$digest" >/dev/null 2>&1; then
+    echo "Updater accepted an unverified digest with $unavailable_inspector." >&2
+    exit 1
+  fi
+done
 
 after_rejection="$(sha256sum "$development_overlay/kustomization.yaml")"
 if [[ "$before_rejection" != "$after_rejection" ]]; then
