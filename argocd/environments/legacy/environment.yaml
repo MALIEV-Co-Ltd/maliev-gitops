@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maliev-legacy
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+  labels:
+    app.kubernetes.io/environment: legacy
+spec:
+  project: maliev-legacy
+  source:
+    repoURL: https://github.com/MALIEV-Co-Ltd/maliev-gitops.git
+    targetRevision: main
+    path: 2-environments/4-legacy
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: maliev-legacy
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
