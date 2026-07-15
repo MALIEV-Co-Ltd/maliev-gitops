@@ -4,14 +4,17 @@ resources:
   - projects/maliev-dev-project.yaml
   - projects/maliev-staging-project.yaml
   - projects/maliev-prod-project.yaml
+  - projects/maliev-legacy-project.yaml
   - environments/dev/maliev-dev-apps.yaml
   - environments/staging/maliev-staging-apps.yaml
   - environments/prod/maliev-prod-apps.yaml
   - environments/live/maliev-live-environment.yaml
+  - environments/legacy/environment.yaml
   - cluster-infra/cert-manager-app.yaml
   - cluster-infra/cloudnative-pg-app.yaml
   - cluster-infra/external-secrets-app.yaml
   - cluster-infra/external-secrets-config-app.yaml
+  - cluster-infra/barman-cloud-plugin-app.yaml
   # Development infrastructure
   - environments/dev/rabbitmq.yaml
   - environments/dev/redis.yaml
