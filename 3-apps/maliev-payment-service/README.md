@@ -17,6 +17,6 @@ After the service workflow has published or copied the digest into the target re
   sha256:<64-lowercase-hex-characters>
 ```
 
-The updater rejects tags, unexpected repositories, and malformed digests. It updates both the Kustomize image digest and `BuildMetadata__ImageDigest`, then renders the overlay before keeping the change. Promotion must stop if the target repository does not already contain the requested digest.
+The updater rejects tags, unexpected repositories, and malformed digests. Before changing any file, it uses the authenticated `gcloud` session to require that the exact digest exists in the selected repository. It then updates both the Kustomize image digest and `BuildMetadata__ImageDigest` and renders the overlay before keeping the change. `PAYMENT_REGISTRY_INSPECTOR` is reserved for a compatible test or automation adapter; it must preserve the `gcloud artifacts docker images describe` argument and output contract.
 
 Run `./scripts/test-paymentservice-image-promotion.sh` to validate the updater, rendered image, and build-metadata parity without changing the checked-in overlays.

@@ -17,6 +17,7 @@ digest="$3"
 repo_root="${MALIEV_GITOPS_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 base_image="asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-payment-service"
 kustomize_bin="${KUSTOMIZE_BIN:-kustomize}"
+registry_inspector="${PAYMENT_REGISTRY_INSPECTOR:-gcloud}"
 
 path_for_kustomize() {
   if [[ "$kustomize_bin" == *.exe ]] && command -v wslpath >/dev/null 2>&1; then
@@ -52,6 +53,11 @@ command -v "$kustomize_bin" >/dev/null 2>&1 || [[ -x "$kustomize_bin" ]] || {
   exit 2
 }
 
+command -v "$registry_inspector" >/dev/null 2>&1 || [[ -x "$registry_inspector" ]] || {
+  echo "Authenticated registry inspection is required (set PAYMENT_REGISTRY_INSPECTOR for an equivalent command)." >&2
+  exit 2
+}
+
 overlay="$repo_root/3-apps/maliev-payment-service/overlays/$environment"
 kustomization="$overlay/kustomization.yaml"
 metadata_patch="$overlay/build-metadata-patch.yaml"
@@ -59,6 +65,19 @@ metadata_patch="$overlay/build-metadata-patch.yaml"
 if [[ ! -f "$kustomization" ]]; then
   echo "PaymentService overlay not found: $overlay" >&2
   exit 2
+fi
+
+if ! verified_digest="$(
+  "$registry_inspector" artifacts docker images describe "$image@$digest" \
+    --format='value(image_summary.digest)'
+)"; then
+  echo "Unable to verify $image@$digest in the selected registry." >&2
+  exit 1
+fi
+
+if [[ "$verified_digest" != "$digest" ]]; then
+  echo "Registry did not confirm the requested digest for $image." >&2
+  exit 1
 fi
 
 backup_dir="$(mktemp -d)"
