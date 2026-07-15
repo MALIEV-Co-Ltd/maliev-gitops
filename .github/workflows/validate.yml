@@ -127,6 +127,9 @@ jobs:
       - name: Install kustomize
         uses: imranismail/setup-kustomize@v3
 
+      - name: Validate PaymentService immutable image promotion contract
+        run: ./scripts/test-paymentservice-image-promotion.sh
+
 
       - name: Install yq
         run: |
@@ -182,7 +185,7 @@ jobs:
 
             # Skip internal/shared directories (names starting with underscore)
             case "$app_name" in
-              _*) 
+              _*)
                 echo "Skipping internal directory: $app_name"
                 continue
                 ;;
@@ -209,7 +212,7 @@ jobs:
       - name: Validate ArgoCD Application paths
         run: |
           set -euo pipefail
-          
+
           YQ_BIN=/usr/local/bin/yq
 
           echo "Validating ArgoCD Application manifests under argocd/..."
