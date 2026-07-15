@@ -154,6 +154,9 @@ jobs:
             exit 1
           fi
 
+      - name: Validate Maliev.Web health probe contract
+        run: bash scripts/validate-maliev-web-probes.sh
+
       - name: Check for native Secrets
         run: |
           set -e
