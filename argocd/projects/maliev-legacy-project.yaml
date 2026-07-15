@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: maliev-legacy
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+spec:
+  description: Legacy migration workloads isolated from the new platform environments
+  sourceRepos:
+    - https://github.com/MALIEV-Co-Ltd/maliev-gitops.git
+  destinations:
+    - namespace: maliev-legacy
+      server: https://kubernetes.default.svc
+  permitOnlyProjectScopedClusters: true
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
