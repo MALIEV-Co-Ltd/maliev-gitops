@@ -114,7 +114,8 @@ def validate_contact_overlay(environment: str) -> list[str]:
     if external_secret is None:
         return [f"{environment}: ContactService ExternalSecret did not render"]
 
-    containers = deployment["spec"]["template"]["spec"].get("containers", [])
+    pod_specification = deployment["spec"]["template"]["spec"]
+    containers = pod_specification.get("containers", [])
     container = next(
         (
             item
@@ -126,8 +127,70 @@ def validate_contact_overlay(environment: str) -> list[str]:
     if container is None:
         return [f"{environment}: ContactService container did not render"]
 
+    if [item.get("name") for item in containers] != ["maliev-contact-service"]:
+        errors.append(
+            f"{environment}: ContactService pod containers do not match the exact "
+            "single-container contract"
+        )
+    if pod_specification.get("initContainers"):
+        errors.append(f"{environment}: ContactService initContainers are not allowlisted")
+    if pod_specification.get("ephemeralContainers"):
+        errors.append(
+            f"{environment}: ContactService ephemeralContainers are not allowlisted"
+        )
+
+    secret_volume_names: set[str] = set()
+    if pod_specification.get("volumes"):
+        errors.append(f"{environment}: ContactService pod volumes are not allowlisted")
+    for volume in pod_specification.get("volumes", []):
+        secret_name = volume.get("secret", {}).get("secretName")
+        projected_secret_names = [
+            source.get("secret", {}).get("name")
+            for source in volume.get("projected", {}).get("sources", [])
+            if isinstance(source, dict) and source.get("secret")
+        ]
+        if secret_name or any(projected_secret_names):
+            secret_volume_names.add(volume.get("name", ""))
+            errors.append(
+                f"{environment}: ContactService secret-bearing volume "
+                f"{volume.get('name', '<unnamed>')!r} is not allowlisted"
+            )
+
+    all_pod_containers = [
+        *containers,
+        *pod_specification.get("initContainers", []),
+        *pod_specification.get("ephemeralContainers", []),
+    ]
+    for pod_container in all_pod_containers:
+        if pod_container.get("volumeMounts"):
+            errors.append(
+                f"{environment}: container {pod_container.get('name', '<unnamed>')!r} "
+                "volumeMounts are not allowlisted"
+            )
+        mounted_secret_volumes = {
+            mount.get("name")
+            for mount in pod_container.get("volumeMounts", [])
+            if mount.get("name") in secret_volume_names
+        }
+        if mounted_secret_volumes:
+            errors.append(
+                f"{environment}: container {pod_container.get('name', '<unnamed>')!r} "
+                f"mounts non-allowlisted secret volumes {sorted(mounted_secret_volumes)!r}"
+            )
+
     contact_projection = yaml.safe_dump(
-        {"env": container.get("env", []), "envFrom": container.get("envFrom", [])},
+        {
+            "containers": [
+                {
+                    "name": item.get("name"),
+                    "env": item.get("env", []),
+                    "envFrom": item.get("envFrom", []),
+                    "volumeMounts": item.get("volumeMounts", []),
+                }
+                for item in all_pod_containers
+            ],
+            "volumes": pod_specification.get("volumes", []),
+        },
         sort_keys=True,
     )
     secret_projection = yaml.safe_dump(external_secret.get("spec", {}), sort_keys=True)
@@ -394,6 +457,13 @@ def validate_contact_applications_remain_disabled() -> list[str]:
             application_names = [document.get("metadata", {}).get("name", "")]
             specification = document.get("spec", {})
             if kind == "ApplicationSet":
+                template_patch = specification.get("templatePatch")
+                if template_patch not in (None, "", {}):
+                    errors.append(
+                        "ContactService Application must remain disabled; active "
+                        "ApplicationSet with non-empty templatePatch found in "
+                        f"{manifest.relative_to(ROOT)}"
+                    )
                 template = specification.get("template", {})
                 application_names.append(template.get("metadata", {}).get("name", ""))
                 specification = template.get("spec", {})
