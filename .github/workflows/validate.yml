@@ -140,6 +140,12 @@ jobs:
       - name: Check AuthService ingress route structure
         run: python3 scripts/check-auth-service-ingress-routes.py
 
+      - name: Test native Secret policy
+        run: python3 -m unittest scripts.tests.test_check_native_secrets -v
+
+      - name: Check native Secret policy
+        run: python3 scripts/check-native-secrets.py
+
       - name: Validate Kustomize overlays
         run: |
           set -e
@@ -158,17 +164,6 @@ jobs:
           fi
           if [ "$found" -ne 0 ]; then
             exit 1
-          fi
-
-      - name: Check for native Secrets
-        run: |
-          set -e
-          # exclude argocd directory where applications may reference secrets in other forms
-          if grep -R --line-number --no-color --exclude-dir=argocd "kind:[[:space:]]*Secret" . ; then
-            echo "Error: Native Kubernetes Secrets are not allowed. Please use ExternalSecrets. See offending lines above."
-            exit 1
-          else
-            echo "No native Secret resources found (outside argocd)."
           fi
 
       - name: Validate repository structure (3-apps)

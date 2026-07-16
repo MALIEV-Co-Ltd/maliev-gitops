@@ -19,6 +19,12 @@ repos:
         language: system
         files: '^3-apps/.*/base/deployment\.yaml$'
         pass_filenames: false
+      - id: native-secret-policy
+        name: Native Kubernetes Secret policy
+        entry: python scripts/check-native-secrets.py
+        language: system
+        files: '(^|/).*\.(yaml|yml)$|^scripts/(check-native-secrets\.py|native-secret-allowlist\.json|tests/test_check_native_secrets\.py)$'
+        pass_filenames: false
 
   # Prevent commits to main branch
   - repo: https://github.com/pre-commit/pre-commit-hooks

@@ -1,0 +1,8 @@
+# kind: Secret
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fixture-documentation
+data:
+  guidance: |
+    Example documentation may say kind: Secret without defining one.
