@@ -59,8 +59,52 @@ spec:
             timeoutSeconds: 3
             failureThreshold: 3
             successThreshold: 1
-          envFrom:
-            - secretRef:
-                name: maliev-shared-secrets
-            - secretRef:
-                name: maliev-contact-service-secrets
+          env:
+            - name: Jwt__PublicKey
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-contact-service-secrets
+                  key: Jwt__PublicKey
+            - name: Jwt__Issuer
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-contact-service-secrets
+                  key: Jwt__Issuer
+            - name: Jwt__Audience
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-contact-service-secrets
+                  key: Jwt__Audience
+            - name: Services__AuthService__BaseUrl
+              value: "https://api.maliev.com"
+            - name: ServiceAuthentication__ClientId
+              value: "service-contact-service"
+            - name: ServiceAuthentication__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-contact-service-secrets
+                  key: ServiceAuthentication__ClientSecret
+            - name: ConnectionStrings__ContactDbContext
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-contact-service-secrets
+                  key: ConnectionStrings__ContactDbContext
+            - name: ConnectionStrings__rabbitmq
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-contact-service-secrets
+                  key: ConnectionStrings__rabbitmq
+            - name: ConnectionStrings__redis
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-contact-service-secrets
+                  key: ConnectionStrings__redis
+            - name: CORS__AllowedOrigins
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-contact-service-secrets
+                  key: CORS__AllowedOrigins
+            - name: ExternalServices__UploadService
+              value: "http://maliev-upload-service:8080"
+            - name: ExternalServices__CountryService
+              value: "http://maliev-country-service"

@@ -3,6 +3,7 @@ name: GitOps Validation
 on:
   pull_request:
     branches:
+      - develop
       - main
 
 jobs:
@@ -130,6 +131,12 @@ jobs:
           sudo chmod +x /usr/local/bin/yq
           yq --version
 
+      - name: Install manifest policy dependencies
+        run: python3 -m pip install --disable-pip-version-check PyYAML==6.0.3
+
+      - name: Check ContactService secret projection policy
+        run: python3 scripts/check-contact-service-secret-projection.py
+
       - name: Validate Kustomize overlays
         run: |
           set -e
@@ -175,7 +182,7 @@ jobs:
 
             # Skip internal/shared directories (names starting with underscore)
             case "$app_name" in
-              _*) 
+              _*)
                 echo "Skipping internal directory: $app_name"
                 continue
                 ;;
@@ -202,7 +209,7 @@ jobs:
       - name: Validate ArgoCD Application paths
         run: |
           set -euo pipefail
-          
+
           YQ_BIN=/usr/local/bin/yq
 
           echo "Validating ArgoCD Application manifests under argocd/..."
