@@ -440,9 +440,16 @@ def expected_external_secret(environment: str) -> dict[str, object]:
 
 def resolve_kustomize_source_documents(
     kustomize_root: Path,
-) -> tuple[list[tuple[str, dict[str, object]]], list[str]]:
+) -> tuple[
+    list[tuple[str, dict[str, object]]],
+    list[tuple[str, dict[str, object], list[dict[str, object]]]],
+    list[str],
+]:
     """Resolve the reviewed local Kustomize graph without leaving this repository."""
     documents: list[tuple[str, dict[str, object]]] = []
+    json_patches: list[
+        tuple[str, dict[str, object], list[dict[str, object]]]
+    ] = []
     errors: list[str] = []
     repository_root = ROOT.resolve()
     visited_kustomizations: set[Path] = set()
@@ -498,11 +505,18 @@ def resolve_kustomize_source_documents(
                 candidate / filename
                 for filename in KUSTOMIZATION_FILENAMES
                 if (candidate / filename).is_file()
+                or (candidate / filename).is_symlink()
             ]
             if len(candidates) != 1:
                 errors.append(
                     f"{context}: directory must contain exactly one Kustomization file: "
                     f"{candidate.relative_to(repository_root)}"
+                )
+                return
+            if candidates[0].is_symlink():
+                errors.append(
+                    f"{context}: implicit Kustomization file is symlinked: "
+                    f"{candidates[0].relative_to(repository_root)}"
                 )
                 return
             visit_kustomization(candidates[0])
@@ -515,19 +529,84 @@ def resolve_kustomize_source_documents(
         ):
             visit_kustomization(candidate, loaded)
 
-    def resolve_inline_patch(value: object, context: str) -> None:
+    def record_json_patch(
+        value: object,
+        context: str,
+        target: object,
+    ) -> bool:
+        if not isinstance(value, list):
+            return False
+        if not value:
+            errors.append(f"{context}: JSON6902 patch must contain operations")
+            return True
+        operations: list[dict[str, object]] = []
+        for index, operation in enumerate(value):
+            if not isinstance(operation, dict):
+                errors.append(
+                    f"{context}[{index}]: JSON6902 operation must be an object"
+                )
+                continue
+            if not isinstance(operation.get("op"), str) or not isinstance(
+                operation.get("path"), str
+            ):
+                errors.append(
+                    f"{context}[{index}]: JSON6902 operation needs string op and path"
+                )
+                continue
+            operations.append(operation)
+        if operations:
+            json_patches.append(
+                (context, target if isinstance(target, dict) else {}, operations)
+            )
+        return True
+
+    def resolve_inline_patch(
+        value: object,
+        context: str,
+        target: object = None,
+    ) -> None:
         if not isinstance(value, str) or not value.strip():
             errors.append(f"{context}: inline patch must be non-empty YAML")
             return
-        loaded = [
-            document
-            for document in yaml.safe_load_all(value)
-            if isinstance(document, dict)
+        loaded = list(yaml.safe_load_all(value))
+        if len(loaded) == 1 and record_json_patch(loaded[0], context, target):
+            return
+        object_documents = [
+            document for document in loaded if isinstance(document, dict)
         ]
-        if not loaded:
+        if not object_documents or len(object_documents) != len(loaded):
             errors.append(f"{context}: inline patch must contain a YAML object")
             return
-        documents.extend((context, document) for document in loaded)
+        documents.extend((context, document) for document in object_documents)
+
+    def resolve_patch_reference(
+        parent: Path,
+        value: object,
+        context: str,
+        target: object,
+    ) -> None:
+        candidate = safe_reference(parent, value, context)
+        if candidate is None:
+            return
+        if not candidate.is_file():
+            errors.append(f"{context}: patch path must reference a file")
+            return
+        label = str(candidate.relative_to(repository_root)).replace("\\", "/")
+        if candidate.suffix.casefold() not in (".json", ".yaml", ".yml"):
+            errors.append(f"{label}: patch file must be JSON or YAML")
+            return
+        loaded = list(yaml.safe_load_all(candidate.read_text(encoding="utf-8")))
+        if len(loaded) == 1 and record_json_patch(loaded[0], label, target):
+            return
+        object_documents = [
+            document for document in loaded if isinstance(document, dict)
+        ]
+        if not object_documents or len(object_documents) != len(loaded):
+            errors.append(
+                f"{label}: patch must contain YAML objects or JSON6902 operations"
+            )
+            return
+        documents.extend((label, document) for document in object_documents)
 
     def visit_kustomization(
         path: Path,
@@ -583,9 +662,35 @@ def resolve_kustomize_source_documents(
                 if has_path == has_inline:
                     errors.append(f"{context}: patch must have exactly one of path or patch")
                 elif has_path:
-                    resolve_reference(parent, patch["path"], context)
+                    resolve_patch_reference(
+                        parent, patch["path"], context, patch.get("target")
+                    )
                 else:
-                    resolve_inline_patch(patch["patch"], f"{context}:inline")
+                    resolve_inline_patch(
+                        patch["patch"], f"{context}:inline", patch.get("target")
+                    )
+
+        json_6902_patches = kustomization.get("patchesJson6902", [])
+        if not isinstance(json_6902_patches, list):
+            errors.append(f"{label}: patchesJson6902 must be a list")
+        else:
+            for index, patch in enumerate(json_6902_patches):
+                context = f"{label}:patchesJson6902[{index}]"
+                if not isinstance(patch, dict):
+                    errors.append(f"{context}: patch must be an object")
+                    continue
+                has_path = patch.get("path") not in (None, "")
+                has_inline = patch.get("patch") not in (None, "")
+                if has_path == has_inline:
+                    errors.append(f"{context}: patch must have exactly one of path or patch")
+                elif has_path:
+                    resolve_patch_reference(
+                        parent, patch["path"], context, patch.get("target")
+                    )
+                else:
+                    resolve_inline_patch(
+                        patch["patch"], f"{context}:inline", patch.get("target")
+                    )
 
         strategic_merges = kustomization.get("patchesStrategicMerge", [])
         if not isinstance(strategic_merges, list):
@@ -607,15 +712,66 @@ def resolve_kustomize_source_documents(
         "Currency Kustomize root",
     )
     if root_candidate is not None:
-        resolve_reference(repository_root, str(root_candidate.relative_to(repository_root)), "Currency Kustomize root")
-    return documents, errors
+        resolve_reference(
+            repository_root,
+            str(root_candidate.relative_to(repository_root)),
+            "Currency Kustomize root",
+        )
+    return documents, json_patches, errors
+
+
+def json_patch_touches_secret_boundary(
+    target: dict[str, object], operation: dict[str, object]
+) -> bool:
+    """Identify source operations that mutate a reviewed secret projection boundary."""
+    raw_path = str(operation.get("path", ""))
+    path_parts = [
+        part.replace("~1", "/").replace("~0", "~")
+        for part in raw_path.split("/")[1:]
+    ]
+    folded_parts = {part.casefold() for part in path_parts}
+    target_kind = str(target.get("kind", "")).casefold()
+    if folded_parts.intersection(
+        {"envfrom", "secretkeyref", "secretname", "secret", "secrets"}
+    ):
+        return True
+    if target_kind == "deployment" and "env" in folded_parts:
+        return True
+    if target_kind == "externalsecret" and (
+        raw_path.startswith("/spec/data/")
+        or raw_path in ("/spec/data", "/spec/dataFrom")
+        or raw_path.startswith("/spec/dataFrom/")
+    ):
+        return True
+
+    def contains_secret_value(value: object) -> bool:
+        if isinstance(value, dict):
+            if any(
+                str(key).casefold()
+                in {"secretkeyref", "envfrom", "secretname", "datafrom"}
+                for key in value
+            ):
+                return True
+            return any(contains_secret_value(item) for item in value.values())
+        if isinstance(value, list):
+            return any(contains_secret_value(item) for item in value)
+        return False
+
+    return contains_secret_value(operation.get("value"))
 
 
 def validate_source_environment_lists(environment: str) -> list[str]:
     """Reject duplicate env names across the real source graph before rendering."""
-    source_documents, errors = resolve_kustomize_source_documents(
+    source_documents, json_patches, errors = resolve_kustomize_source_documents(
         CURRENCY_ROOT / "overlays" / environment
     )
+    for source_label, target, operations in json_patches:
+        for index, operation in enumerate(operations):
+            if json_patch_touches_secret_boundary(target, operation):
+                errors.append(
+                    f"{environment}: {source_label}[{index}] touches a "
+                    "secret-bearing JSON6902 boundary"
+                )
     for source_label, document in source_documents:
         if (
             document.get("kind") != "Deployment"
@@ -657,6 +813,8 @@ def validate_source_environment_lists(environment: str) -> list[str]:
 def validate_currency_overlay(environment: str) -> list[str]:
     """Validate exact rendered inventory, pod projection, and ExternalSecret."""
     errors = validate_source_environment_lists(environment)
+    if errors:
+        return errors
     rendered = render(CURRENCY_ROOT / "overlays" / environment)
     documents = [
         document for document in yaml.safe_load_all(rendered) if isinstance(document, dict)

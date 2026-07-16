@@ -148,6 +148,19 @@ class CurrencyProjectionPolicyTests(unittest.TestCase):
             yaml.safe_dump(kustomization, sort_keys=False), encoding="utf-8"
         )
 
+    def append_kustomization_field(
+        self, environment: str, field: str, value: object
+    ) -> None:
+        """Append a real source-graph entry to an isolated overlay."""
+        kustomization_path = (
+            POLICY.CURRENCY_ROOT / "overlays" / environment / "kustomization.yaml"
+        )
+        kustomization = yaml.safe_load(kustomization_path.read_text(encoding="utf-8"))
+        kustomization.setdefault(field, []).append(value)
+        kustomization_path.write_text(
+            yaml.safe_dump(kustomization, sort_keys=False), encoding="utf-8"
+        )
+
     def test_broad_env_from_and_data_from_are_rejected(self) -> None:
         """Broad shared and service secret bundles must remain impossible."""
         self.copy_currency_manifests()
@@ -230,6 +243,193 @@ class CurrencyProjectionPolicyTests(unittest.TestCase):
                 for error in errors
             )
         )
+
+    def test_legacy_path_json6902_secret_replace_restore_is_rejected(self) -> None:
+        """A path-based replace/restore pair must not hide an unreviewed secret."""
+        self.copy_currency_manifests()
+        overlay = POLICY.CURRENCY_ROOT / "overlays" / "production"
+        patch_path = overlay / "hidden-secret.json"
+        patch_path.write_text(
+            yaml.safe_dump(
+                [
+                    {
+                        "op": "replace",
+                        "path": "/spec/template/spec/containers/0/env/4/valueFrom/secretKeyRef/name",
+                        "value": "unreviewed-secret",
+                    },
+                    {
+                        "op": "replace",
+                        "path": "/spec/template/spec/containers/0/env/4/valueFrom/secretKeyRef/name",
+                        "value": "maliev-currency-service-secrets",
+                    },
+                ],
+                sort_keys=False,
+            ),
+            encoding="utf-8",
+        )
+        self.append_kustomization_field(
+            "production",
+            "patchesJson6902",
+            {
+                "target": {
+                    "group": "apps",
+                    "version": "v1",
+                    "kind": "Deployment",
+                    "name": "maliev-currency-service",
+                },
+                "path": "hidden-secret.json",
+            },
+        )
+
+        errors = POLICY.validate_currency_overlay("production")
+
+        self.assertTrue(any("secret-bearing JSON6902" in error for error in errors))
+
+    def test_legacy_inline_json6902_hidden_env_add_remove_is_rejected(self) -> None:
+        """An inline add/remove pair restoring exact output must still fail source review."""
+        self.copy_currency_manifests()
+        operations = [
+            {
+                "op": "add",
+                "path": "/spec/template/spec/containers/0/env/4",
+                "value": {
+                    "name": "ServiceAuthentication__ClientSecret",
+                    "valueFrom": {
+                        "secretKeyRef": {
+                            "name": "unreviewed-secret",
+                            "key": "ServiceAuthentication__ClientSecret",
+                        }
+                    },
+                },
+            },
+            {
+                "op": "remove",
+                "path": "/spec/template/spec/containers/0/env/4",
+            },
+        ]
+        self.append_kustomization_field(
+            "production",
+            "patchesJson6902",
+            {
+                "target": {
+                    "group": "apps",
+                    "version": "v1",
+                    "kind": "Deployment",
+                    "name": "maliev-currency-service",
+                },
+                "patch": yaml.safe_dump(operations, sort_keys=False),
+            },
+        )
+
+        errors = POLICY.validate_currency_overlay("production")
+
+        self.assertTrue(any("secret-bearing JSON6902" in error for error in errors))
+
+    def test_modern_inline_json6902_secret_add_remove_is_rejected(self) -> None:
+        """Modern patches.patch lists need the same source-level secret inspection."""
+        self.copy_currency_manifests()
+        operations = [
+            {
+                "op": "add",
+                "path": "/spec/template/spec/containers/0/env/4",
+                "value": {
+                    "name": "ServiceAuthentication__ClientSecret",
+                    "valueFrom": {
+                        "secretKeyRef": {
+                            "name": "unreviewed-secret",
+                            "key": "ServiceAuthentication__ClientSecret",
+                        }
+                    },
+                },
+            },
+            {"op": "remove", "path": "/spec/template/spec/containers/0/env/4"},
+        ]
+        self.append_kustomization_field(
+            "production",
+            "patches",
+            {
+                "target": {
+                    "group": "apps",
+                    "version": "v1",
+                    "kind": "Deployment",
+                    "name": "maliev-currency-service",
+                },
+                "patch": yaml.safe_dump(operations, sort_keys=False),
+            },
+        )
+
+        errors = POLICY.validate_currency_overlay("production")
+
+        self.assertTrue(any("secret-bearing JSON6902" in error for error in errors))
+
+    def test_modern_inline_json6902_harmless_replace_is_allowed(self) -> None:
+        """A valid top-level operation list must not be mistaken for malformed YAML."""
+        self.copy_currency_manifests()
+        self.append_kustomization_field(
+            "production",
+            "patches",
+            {
+                "target": {
+                    "group": "apps",
+                    "version": "v1",
+                    "kind": "Deployment",
+                    "name": "maliev-currency-service",
+                },
+                "patch": yaml.safe_dump(
+                    [
+                        {
+                            "op": "replace",
+                            "path": "/spec/template/spec/containers/0/imagePullPolicy",
+                            "value": "Always",
+                        }
+                    ],
+                    sort_keys=False,
+                ),
+            },
+        )
+
+        errors = POLICY.validate_currency_overlay("production")
+
+        self.assertEqual([], errors)
+
+    def test_implicit_kustomization_file_symlink_is_rejected(self) -> None:
+        """Directory discovery must not follow an implicit Kustomization symlink."""
+        self.copy_currency_manifests()
+        overlay = POLICY.CURRENCY_ROOT / "overlays" / "production"
+        nested = overlay / "symlinked-component"
+        nested.mkdir()
+        target = overlay / "real-component.yaml"
+        target.write_text(
+            "apiVersion: kustomize.config.k8s.io/v1alpha1\nkind: Component\n",
+            encoding="utf-8",
+        )
+        try:
+            (nested / "kustomization.yaml").symlink_to(target)
+        except OSError as error:
+            self.fail(f"real symlink fixture could not be created: {error}")
+        self.append_kustomization_field(
+            "production", "components", "symlinked-component"
+        )
+
+        errors = POLICY.validate_currency_overlay("production")
+
+        self.assertTrue(
+            any("implicit Kustomization file is symlinked" in error for error in errors)
+        )
+
+    def test_source_graph_errors_short_circuit_before_render(self) -> None:
+        """An unsafe graph must return errors without asking Kustomize to load it."""
+        self.copy_currency_manifests()
+        outside = self.root.parent / f"{self.root.name}-outside.yaml"
+        outside.write_text("apiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: outside\n")
+        self.addCleanup(outside.unlink, missing_ok=True)
+        self.append_kustomization_field(
+            "production", "resources", str(outside.resolve())
+        )
+
+        errors = POLICY.validate_currency_overlay("production")
+
+        self.assertTrue(any("non-local path" in error for error in errors))
 
     def test_helper_container_and_secret_volume_are_rejected(self) -> None:
         """Alternate pod secret channels must not bypass the main container allowlist."""
