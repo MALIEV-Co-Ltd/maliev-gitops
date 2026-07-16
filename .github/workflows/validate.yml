@@ -143,6 +143,12 @@ jobs:
       - name: Test SearchService secret projection policy
         run: python3 scripts/test-search-service-secret-projection.py
 
+      - name: Check RegistryService secret projection policy
+        run: python3 scripts/check-registry-service-secret-projection.py
+
+      - name: Test RegistryService secret projection policy
+        run: python3 scripts/test-registry-service-secret-projection.py
+
       - name: Check AuthService ingress route structure
         run: python3 scripts/check-auth-service-ingress-routes.py
 
