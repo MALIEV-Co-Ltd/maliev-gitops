@@ -8,19 +8,12 @@ spec:
       containers:
         - name: maliev-accounting-service
           livenessProbe:
-            httpGet:
-              path: /accounting/liveness
-              port: 8080
-            initialDelaySeconds: 15
-            periodSeconds: 10
-            timeoutSeconds: 5
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
             failureThreshold: 3
           readinessProbe:
-            httpGet:
-              path: /accounting/readiness
-              port: 8080
-            initialDelaySeconds: 20
+            initialDelaySeconds: 10
             periodSeconds: 5
-            timeoutSeconds: 5
+            timeoutSeconds: 3
             failureThreshold: 3
-            successThreshold: 1
