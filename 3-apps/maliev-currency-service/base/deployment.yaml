@@ -19,6 +19,7 @@ spec:
       labels:
         app: maliev-currency-service
     spec:
+      automountServiceAccountToken: false
       terminationGracePeriodSeconds: 30
       containers:
         - name: maliev-currency-service
@@ -59,8 +60,52 @@ spec:
             timeoutSeconds: 3
             failureThreshold: 3
             successThreshold: 1
-          envFrom:
-            - secretRef:
-                name: maliev-shared-secrets
-            - secretRef:
-                name: maliev-currency-service-secrets
+          env:
+            - name: Jwt__PublicKey
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-currency-service-secrets
+                  key: Jwt__PublicKey
+            - name: Jwt__Issuer
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-currency-service-secrets
+                  key: Jwt__Issuer
+            - name: Jwt__Audience
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-currency-service-secrets
+                  key: Jwt__Audience
+            - name: ServiceAuthentication__ClientId
+              value: "service-currency-service"
+            - name: ServiceAuthentication__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-currency-service-secrets
+                  key: ServiceAuthentication__ClientSecret
+            - name: Services__AuthService__BaseUrl
+              value: "https://api.maliev.com"
+            - name: Services__IAMService__BaseUrl
+              value: "https://api.maliev.com"
+            - name: ConnectionStrings__CurrencyDbContext
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-currency-service-secrets
+                  key: ConnectionStrings__CurrencyDbContext
+            - name: ConnectionStrings__rabbitmq
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-currency-service-secrets
+                  key: ConnectionStrings__rabbitmq
+            - name: ConnectionStrings__redis
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-currency-service-secrets
+                  key: ConnectionStrings__redis
+            - name: CORS__AllowedOrigins
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-currency-service-secrets
+                  key: CORS__AllowedOrigins
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"

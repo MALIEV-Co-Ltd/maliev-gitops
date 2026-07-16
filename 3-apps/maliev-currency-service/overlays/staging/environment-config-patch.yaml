@@ -10,3 +10,7 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Staging"
+            - name: Services__AuthService__BaseUrl
+              value: "https://staging.api.maliev.com"
+            - name: Services__IAMService__BaseUrl
+              value: "https://staging.api.maliev.com"
