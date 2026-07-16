@@ -94,6 +94,60 @@ class CurrencyProjectionPolicyTests(unittest.TestCase):
             encoding="utf-8",
         )
 
+    def add_duplicate_env_patch(self, environment: str, relative_path: str) -> None:
+        """Reference a real Deployment patch whose duplicate env key is normalized away."""
+        overlay = POLICY.CURRENCY_ROOT / "overlays" / environment
+        patch_path = overlay / relative_path
+        patch_path.parent.mkdir(parents=True, exist_ok=True)
+        patch_path.write_text(
+            yaml.safe_dump(
+                {
+                    "apiVersion": "apps/v1",
+                    "kind": "Deployment",
+                    "metadata": {"name": "maliev-currency-service"},
+                    "spec": {
+                        "template": {
+                            "spec": {
+                                "containers": [
+                                    {
+                                        "name": "maliev-currency-service",
+                                        "env": [
+                                            {
+                                                "name": "ServiceAuthentication__ClientSecret",
+                                                "valueFrom": {
+                                                    "secretKeyRef": {
+                                                        "name": "unreviewed-secret",
+                                                        "key": "client-secret",
+                                                    }
+                                                },
+                                            },
+                                            {
+                                                "name": "ServiceAuthentication__ClientSecret",
+                                                "valueFrom": {
+                                                    "secretKeyRef": {
+                                                        "name": "maliev-currency-service-secrets",
+                                                        "key": "ServiceAuthentication__ClientSecret",
+                                                    }
+                                                },
+                                            },
+                                        ],
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                },
+                sort_keys=False,
+            ),
+            encoding="utf-8",
+        )
+        kustomization_path = overlay / "kustomization.yaml"
+        kustomization = yaml.safe_load(kustomization_path.read_text(encoding="utf-8"))
+        kustomization.setdefault("patches", []).append({"path": relative_path})
+        kustomization_path.write_text(
+            yaml.safe_dump(kustomization, sort_keys=False), encoding="utf-8"
+        )
+
     def test_broad_env_from_and_data_from_are_rejected(self) -> None:
         """Broad shared and service secret bundles must remain impossible."""
         self.copy_currency_manifests()
@@ -150,6 +204,31 @@ class CurrencyProjectionPolicyTests(unittest.TestCase):
 
         self.assertTrue(
             any("source env list has duplicate names" in error for error in errors)
+        )
+
+    def test_referenced_yml_patch_duplicate_is_rejected_end_to_end(self) -> None:
+        """Referenced .yml patches must be source-checked before Kustomize normalization."""
+        self.copy_currency_manifests()
+        self.add_duplicate_env_patch("production", "unreviewed.yml")
+
+        errors = POLICY.validate_currency_overlay("production")
+
+        self.assertTrue(
+            any("unreviewed.yml source env list has duplicate names" in error for error in errors)
+        )
+
+    def test_referenced_nested_patch_duplicate_is_rejected_end_to_end(self) -> None:
+        """Nested referenced patches must be discovered from the Kustomization graph."""
+        self.copy_currency_manifests()
+        self.add_duplicate_env_patch("production", "nested/unreviewed.yaml")
+
+        errors = POLICY.validate_currency_overlay("production")
+
+        self.assertTrue(
+            any(
+                "nested/unreviewed.yaml source env list has duplicate names" in error
+                for error in errors
+            )
         )
 
     def test_helper_container_and_secret_volume_are_rejected(self) -> None:

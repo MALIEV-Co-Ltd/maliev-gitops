@@ -438,61 +438,219 @@ def expected_external_secret(environment: str) -> dict[str, object]:
     }
 
 
-def validate_source_environment_lists(environment: str) -> list[str]:
-    """Reject duplicate env names in source YAML before Kustomize normalizes lists."""
+def resolve_kustomize_source_documents(
+    kustomize_root: Path,
+) -> tuple[list[tuple[str, dict[str, object]]], list[str]]:
+    """Resolve the reviewed local Kustomize graph without leaving this repository."""
+    documents: list[tuple[str, dict[str, object]]] = []
     errors: list[str] = []
-    source_paths = [CURRENCY_ROOT / "base" / "deployment.yaml"]
-    source_paths.extend(
-        sorted((CURRENCY_ROOT / "overlays" / environment).glob("*.yaml"))
-    )
-    for source_path in source_paths:
-        documents = [
+    repository_root = ROOT.resolve()
+    visited_kustomizations: set[Path] = set()
+    active_kustomizations: set[Path] = set()
+
+    def safe_reference(parent: Path, value: object, context: str) -> Path | None:
+        if not isinstance(value, str) or not value.strip():
+            errors.append(f"{context}: local path must be a non-empty string")
+            return None
+        reference = value.strip()
+        if any(token in reference for token in ("{{", "}}", "*", "?", "[", "]")):
+            errors.append(f"{context}: ambiguous local path {reference!r}")
+            return None
+        reference_path = Path(reference)
+        if reference_path.is_absolute() or "://" in reference or reference.startswith("git@"):
+            errors.append(f"{context}: non-local path {reference!r} is forbidden")
+            return None
+        unresolved = parent / reference_path
+        if any(candidate.is_symlink() for candidate in [unresolved, *unresolved.parents]):
+            errors.append(f"{context}: symlinked path {reference!r} is forbidden")
+            return None
+        candidate = unresolved.resolve()
+        try:
+            candidate.relative_to(repository_root)
+        except ValueError:
+            errors.append(f"{context}: path escapes repository: {reference!r}")
+            return None
+        if not candidate.exists():
+            errors.append(f"{context}: referenced path does not exist: {reference!r}")
+            return None
+        return candidate
+
+    def load_yaml_documents(path: Path, label: str) -> list[dict[str, object]]:
+        if path.suffix.casefold() not in (".yaml", ".yml") and path.name not in (
+            "Kustomization",
+        ):
+            errors.append(f"{label}: referenced file is not YAML")
+            return []
+        loaded = [
             document
-            for document in yaml.safe_load_all(source_path.read_text(encoding="utf-8"))
+            for document in yaml.safe_load_all(path.read_text(encoding="utf-8"))
             if isinstance(document, dict)
-            and document.get("kind") == "Deployment"
-            and document.get("metadata", {}).get("name")
-            == "maliev-currency-service"
         ]
-        for document in documents:
-            pod_spec = document.get("spec", {}).get("template", {}).get("spec", {})
-            for container_set in (
-                "containers",
-                "initContainers",
-                "ephemeralContainers",
-            ):
-                containers = pod_spec.get(container_set, [])
-                if not isinstance(containers, list):
-                    errors.append(
-                        f"{environment}: {source_path.relative_to(ROOT)} "
-                        f"{container_set} must be a list"
-                    )
+        documents.extend((label, document) for document in loaded)
+        return loaded
+
+    def resolve_reference(parent: Path, value: object, context: str) -> None:
+        candidate = safe_reference(parent, value, context)
+        if candidate is None:
+            return
+        if candidate.is_dir():
+            candidates = [
+                candidate / filename
+                for filename in KUSTOMIZATION_FILENAMES
+                if (candidate / filename).is_file()
+            ]
+            if len(candidates) != 1:
+                errors.append(
+                    f"{context}: directory must contain exactly one Kustomization file: "
+                    f"{candidate.relative_to(repository_root)}"
+                )
+                return
+            visit_kustomization(candidates[0])
+            return
+        label = str(candidate.relative_to(repository_root)).replace("\\", "/")
+        loaded = load_yaml_documents(candidate, label)
+        if any(
+            document.get("kind") in ("Kustomization", "Component")
+            for document in loaded
+        ):
+            visit_kustomization(candidate, loaded)
+
+    def resolve_inline_patch(value: object, context: str) -> None:
+        if not isinstance(value, str) or not value.strip():
+            errors.append(f"{context}: inline patch must be non-empty YAML")
+            return
+        loaded = [
+            document
+            for document in yaml.safe_load_all(value)
+            if isinstance(document, dict)
+        ]
+        if not loaded:
+            errors.append(f"{context}: inline patch must contain a YAML object")
+            return
+        documents.extend((context, document) for document in loaded)
+
+    def visit_kustomization(
+        path: Path,
+        loaded_documents: list[dict[str, object]] | None = None,
+    ) -> None:
+        resolved_path = path.resolve()
+        try:
+            resolved_path.relative_to(repository_root)
+        except ValueError:
+            errors.append(f"Kustomization escapes repository: {path}")
+            return
+        if resolved_path in active_kustomizations:
+            errors.append(
+                f"cyclic Kustomization graph: {resolved_path.relative_to(repository_root)}"
+            )
+            return
+        if resolved_path in visited_kustomizations:
+            return
+        visited_kustomizations.add(resolved_path)
+        active_kustomizations.add(resolved_path)
+        label = str(resolved_path.relative_to(repository_root)).replace("\\", "/")
+        loaded = loaded_documents or load_yaml_documents(resolved_path, label)
+        kustomizations = [
+            document
+            for document in loaded
+            if document.get("kind") in ("Kustomization", "Component")
+        ]
+        if len(kustomizations) != 1:
+            errors.append(f"{label}: expected exactly one Kustomization or Component")
+            active_kustomizations.remove(resolved_path)
+            return
+        kustomization = kustomizations[0]
+        parent = resolved_path.parent
+        for field in ("resources", "bases", "components"):
+            references = kustomization.get(field, [])
+            if not isinstance(references, list):
+                errors.append(f"{label}: {field} must be a list")
+                continue
+            for index, reference in enumerate(references):
+                resolve_reference(parent, reference, f"{label}:{field}[{index}]")
+
+        patches = kustomization.get("patches", [])
+        if not isinstance(patches, list):
+            errors.append(f"{label}: patches must be a list")
+        else:
+            for index, patch in enumerate(patches):
+                context = f"{label}:patches[{index}]"
+                if not isinstance(patch, dict):
+                    errors.append(f"{context}: patch must be an object")
                     continue
-                for container in containers:
-                    if not isinstance(container, dict) or "env" not in container:
-                        continue
-                    environment_entries = container.get("env")
-                    if not isinstance(environment_entries, list):
-                        errors.append(
-                            f"{environment}: {source_path.relative_to(ROOT)} "
-                            "source env must be a list"
-                        )
-                        continue
-                    names = [
-                        str(entry.get("name", ""))
-                        for entry in environment_entries
-                        if isinstance(entry, dict)
-                    ]
-                    duplicate_names = sorted(
-                        name
-                        for name, count in Counter(names).items()
-                        if name and count > 1
+                has_path = patch.get("path") not in (None, "")
+                has_inline = patch.get("patch") not in (None, "")
+                if has_path == has_inline:
+                    errors.append(f"{context}: patch must have exactly one of path or patch")
+                elif has_path:
+                    resolve_reference(parent, patch["path"], context)
+                else:
+                    resolve_inline_patch(patch["patch"], f"{context}:inline")
+
+        strategic_merges = kustomization.get("patchesStrategicMerge", [])
+        if not isinstance(strategic_merges, list):
+            errors.append(f"{label}: patchesStrategicMerge must be a list")
+        else:
+            for index, patch in enumerate(strategic_merges):
+                context = f"{label}:patchesStrategicMerge[{index}]"
+                if isinstance(patch, dict):
+                    documents.append((f"{context}:inline", patch))
+                elif isinstance(patch, str) and "\n" in patch:
+                    resolve_inline_patch(patch, f"{context}:inline")
+                else:
+                    resolve_reference(parent, patch, context)
+        active_kustomizations.remove(resolved_path)
+
+    root_candidate = safe_reference(
+        repository_root,
+        str(kustomize_root.resolve().relative_to(repository_root)),
+        "Currency Kustomize root",
+    )
+    if root_candidate is not None:
+        resolve_reference(repository_root, str(root_candidate.relative_to(repository_root)), "Currency Kustomize root")
+    return documents, errors
+
+
+def validate_source_environment_lists(environment: str) -> list[str]:
+    """Reject duplicate env names across the real source graph before rendering."""
+    source_documents, errors = resolve_kustomize_source_documents(
+        CURRENCY_ROOT / "overlays" / environment
+    )
+    for source_label, document in source_documents:
+        if (
+            document.get("kind") != "Deployment"
+            or document.get("metadata", {}).get("name")
+            != "maliev-currency-service"
+        ):
+            continue
+        pod_spec = document.get("spec", {}).get("template", {}).get("spec", {})
+        for container_set in ("containers", "initContainers", "ephemeralContainers"):
+            containers = pod_spec.get(container_set, [])
+            if not isinstance(containers, list):
+                errors.append(f"{environment}: {source_label} {container_set} must be a list")
+                continue
+            for container in containers:
+                if not isinstance(container, dict) or "env" not in container:
+                    continue
+                environment_entries = container.get("env")
+                if not isinstance(environment_entries, list):
+                    errors.append(f"{environment}: {source_label} source env must be a list")
+                    continue
+                names = [
+                    str(entry.get("name", ""))
+                    for entry in environment_entries
+                    if isinstance(entry, dict)
+                ]
+                duplicate_names = sorted(
+                    name
+                    for name, count in Counter(names).items()
+                    if name and count > 1
+                )
+                if duplicate_names:
+                    errors.append(
+                        f"{environment}: {source_label} source env list has duplicate "
+                        f"names {duplicate_names!r}"
                     )
-                    if duplicate_names:
-                        errors.append(
-                            f"{environment}: {source_path.relative_to(ROOT)} source env "
-                            f"list has duplicate names {duplicate_names!r}"
-                        )
     return errors
 
 
