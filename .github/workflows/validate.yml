@@ -155,6 +155,12 @@ jobs:
       - name: Test CountryService secret projection policy
         run: python3 scripts/test-country-service-secret-projection.py
 
+      - name: Check CurrencyService secret projection policy
+        run: python3 scripts/check-currency-service-secret-projection.py
+
+      - name: Test CurrencyService secret projection policy
+        run: python3 scripts/test-currency-service-secret-projection.py
+
       - name: Check AuthService ingress route structure
         run: python3 scripts/check-auth-service-ingress-routes.py
 
