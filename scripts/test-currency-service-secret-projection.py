@@ -8,6 +8,7 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import yaml
 
@@ -124,6 +125,46 @@ class CurrencyProjectionPolicyTests(unittest.TestCase):
         self.assertTrue(any("forbidden CurrencyService projection" in error for error in errors))
         self.assertTrue(any("exact object contract" in error for error in errors))
 
+    def test_duplicate_environment_names_cannot_hide_unreviewed_projection(self) -> None:
+        """Every env entry must be reviewed even when a later duplicate is allowlisted."""
+        self.copy_currency_manifests()
+        rendered = POLICY.render(POLICY.CURRENCY_ROOT / "overlays" / "production")
+        documents = [document for document in yaml.safe_load_all(rendered) if document]
+        deployment = next(
+            document
+            for document in documents
+            if document.get("kind") == "Deployment"
+            and document.get("metadata", {}).get("name")
+            == "maliev-currency-service"
+        )
+        container = deployment["spec"]["template"]["spec"]["containers"][0]
+        container["env"].insert(
+            0,
+            {
+                "name": "ServiceAuthentication__ClientSecret",
+                "valueFrom": {
+                    "secretKeyRef": {
+                        "name": "unreviewed-secret",
+                        "key": "ServiceAuthentication__ClientSecret",
+                    }
+                },
+            },
+        )
+
+        with patch.object(
+            POLICY,
+            "render",
+            return_value=yaml.safe_dump_all(documents, sort_keys=False),
+        ):
+            errors = POLICY.validate_currency_overlay("production")
+
+        self.assertTrue(
+            any("duplicate environment variable names" in error for error in errors)
+        )
+        self.assertTrue(
+            any("environment entry projection is not exact" in error for error in errors)
+        )
+
     def test_helper_container_and_secret_volume_are_rejected(self) -> None:
         """Alternate pod secret channels must not bypass the main container allowlist."""
         self.copy_currency_manifests()
@@ -199,6 +240,46 @@ class CurrencyProjectionPolicyTests(unittest.TestCase):
         self.assertTrue(
             any("Application', 'maliev-currency-service-child" in error for error in errors)
         )
+
+    def test_percent_encoded_same_repository_url_is_unsafe_and_traversed(self) -> None:
+        """Encoded same-repo spellings must be rejected without hiding rendered activation."""
+        self.copy_disabled_applications()
+        self.write_application(
+            self.root / "argocd" / "environments" / "dev" / "root.yaml",
+            "generic-root",
+            "encoded-root",
+            "https://github.com/MALIEV-Co-Ltd/%6Daliev-gitops.git",
+        )
+        workload = self.root / "encoded-root"
+        workload.mkdir()
+        (workload / "kustomization.yaml").write_text(
+            "resources:\n  - deployment.yaml\n", encoding="utf-8"
+        )
+        (workload / "deployment.yaml").write_text(
+            """apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: encoded-currency-runtime
+spec:
+  selector:
+    matchLabels:
+      app: encoded-currency-runtime
+  template:
+    metadata:
+      labels:
+        app: encoded-currency-runtime
+    spec:
+      containers:
+        - name: runtime
+          image: registry.example/maliev-currency-service:review
+""",
+            encoding="utf-8",
+        )
+
+        errors = POLICY.validate_currency_applications_remain_disabled()
+
+        self.assertTrue(any("noncanonical MALIEV GitOps URL" in error for error in errors))
+        self.assertTrue(any("encoded-currency-runtime" in error for error in errors))
 
     def test_rendered_child_application_source_is_traversed_recursively(self) -> None:
         """Every same-repository child source must be rendered until the graph closes."""
@@ -345,6 +426,22 @@ spec:
                 environment,
             )
 
+    def test_probe_port_and_extra_fields_are_rejected(self) -> None:
+        """Probe validation must cover complete reviewed objects, not paths alone."""
+        self.copy_currency_manifests()
+        deployment_path = POLICY.CURRENCY_ROOT / "base" / "deployment.yaml"
+        deployment = yaml.safe_load(deployment_path.read_text(encoding="utf-8"))
+        container = deployment["spec"]["template"]["spec"]["containers"][0]
+        container["livenessProbe"]["httpGet"]["port"] = 9090
+        container["readinessProbe"]["unexpected"] = True
+        deployment_path.write_text(
+            yaml.safe_dump(deployment, sort_keys=False), encoding="utf-8"
+        )
+
+        errors = POLICY.validate_currency_overlay("production")
+
+        self.assertTrue(any("health probe contract is not exact" in error for error in errors))
+
     def test_service_contract_is_internal_and_monitorable(self) -> None:
         """The disabled service must be internal and expose the named monitor port."""
         self.copy_currency_manifests()
@@ -384,6 +481,20 @@ spec:
         errors = POLICY.validate_currency_overlay("production")
 
         self.assertTrue(any("deployment replicas" in error for error in errors))
+        self.assertTrue(any("HPA contract" in error for error in errors))
+
+    def test_hpa_unknown_fields_are_rejected(self) -> None:
+        """An allowlisted HPA must reject behavior and every other unreviewed field."""
+        self.copy_currency_manifests()
+        hpa_path = POLICY.CURRENCY_ROOT / "base" / "hpa.yaml"
+        hpa = yaml.safe_load(hpa_path.read_text(encoding="utf-8"))
+        hpa["spec"]["behavior"] = {"scaleDown": {"stabilizationWindowSeconds": 300}}
+        hpa_path.write_text(
+            yaml.safe_dump(hpa, sort_keys=False), encoding="utf-8"
+        )
+
+        errors = POLICY.validate_currency_overlay("production")
+
         self.assertTrue(any("HPA contract" in error for error in errors))
 
     def test_dynamic_applicationset_activation_paths_are_rejected(self) -> None:

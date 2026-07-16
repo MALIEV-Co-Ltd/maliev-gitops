@@ -7,7 +7,7 @@ import subprocess
 import sys
 from collections import Counter
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 import yaml
 
@@ -47,6 +47,39 @@ EXPECTED_HPA_BOUNDS = {
     "staging": (1, 3),
     "production": (1, 3),
 }
+
+
+def expected_probe_contracts(environment: str) -> dict[str, dict[str, object]]:
+    """Return the complete reviewed Kubernetes probe objects for one environment."""
+    if environment == "development":
+        initial_delay = 60
+        period = 10
+        timeout = 5
+    elif environment in ("staging", "production"):
+        initial_delay = 10
+        period = 5
+        timeout = 3
+    else:
+        raise ValueError(f"unsupported environment: {environment}")
+    common = {
+        "initialDelaySeconds": initial_delay,
+        "periodSeconds": period,
+        "timeoutSeconds": timeout,
+        "failureThreshold": 3,
+    }
+    return {
+        "livenessProbe": {
+            "httpGet": {"path": "/currency/liveness", "port": 8080},
+            **common,
+        },
+        "readinessProbe": {
+            "httpGet": {"path": "/currency/readiness", "port": 8080},
+            **common,
+            "successThreshold": 1,
+        },
+    }
+
+
 REQUIRED_SECRET_KEYS = {
     "Jwt__PublicKey",
     "Jwt__Issuer",
@@ -130,7 +163,12 @@ def classify_gitops_repository_url(value: object) -> str:
         except ValueError:
             return "unsafe" if "maliev-gitops" in repository_url.casefold() else "other"
 
-    normalized_path = repository_path.strip("/")
+    try:
+        decoded_repository_path = unquote(repository_path, errors="strict")
+    except UnicodeDecodeError:
+        return "unsafe" if "maliev-gitops" in repository_url.casefold() else "other"
+
+    normalized_path = decoded_repository_path.strip("/")
     if normalized_path.casefold().endswith(".git"):
         normalized_path = normalized_path[:-4]
     parts = normalized_path.split("/")
@@ -140,7 +178,11 @@ def classify_gitops_repository_url(value: object) -> str:
     )
     if not is_this_repository:
         return "other"
-    return "same" if approved_transport else "unsafe"
+    return (
+        "same"
+        if approved_transport and repository_url == GITOPS_REPOSITORY_URL
+        else "unsafe"
+    )
 
 
 def contains_non_empty_template_override(value: object) -> bool:
@@ -472,12 +514,6 @@ def validate_currency_overlay(environment: str) -> list[str]:
 
     expected_minimum, expected_maximum = EXPECTED_HPA_BOUNDS[environment]
     hpa_spec = horizontal_pod_autoscaler.get("spec", {})
-    actual_hpa_contract = {
-        "scaleTargetRef": hpa_spec.get("scaleTargetRef"),
-        "minReplicas": hpa_spec.get("minReplicas"),
-        "maxReplicas": hpa_spec.get("maxReplicas"),
-        "metrics": hpa_spec.get("metrics"),
-    }
     expected_hpa_contract = {
         "scaleTargetRef": {
             "apiVersion": "apps/v1",
@@ -499,7 +535,7 @@ def validate_currency_overlay(environment: str) -> list[str]:
             }
         ],
     }
-    if actual_hpa_contract != expected_hpa_contract:
+    if hpa_spec != expected_hpa_contract:
         errors.append(f"{environment}: HPA contract is not exact")
 
     pod_spec = deployment.get("spec", {}).get("template", {}).get("spec", {})
@@ -521,28 +557,64 @@ def validate_currency_overlay(environment: str) -> list[str]:
     if container.get("volumeMounts"):
         errors.append(f"{environment}: CurrencyService volumeMounts are not allowlisted")
 
-    expected_probe_paths = {
-        "livenessProbe": "/currency/liveness",
-        "readinessProbe": "/currency/readiness",
+    expected_probes = expected_probe_contracts(environment)
+    actual_probes = {
+        probe_name: container.get(probe_name) for probe_name in expected_probes
     }
-    actual_probe_paths = {
-        probe_name: container.get(probe_name, {}).get("httpGet", {}).get("path")
-        for probe_name in expected_probe_paths
-    }
-    if actual_probe_paths != expected_probe_paths:
-        errors.append(
-            f"{environment}: health probe paths {actual_probe_paths!r} do not match "
-            f"{expected_probe_paths!r}"
-        )
+    if actual_probes != expected_probes:
+        errors.append(f"{environment}: health probe contract is not exact")
 
+    raw_environment_entries = container.get("env", [])
+    if not isinstance(raw_environment_entries, list):
+        errors.append(f"{environment}: environment entries must be a list")
+        raw_environment_entries = []
+    environment_entries = [
+        item for item in raw_environment_entries if isinstance(item, dict)
+    ]
+    if len(environment_entries) != len(raw_environment_entries):
+        errors.append(f"{environment}: every environment entry must be an object")
+    environment_name_counts = Counter(
+        str(item.get("name", "")) for item in environment_entries
+    )
+    duplicate_environment_names = sorted(
+        name for name, count in environment_name_counts.items() if name and count > 1
+    )
+    if duplicate_environment_names:
+        errors.append(
+            f"{environment}: duplicate environment variable names "
+            f"{duplicate_environment_names!r} are forbidden"
+        )
     environment_variables = {
-        item.get("name"): item for item in container.get("env", []) if item.get("name")
+        item.get("name"): item for item in environment_entries if item.get("name")
     }
     expected_non_secret_values = {
         "ServiceAuthentication__ClientId": "service-currency-service",
         **EXPECTED_ENVIRONMENT_VALUES[environment],
     }
     expected_names = REQUIRED_SECRET_KEYS | set(expected_non_secret_values)
+    expected_environment_entries = [
+        {
+            "name": key,
+            "valueFrom": {
+                "secretKeyRef": {
+                    "name": "maliev-currency-service-secrets",
+                    "key": key,
+                }
+            },
+        }
+        for key in sorted(REQUIRED_SECRET_KEYS)
+    ] + [
+        {"name": key, "value": value}
+        for key, value in sorted(expected_non_secret_values.items())
+    ]
+    actual_entry_contract = Counter(
+        yaml.safe_dump(item, sort_keys=True) for item in environment_entries
+    )
+    expected_entry_contract = Counter(
+        yaml.safe_dump(item, sort_keys=True) for item in expected_environment_entries
+    )
+    if actual_entry_contract != expected_entry_contract:
+        errors.append(f"{environment}: environment entry projection is not exact")
     if set(environment_variables) != expected_names:
         errors.append(
             f"{environment}: environment keys {sorted(environment_variables)!r} do not "
@@ -717,7 +789,7 @@ def validate_currency_applications_remain_disabled() -> list[str]:
                         "noncanonical MALIEV GitOps URL in active source: "
                         f"{manifest.relative_to(ROOT)}"
                     )
-                if repository_class == "same":
+                if repository_class in ("same", "unsafe"):
                     source_path = str(source.get("path", ""))
                     if "{{" not in source_path and "}}" not in source_path:
                         contract = yaml.safe_dump(source, sort_keys=True)
@@ -763,8 +835,7 @@ def validate_currency_applications_remain_disabled() -> list[str]:
                         f"rendered child from {source_path!r} uses a noncanonical "
                         "MALIEV GitOps URL"
                     )
-                    continue
-                if repository_class != "same":
+                if repository_class not in ("same", "unsafe"):
                     continue
                 child_path = str(child_source.get("path", ""))
                 if "{{" in child_path or "}}" in child_path:
