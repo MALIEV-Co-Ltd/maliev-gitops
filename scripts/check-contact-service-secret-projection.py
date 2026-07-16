@@ -186,6 +186,14 @@ def validate_contact_overlay(environment: str) -> list[str]:
         "ExternalServices__CountryService": "http://maliev-country-service",
         **EXPECTED_ENVIRONMENT_VALUES[environment],
     }
+    expected_environment_names = REQUIRED_SECRET_KEYS | set(expected_non_secret_values)
+    if set(environment_variables) != expected_environment_names:
+        errors.append(
+            f"{environment}: ContactService environment keys are "
+            f"{sorted(environment_variables)!r}; expected exact allowlist "
+            f"{sorted(expected_environment_names)!r}"
+        )
+
     actual_non_secret_values = {
         key: environment_variables.get(key, {}).get("value")
         for key in expected_non_secret_values
@@ -198,6 +206,26 @@ def validate_contact_overlay(environment: str) -> list[str]:
 
     if external_secret.get("spec", {}).get("dataFrom"):
         errors.append(f"{environment}: ContactService ExternalSecret must not use dataFrom")
+
+    expected_secret_boundary = {
+        "secretStoreRef": {
+            "kind": "ClusterSecretStore",
+            "name": "gcp-secret-manager",
+        },
+        "target": {
+            "name": "maliev-contact-service-secrets",
+            "creationPolicy": "Owner",
+        },
+    }
+    actual_secret_boundary = {
+        key: external_secret.get("spec", {}).get(key)
+        for key in expected_secret_boundary
+    }
+    if actual_secret_boundary != expected_secret_boundary:
+        errors.append(
+            f"{environment}: ContactService ExternalSecret store/target boundary does "
+            "not match the reviewed contract"
+        )
 
     mapped_secret_keys = {
         item.get("secretKey")
@@ -268,12 +296,30 @@ def validate_contact_applications_remain_disabled() -> list[str]:
         if not expected.is_file():
             errors.append(f"missing disabled ContactService Application: {expected}")
 
-        active_root = ROOT / "argocd" / "environments" / environment
-        for manifest in active_root.rglob("*.yaml"):
-            if "maliev-contact-service" in manifest.read_text(encoding="utf-8"):
+    argocd_root = ROOT / "argocd"
+    manifests = [*argocd_root.rglob("*.yaml"), *argocd_root.rglob("*.yml")]
+    for manifest in manifests:
+        if "_disabled_apps" in manifest.parts:
+            continue
+
+        documents = [
+            document
+            for document in yaml.safe_load_all(manifest.read_text(encoding="utf-8"))
+            if document
+        ]
+        for document in documents:
+            if document.get("kind") != "Application":
+                continue
+
+            application_name = document.get("metadata", {}).get("name", "")
+            source_path = document.get("spec", {}).get("source", {}).get("path", "")
+            if (
+                "maliev-contact-service" in application_name
+                or "maliev-contact-service" in source_path
+            ):
                 errors.append(
-                    "ContactService Application must remain disabled; active reference found "
-                    f"in {manifest.relative_to(ROOT)}"
+                    "ContactService Application must remain disabled; active Application "
+                    f"found in {manifest.relative_to(ROOT)}"
                 )
     return errors
 
