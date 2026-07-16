@@ -297,18 +297,21 @@ def validate_contact_applications_remain_disabled() -> list[str]:
             "path": "3-apps/maliev-contact-service/overlays/development",
             "environment": "development",
             "namespace": "maliev-dev",
+            "targetRevision": "main",
         },
         "staging": {
             "name": "maliev-contact-service-staging",
             "path": "3-apps/maliev-contact-service/overlays/staging",
             "environment": "staging",
             "namespace": "maliev-staging",
+            "targetRevision": "main",
         },
         "prod": {
             "name": "maliev-contact-service-prod",
             "path": "3-apps/maliev-contact-service/overlays/production",
             "environment": "production",
             "namespace": "maliev-prod",
+            "targetRevision": "v1.0.0",
         },
     }
     for environment, contract in disabled_contracts.items():
@@ -342,6 +345,13 @@ def validate_contact_applications_remain_disabled() -> list[str]:
             .get("labels", {})
             .get("app.kubernetes.io/environment"),
             "path": application.get("spec", {}).get("source", {}).get("path"),
+            "repoURL": application.get("spec", {}).get("source", {}).get("repoURL"),
+            "targetRevision": application.get("spec", {})
+            .get("source", {})
+            .get("targetRevision"),
+            "destinationServer": application.get("spec", {})
+            .get("destination", {})
+            .get("server"),
             "destinationNamespace": application.get("spec", {})
             .get("destination", {})
             .get("namespace"),
@@ -354,6 +364,9 @@ def validate_contact_applications_remain_disabled() -> list[str]:
             "appLabel": "maliev-contact-service",
             "environment": contract["environment"],
             "path": contract["path"],
+            "repoURL": "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git",
+            "targetRevision": contract["targetRevision"],
+            "destinationServer": "https://kubernetes.default.svc",
             "destinationNamespace": contract["namespace"],
         }
         if actual_contract != expected_contract:
