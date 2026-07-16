@@ -291,10 +291,76 @@ def validate_contact_overlay(environment: str) -> list[str]:
 def validate_contact_applications_remain_disabled() -> list[str]:
     errors: list[str] = []
     disabled = ROOT / "argocd" / "environments" / "_disabled_apps"
-    for environment in ("dev", "staging", "prod"):
+    disabled_contracts = {
+        "dev": {
+            "name": "maliev-contact-service-dev",
+            "path": "3-apps/maliev-contact-service/overlays/development",
+            "environment": "development",
+            "namespace": "maliev-dev",
+        },
+        "staging": {
+            "name": "maliev-contact-service-staging",
+            "path": "3-apps/maliev-contact-service/overlays/staging",
+            "environment": "staging",
+            "namespace": "maliev-staging",
+        },
+        "prod": {
+            "name": "maliev-contact-service-prod",
+            "path": "3-apps/maliev-contact-service/overlays/production",
+            "environment": "production",
+            "namespace": "maliev-prod",
+        },
+    }
+    for environment, contract in disabled_contracts.items():
         expected = disabled / environment / "maliev-contact-service.yaml"
         if not expected.is_file():
             errors.append(f"missing disabled ContactService Application: {expected}")
+            continue
+
+        documents = [
+            document
+            for document in yaml.safe_load_all(expected.read_text(encoding="utf-8"))
+            if document
+        ]
+        if len(documents) != 1:
+            errors.append(
+                f"disabled ContactService manifest must contain exactly one Application: "
+                f"{expected.relative_to(ROOT)}"
+            )
+            continue
+
+        application = documents[0]
+        actual_contract = {
+            "apiVersion": application.get("apiVersion"),
+            "kind": application.get("kind"),
+            "name": application.get("metadata", {}).get("name"),
+            "metadataNamespace": application.get("metadata", {}).get("namespace"),
+            "appLabel": application.get("metadata", {})
+            .get("labels", {})
+            .get("app.kubernetes.io/name"),
+            "environment": application.get("metadata", {})
+            .get("labels", {})
+            .get("app.kubernetes.io/environment"),
+            "path": application.get("spec", {}).get("source", {}).get("path"),
+            "destinationNamespace": application.get("spec", {})
+            .get("destination", {})
+            .get("namespace"),
+        }
+        expected_contract = {
+            "apiVersion": "argoproj.io/v1alpha1",
+            "kind": "Application",
+            "name": contract["name"],
+            "metadataNamespace": "argocd",
+            "appLabel": "maliev-contact-service",
+            "environment": contract["environment"],
+            "path": contract["path"],
+            "destinationNamespace": contract["namespace"],
+        }
+        if actual_contract != expected_contract:
+            errors.append(
+                "disabled ContactService Application does not match its exact environment "
+                f"contract: {expected.relative_to(ROOT)}"
+            )
 
     argocd_root = ROOT / "argocd"
     manifests = [*argocd_root.rglob("*.yaml"), *argocd_root.rglob("*.yml")]
@@ -308,18 +374,27 @@ def validate_contact_applications_remain_disabled() -> list[str]:
             if document
         ]
         for document in documents:
-            if document.get("kind") != "Application":
+            kind = document.get("kind")
+            if kind not in ("Application", "ApplicationSet"):
                 continue
 
             application_name = document.get("metadata", {}).get("name", "")
-            source_path = document.get("spec", {}).get("source", {}).get("path", "")
+            specification = document.get("spec", {})
+            if kind == "ApplicationSet":
+                specification = specification.get("template", {}).get("spec", {})
+            source_paths = [specification.get("source", {}).get("path", "")]
+            source_paths.extend(
+                source.get("path", "")
+                for source in specification.get("sources", [])
+                if isinstance(source, dict)
+            )
             if (
                 "maliev-contact-service" in application_name
-                or "maliev-contact-service" in source_path
+                or any("maliev-contact-service" in path for path in source_paths)
             ):
                 errors.append(
-                    "ContactService Application must remain disabled; active Application "
-                    f"found in {manifest.relative_to(ROOT)}"
+                    "ContactService Application must remain disabled; active "
+                    f"{kind} found in {manifest.relative_to(ROOT)}"
                 )
     return errors
 
