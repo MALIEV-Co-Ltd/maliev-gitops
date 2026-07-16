@@ -67,6 +67,11 @@ REQUIRED_SECRET_KEYS = {
     "ConnectionStrings__redis",
     "CORS__AllowedOrigins",
 }
+ENVIRONMENT_NAMESPACES = {
+    "development": "maliev-dev",
+    "staging": "maliev-staging",
+    "production": "maliev-prod",
+}
 
 EXPECTED_RENDERED_INVENTORY = Counter(
     {
@@ -364,19 +369,29 @@ def validate_contact_overlay(environment: str) -> list[str]:
             "property": "CORS__AllowedOrigins",
         },
     }
-    expected_external_secret_spec = {
-        "secretStoreRef": {
-            "kind": "ClusterSecretStore",
-            "name": "gcp-secret-manager",
-        },
-        "target": {
+    expected_external_secret = {
+        "apiVersion": "external-secrets.io/v1",
+        "kind": "ExternalSecret",
+        "metadata": {
             "name": "maliev-contact-service-secrets",
-            "creationPolicy": "Owner",
+            "namespace": ENVIRONMENT_NAMESPACES[environment],
         },
-        "data": [
-            {"secretKey": secret_key, "remoteRef": remote_reference}
-            for secret_key, remote_reference in sorted(expected_remote_mappings.items())
-        ],
+        "spec": {
+            "secretStoreRef": {
+                "kind": "ClusterSecretStore",
+                "name": "gcp-secret-manager",
+            },
+            "target": {
+                "name": "maliev-contact-service-secrets",
+                "creationPolicy": "Owner",
+            },
+            "data": [
+                {"secretKey": secret_key, "remoteRef": remote_reference}
+                for secret_key, remote_reference in sorted(
+                    expected_remote_mappings.items()
+                )
+            ],
+        },
     }
     actual_external_secret_spec = external_secret.get("spec", {})
     actual_data = actual_external_secret_spec.get("data")
@@ -388,10 +403,12 @@ def validate_contact_overlay(environment: str) -> list[str]:
             if isinstance(item, dict)
             else repr(item),
         )
-    if normalized_actual_spec != expected_external_secret_spec:
+    normalized_actual_external_secret = dict(external_secret)
+    normalized_actual_external_secret["spec"] = normalized_actual_spec
+    if normalized_actual_external_secret != expected_external_secret:
         errors.append(
-            f"{environment}: ContactService ExternalSecret spec does not match the "
-            "exact environment property contract"
+            f"{environment}: ContactService ExternalSecret object does not match the "
+            "exact environment metadata and property contract"
         )
 
     return errors
