@@ -732,8 +732,23 @@ def json_patch_touches_secret_boundary(
     folded_parts = {part.casefold() for part in path_parts}
     target_kind = str(target.get("kind", "")).casefold()
     if folded_parts.intersection(
-        {"envfrom", "secretkeyref", "secretname", "secret", "secrets"}
+        {
+            "envfrom",
+            "remoteref",
+            "secret",
+            "secretkeyref",
+            "secretname",
+            "secrets",
+            "secretstoreref",
+        }
     ):
+        return True
+    if len(path_parts) >= 2 and path_parts[0] == "spec" and path_parts[1] in {
+        "data",
+        "dataFrom",
+        "secretStoreRef",
+        "target",
+    }:
         return True
     if target_kind == "deployment" and "env" in folded_parts:
         return True
@@ -748,7 +763,14 @@ def json_patch_touches_secret_boundary(
         if isinstance(value, dict):
             if any(
                 str(key).casefold()
-                in {"secretkeyref", "envfrom", "secretname", "datafrom"}
+                in {
+                    "datafrom",
+                    "envfrom",
+                    "remoteref",
+                    "secretkeyref",
+                    "secretname",
+                    "secretstoreref",
+                }
                 for key in value
             ):
                 return True

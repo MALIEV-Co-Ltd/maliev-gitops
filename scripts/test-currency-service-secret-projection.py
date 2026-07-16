@@ -392,6 +392,36 @@ class CurrencyProjectionPolicyTests(unittest.TestCase):
 
         self.assertEqual([], errors)
 
+    def test_modern_name_only_externalsecret_replace_restore_is_rejected(self) -> None:
+        """ExternalSecret pointers stay sensitive when the selector omits kind."""
+        self.copy_currency_manifests()
+        self.append_kustomization_field(
+            "production",
+            "patches",
+            {
+                "target": {"name": "maliev-currency-service-secrets"},
+                "patch": yaml.safe_dump(
+                    [
+                        {
+                            "op": "replace",
+                            "path": "/spec/data/0/remoteRef/key",
+                            "value": "unreviewed-secret-manager-key",
+                        },
+                        {
+                            "op": "replace",
+                            "path": "/spec/data/0/remoteRef/key",
+                            "value": "maliev-prod-shared-config",
+                        },
+                    ],
+                    sort_keys=False,
+                ),
+            },
+        )
+
+        errors = POLICY.validate_currency_overlay("production")
+
+        self.assertTrue(any("secret-bearing JSON6902" in error for error in errors))
+
     def test_implicit_kustomization_file_symlink_is_rejected(self) -> None:
         """Directory discovery must not follow an implicit Kustomization symlink."""
         self.copy_currency_manifests()
