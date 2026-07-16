@@ -83,6 +83,20 @@ EXPECTED_RENDERED_INVENTORY = Counter(
     }
 )
 
+GITOPS_REPOSITORY_URL = "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
+KUSTOMIZATION_FILENAMES = (
+    "kustomization.yaml",
+    "kustomization.yml",
+    "Kustomization",
+)
+CONTACT_RENDERED_IDENTITIES = {
+    ("Deployment", "maliev-contact-service"),
+    ("Service", "maliev-contact-service"),
+    ("HorizontalPodAutoscaler", "maliev-contact-service-hpa"),
+    ("ExternalSecret", "maliev-contact-service-secrets"),
+    ("ServiceMonitor", "maliev-contact-service"),
+}
+
 
 def contains_non_empty_template_override(value: object) -> bool:
     """Return true when an ApplicationSet generator tree contains a template override."""
@@ -137,6 +151,96 @@ def render(overlay: Path) -> str:
             f"{completed.stderr.strip()}"
         )
     return completed.stdout
+
+
+def render_active_in_repo_source(source: dict[str, object]) -> list[dict[str, object]]:
+    """Render a static in-repo Argo source exactly as its local source type permits."""
+    source_path = str(source.get("path", "")).strip()
+    if not source_path:
+        raise RuntimeError("active in-repo Argo source has no path")
+    if "{{" in source_path or "}}" in source_path:
+        raise RuntimeError(
+            f"active in-repo Argo source has unresolved dynamic path {source_path!r}"
+        )
+
+    candidate = (ROOT / source_path).resolve()
+    try:
+        candidate.relative_to(ROOT.resolve())
+    except ValueError as error:
+        raise RuntimeError(
+            f"active in-repo Argo source escapes the repository: {source_path!r}"
+        ) from error
+    if not candidate.is_dir():
+        raise RuntimeError(
+            f"active in-repo Argo source path does not exist: {source_path!r}"
+        )
+
+    unsupported = sorted(
+        key
+        for key in ("chart", "helm", "plugin")
+        if source.get(key) not in (None, "", {}, [])
+    )
+    if unsupported:
+        raise RuntimeError(
+            f"active in-repo Argo source {source_path!r} uses unsupported local "
+            f"source configuration {unsupported!r}"
+        )
+
+    if any((candidate / name).is_file() for name in KUSTOMIZATION_FILENAMES):
+        rendered = render(candidate)
+        return [
+            document
+            for document in yaml.safe_load_all(rendered)
+            if isinstance(document, dict)
+        ]
+
+    directory = source.get("directory")
+    if directory not in (None, {}):
+        raise RuntimeError(
+            f"active in-repo Argo directory source {source_path!r} requires "
+            "unsupported discovery options"
+        )
+
+    documents: list[dict[str, object]] = []
+    manifests = [*candidate.glob("*.yaml"), *candidate.glob("*.yml")]
+    for manifest in manifests:
+        documents.extend(
+            document
+            for document in yaml.safe_load_all(manifest.read_text(encoding="utf-8"))
+            if isinstance(document, dict)
+        )
+    return documents
+
+
+def rendered_document_activates_contact(document: dict[str, object]) -> bool:
+    """Return true when an active source renders a Contact resource or child app."""
+    identity = (
+        document.get("kind"),
+        document.get("metadata", {}).get("name"),
+    )
+    if identity in CONTACT_RENDERED_IDENTITIES:
+        return True
+
+    kind = document.get("kind")
+    if kind not in ("Application", "ApplicationSet"):
+        return False
+    specification = document.get("spec", {})
+    names = [str(document.get("metadata", {}).get("name", ""))]
+    if kind == "ApplicationSet":
+        template = specification.get("template", {})
+        names.append(str(template.get("metadata", {}).get("name", "")))
+        specification = template.get("spec", {})
+    sources: list[dict[str, object]] = []
+    if isinstance(specification.get("source"), dict):
+        sources.append(specification["source"])
+    sources.extend(
+        source
+        for source in specification.get("sources", [])
+        if isinstance(source, dict)
+    )
+    return any("maliev-contact-service" in name for name in names) or any(
+        source_can_activate_contact(source) for source in sources
+    )
 
 
 def validate_contact_overlay(environment: str) -> list[str]:
@@ -416,6 +520,7 @@ def validate_contact_overlay(environment: str) -> list[str]:
 
 def validate_contact_applications_remain_disabled() -> list[str]:
     errors: list[str] = []
+    active_in_repo_sources: dict[tuple[str, str], dict[str, object]] = {}
     disabled = ROOT / "argocd" / "environments" / "_disabled_apps"
     disabled_contracts = {
         "dev": {
@@ -546,6 +651,14 @@ def validate_contact_applications_remain_disabled() -> list[str]:
                 for source in specification.get("sources", [])
                 if isinstance(source, dict)
             )
+            for source in sources:
+                if source.get("repoURL") == GITOPS_REPOSITORY_URL:
+                    source_path = str(source.get("path", ""))
+                    if "{{" not in source_path and "}}" not in source_path:
+                        source_contract = yaml.safe_dump(source, sort_keys=True)
+                        active_in_repo_sources.setdefault(
+                            (source_path, source_contract), source
+                        )
             source_paths = [str(source.get("path", "")) for source in sources]
             has_contact_reference = any(
                 "maliev-contact-service" in name for name in application_names
@@ -566,6 +679,33 @@ def validate_contact_applications_remain_disabled() -> list[str]:
                     f"{kind} with a Contact or unresolved dynamic source found in "
                     f"{manifest.relative_to(ROOT)}"
                 )
+
+    for (source_path, _), source in sorted(active_in_repo_sources.items()):
+        try:
+            documents = render_active_in_repo_source(source)
+        except (OSError, RuntimeError, yaml.YAMLError) as error:
+            errors.append(
+                "ContactService activation policy could not render active in-repo "
+                f"Argo source {source_path!r}: {error}"
+            )
+            continue
+
+        activated_identities = sorted(
+            {
+                (
+                    str(document.get("kind", "")),
+                    str(document.get("metadata", {}).get("name", "")),
+                )
+                for document in documents
+                if rendered_document_activates_contact(document)
+            }
+        )
+        if activated_identities:
+            errors.append(
+                "ContactService Application must remain disabled; active in-repo "
+                f"Argo source {source_path!r} renders ContactService identities "
+                f"{activated_identities!r}"
+            )
     return errors
 
 
