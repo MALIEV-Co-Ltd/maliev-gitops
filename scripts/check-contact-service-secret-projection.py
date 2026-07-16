@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+from collections import Counter
 from pathlib import Path
 
 import yaml
@@ -67,6 +68,55 @@ REQUIRED_SECRET_KEYS = {
     "CORS__AllowedOrigins",
 }
 
+EXPECTED_RENDERED_INVENTORY = Counter(
+    {
+        ("Service", "maliev-contact-service"): 1,
+        ("Deployment", "maliev-contact-service"): 1,
+        ("HorizontalPodAutoscaler", "maliev-contact-service-hpa"): 1,
+        ("ExternalSecret", "maliev-contact-service-secrets"): 1,
+        ("ServiceMonitor", "maliev-contact-service"): 1,
+    }
+)
+
+
+def contains_non_empty_template_override(value: object) -> bool:
+    """Return true when an ApplicationSet generator tree contains a template override."""
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if key == "template" and child not in (None, "", {}, []):
+                return True
+            if contains_non_empty_template_override(child):
+                return True
+    elif isinstance(value, list):
+        return any(contains_non_empty_template_override(child) for child in value)
+    return False
+
+
+def source_can_activate_contact(source: object) -> bool:
+    """Fail closed when an Argo source directly or recursively reaches ContactService."""
+    if not isinstance(source, dict):
+        return False
+
+    source_path = str(source.get("path", "")).strip("/")
+    if source_path == ".":
+        source_path = ""
+    contact_path = "3-apps/maliev-contact-service"
+    if "{{" in source_path or "}}" in source_path:
+        return True
+    if ".." in source_path.split("/"):
+        return True
+    if source_path == contact_path or source_path.startswith(f"{contact_path}/"):
+        return True
+
+    directory = source.get("directory")
+    is_contact_ancestor = not source_path or contact_path.startswith(f"{source_path}/")
+    if is_contact_ancestor and isinstance(directory, dict):
+        has_recursive_discovery = directory.get("recurse") is True
+        has_include_pattern = directory.get("include") not in (None, "", [])
+        if has_recursive_discovery or has_include_pattern:
+            return True
+    return False
+
 
 def render(overlay: Path) -> str:
     completed = subprocess.run(
@@ -89,30 +139,43 @@ def validate_contact_overlay(environment: str) -> list[str]:
     errors: list[str] = []
 
     documents = [document for document in yaml.safe_load_all(rendered) if document]
-    deployment = next(
-        (
-            document
-            for document in documents
-            if document.get("kind") == "Deployment"
-            and document.get("metadata", {}).get("name") == "maliev-contact-service"
-        ),
-        None,
+    rendered_inventory = Counter(
+        (document.get("kind"), document.get("metadata", {}).get("name"))
+        for document in documents
     )
-    external_secret = next(
-        (
-            document
-            for document in documents
-            if document.get("kind") == "ExternalSecret"
-            and document.get("metadata", {}).get("name")
-            == "maliev-contact-service-secrets"
-        ),
-        None,
-    )
+    if rendered_inventory != EXPECTED_RENDERED_INVENTORY:
+        errors.append(
+            f"{environment}: rendered ContactService inventory is "
+            f"{dict(rendered_inventory)!r}; expected exact inventory "
+            f"{dict(EXPECTED_RENDERED_INVENTORY)!r}"
+        )
+
+    deployments = [
+        document
+        for document in documents
+        if document.get("kind") == "Deployment"
+        and document.get("metadata", {}).get("name") == "maliev-contact-service"
+    ]
+    external_secrets = [
+        document
+        for document in documents
+        if document.get("kind") == "ExternalSecret"
+        and document.get("metadata", {}).get("name")
+        == "maliev-contact-service-secrets"
+    ]
+    deployment = deployments[0] if len(deployments) == 1 else None
+    external_secret = external_secrets[0] if len(external_secrets) == 1 else None
 
     if deployment is None:
-        return [f"{environment}: ContactService Deployment did not render"]
+        errors.append(
+            f"{environment}: exactly one ContactService Deployment must render"
+        )
     if external_secret is None:
-        return [f"{environment}: ContactService ExternalSecret did not render"]
+        errors.append(
+            f"{environment}: exactly one ContactService ExternalSecret must render"
+        )
+    if deployment is None or external_secret is None:
+        return errors
 
     pod_specification = deployment["spec"]["template"]["spec"]
     containers = pod_specification.get("containers", [])
@@ -267,10 +330,41 @@ def validate_contact_overlay(environment: str) -> list[str]:
             "match the reviewed environment contract"
         )
 
-    if external_secret.get("spec", {}).get("dataFrom"):
-        errors.append(f"{environment}: ContactService ExternalSecret must not use dataFrom")
-
-    expected_secret_boundary = {
+    expected_remote_mappings = {
+        "Jwt__PublicKey": {
+            "key": f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
+            "property": "Jwt__PublicKey",
+        },
+        "Jwt__Issuer": {
+            "key": f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
+            "property": "Jwt__Issuer",
+        },
+        "Jwt__Audience": {
+            "key": f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
+            "property": "Jwt__Audience",
+        },
+        "ServiceAuthentication__ClientSecret": {
+            "key": f"{ENVIRONMENT_PREFIXES[environment]}-contact-service-config",
+            "property": "ServiceAuthentication__ClientSecret",
+        },
+        "ConnectionStrings__ContactDbContext": {
+            "key": f"{ENVIRONMENT_PREFIXES[environment]}-contact-service-config",
+            "property": "ConnectionStrings__ContactDbContext",
+        },
+        "ConnectionStrings__rabbitmq": {
+            "key": f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
+            "property": "ConnectionStrings__rabbitmq",
+        },
+        "ConnectionStrings__redis": {
+            "key": f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
+            "property": "ConnectionStrings__redis",
+        },
+        "CORS__AllowedOrigins": {
+            "key": f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
+            "property": "CORS__AllowedOrigins",
+        },
+    }
+    expected_external_secret_spec = {
         "secretStoreRef": {
             "kind": "ClusterSecretStore",
             "name": "gcp-secret-manager",
@@ -279,73 +373,25 @@ def validate_contact_overlay(environment: str) -> list[str]:
             "name": "maliev-contact-service-secrets",
             "creationPolicy": "Owner",
         },
+        "data": [
+            {"secretKey": secret_key, "remoteRef": remote_reference}
+            for secret_key, remote_reference in sorted(expected_remote_mappings.items())
+        ],
     }
-    actual_secret_boundary = {
-        key: external_secret.get("spec", {}).get(key)
-        for key in expected_secret_boundary
-    }
-    if actual_secret_boundary != expected_secret_boundary:
-        errors.append(
-            f"{environment}: ContactService ExternalSecret store/target boundary does "
-            "not match the reviewed contract"
+    actual_external_secret_spec = external_secret.get("spec", {})
+    actual_data = actual_external_secret_spec.get("data")
+    normalized_actual_spec = dict(actual_external_secret_spec)
+    if isinstance(actual_data, list):
+        normalized_actual_spec["data"] = sorted(
+            actual_data,
+            key=lambda item: str(item.get("secretKey"))
+            if isinstance(item, dict)
+            else repr(item),
         )
-
-    mapped_secret_keys = {
-        item.get("secretKey")
-        for item in external_secret.get("spec", {}).get("data", [])
-    }
-    if mapped_secret_keys != REQUIRED_SECRET_KEYS:
+    if normalized_actual_spec != expected_external_secret_spec:
         errors.append(
-            f"{environment}: ContactService ExternalSecret keys are "
-            f"{sorted(key for key in mapped_secret_keys if key)!r}; expected "
-            f"{sorted(REQUIRED_SECRET_KEYS)!r}"
-        )
-
-    expected_remote_mappings = {
-        "Jwt__PublicKey": (
-            f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
-            "Jwt__PublicKey",
-        ),
-        "Jwt__Issuer": (
-            f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
-            "Jwt__Issuer",
-        ),
-        "Jwt__Audience": (
-            f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
-            "Jwt__Audience",
-        ),
-        "ServiceAuthentication__ClientSecret": (
-            f"{ENVIRONMENT_PREFIXES[environment]}-contact-service-config",
-            "ServiceAuthentication__ClientSecret",
-        ),
-        "ConnectionStrings__ContactDbContext": (
-            f"{ENVIRONMENT_PREFIXES[environment]}-contact-service-config",
-            "ConnectionStrings__ContactDbContext",
-        ),
-        "ConnectionStrings__rabbitmq": (
-            f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
-            "ConnectionStrings__rabbitmq",
-        ),
-        "ConnectionStrings__redis": (
-            f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
-            "ConnectionStrings__redis",
-        ),
-        "CORS__AllowedOrigins": (
-            f"{ENVIRONMENT_PREFIXES[environment]}-shared-config",
-            "CORS__AllowedOrigins",
-        ),
-    }
-    actual_remote_mappings = {
-        item.get("secretKey"): (
-            item.get("remoteRef", {}).get("key"),
-            item.get("remoteRef", {}).get("property"),
-        )
-        for item in external_secret.get("spec", {}).get("data", [])
-    }
-    if actual_remote_mappings != expected_remote_mappings:
-        errors.append(
-            f"{environment}: ContactService ExternalSecret remote mappings do not "
-            "match the environment-specific property allowlist"
+            f"{environment}: ContactService ExternalSecret spec does not match the "
+            "exact environment property contract"
         )
 
     return errors
@@ -464,18 +510,29 @@ def validate_contact_applications_remain_disabled() -> list[str]:
                         "ApplicationSet with non-empty templatePatch found in "
                         f"{manifest.relative_to(ROOT)}"
                     )
+                if contains_non_empty_template_override(
+                    specification.get("generators", [])
+                ):
+                    errors.append(
+                        "ContactService Application must remain disabled; active "
+                        "ApplicationSet generator template override found in "
+                        f"{manifest.relative_to(ROOT)}"
+                    )
                 template = specification.get("template", {})
                 application_names.append(template.get("metadata", {}).get("name", ""))
                 specification = template.get("spec", {})
-            source_paths = [specification.get("source", {}).get("path", "")]
-            source_paths.extend(
-                source.get("path", "")
+            sources = []
+            if isinstance(specification.get("source"), dict):
+                sources.append(specification["source"])
+            sources.extend(
+                source
                 for source in specification.get("sources", [])
                 if isinstance(source, dict)
             )
+            source_paths = [str(source.get("path", "")) for source in sources]
             has_contact_reference = any(
                 "maliev-contact-service" in name for name in application_names
-            ) or any("maliev-contact-service" in path for path in source_paths)
+            ) or any(source_can_activate_contact(source) for source in sources)
             has_unresolved_dynamic_source = kind == "ApplicationSet" and any(
                 "{{" in path or "}}" in path for path in source_paths
             )
