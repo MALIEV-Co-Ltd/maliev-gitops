@@ -29,14 +29,17 @@ EXPECTED_ENVIRONMENT_VALUES = {
     "development": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "Services__AuthService__BaseUrl": "https://dev.api.maliev.com",
+        "Services__IAMService__BaseUrl": "https://dev.api.maliev.com",
     },
     "staging": {
         "ASPNETCORE_ENVIRONMENT": "Staging",
         "Services__AuthService__BaseUrl": "https://staging.api.maliev.com",
+        "Services__IAMService__BaseUrl": "https://staging.api.maliev.com",
     },
     "production": {
         "ASPNETCORE_ENVIRONMENT": "Production",
         "Services__AuthService__BaseUrl": "https://api.maliev.com",
+        "Services__IAMService__BaseUrl": "https://api.maliev.com",
     },
 }
 REQUIRED_SECRET_KEYS = {
@@ -66,6 +69,17 @@ EXPECTED_RENDERED_INVENTORY = Counter(
     }
 )
 SEARCH_RENDERED_IDENTITIES = set(EXPECTED_RENDERED_INVENTORY)
+POD_PRODUCING_KINDS = {
+    "Pod",
+    "Deployment",
+    "StatefulSet",
+    "DaemonSet",
+    "ReplicaSet",
+    "ReplicationController",
+    "Job",
+    "CronJob",
+    "Rollout",
+}
 GITOPS_REPOSITORY_OWNER = "maliev-co-ltd"
 GITOPS_REPOSITORY_NAME = "maliev-gitops"
 GITOPS_REPOSITORY_URL = "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
@@ -248,6 +262,73 @@ def argo_sources(document: dict[str, object]) -> tuple[list[str], list[dict[str,
     return names, sources
 
 
+def pod_specification(document: dict[str, object]) -> dict[str, object] | None:
+    """Extract the pod specification from supported pod-producing resources."""
+    kind = document.get("kind")
+    specification = document.get("spec", {})
+    if kind == "Pod":
+        return specification if isinstance(specification, dict) else None
+    if kind == "CronJob":
+        specification = specification.get("jobTemplate", {}).get("spec", {})
+    if kind in POD_PRODUCING_KINDS:
+        pod_spec = specification.get("template", {}).get("spec")
+        return pod_spec if isinstance(pod_spec, dict) else None
+    return None
+
+
+def image_is_search_runtime(value: object) -> bool:
+    """Match the canonical SearchService image regardless of registry, tag, or digest."""
+    image = str(value or "").strip()
+    if not image:
+        return False
+    image_name = image.rsplit("/", 1)[-1].split("@", 1)[0].split(":", 1)[0]
+    return image_name.casefold() == "maliev-search-service"
+
+
+def workload_uses_search_runtime(document: dict[str, object]) -> bool:
+    """Detect Search runtime identity even when workload resources are renamed."""
+    if document.get("kind") not in POD_PRODUCING_KINDS:
+        return False
+    pod_spec = pod_specification(document)
+    if pod_spec is None:
+        return False
+
+    containers = [
+        container
+        for key in ("containers", "initContainers", "ephemeralContainers")
+        for container in pod_spec.get(key, [])
+        if isinstance(container, dict)
+    ]
+    if any(image_is_search_runtime(container.get("image")) for container in containers):
+        return True
+
+    metadata = document.get("metadata", {})
+    template_metadata = (
+        document.get("spec", {})
+        .get("jobTemplate", {})
+        .get("spec", {})
+        .get("template", {})
+        .get("metadata", {})
+        if document.get("kind") == "CronJob"
+        else document.get("spec", {}).get("template", {}).get("metadata", {})
+    )
+    label_values = {
+        str(value).casefold()
+        for labels in (
+            metadata.get("labels", {}),
+            template_metadata.get("labels", {}),
+        )
+        if isinstance(labels, dict)
+        for value in labels.values()
+    }
+    if "maliev-search-service" in label_values:
+        return True
+
+    return "maliev-search-service-secrets" in yaml.safe_dump(
+        pod_spec, sort_keys=True
+    )
+
+
 def rendered_document_activates_search(document: dict[str, object]) -> bool:
     """Return true when a rendered resource activates SearchService."""
     identity = (
@@ -255,6 +336,8 @@ def rendered_document_activates_search(document: dict[str, object]) -> bool:
         document.get("metadata", {}).get("name"),
     )
     if identity in SEARCH_RENDERED_IDENTITIES:
+        return True
+    if workload_uses_search_runtime(document):
         return True
     if document.get("kind") not in ("Application", "ApplicationSet"):
         return False
@@ -374,7 +457,6 @@ def validate_search_overlay(environment: str) -> list[str]:
     }
     expected_non_secret_values = {
         "ServiceAuthentication__ClientId": "service-search-service",
-        "Services__IAMService__BaseUrl": "https://maliev-iam-service:8080",
         **EXPECTED_ENVIRONMENT_VALUES[environment],
     }
     expected_names = REQUIRED_SECRET_KEYS | set(expected_non_secret_values)

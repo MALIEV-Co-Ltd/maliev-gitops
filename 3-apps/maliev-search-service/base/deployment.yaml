@@ -87,7 +87,7 @@ spec:
             - name: Services__AuthService__BaseUrl
               value: "https://api.maliev.com"
             - name: Services__IAMService__BaseUrl
-              value: "https://maliev-iam-service:8080"
+              value: "https://api.maliev.com"
             - name: ConnectionStrings__SearchDbContext
               valueFrom:
                 secretKeyRef:

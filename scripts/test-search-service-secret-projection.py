@@ -250,6 +250,94 @@ spec:
             any("Deployment', 'maliev-search-service" in error for error in errors)
         )
 
+    def test_renamed_workload_using_search_image_is_rejected(self) -> None:
+        """Runtime image identity must survive arbitrary workload and container renames."""
+        self.copy_disabled_applications()
+        self.write_application(
+            self.root / "argocd" / "environments" / "dev" / "root.yaml",
+            "generic-root",
+            "generic-workload",
+        )
+        workload = self.root / "generic-workload"
+        workload.mkdir()
+        (workload / "kustomization.yaml").write_text(
+            "resources:\n  - deployment.yaml\n", encoding="utf-8"
+        )
+        (workload / "deployment.yaml").write_text(
+            """apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: generic-worker
+spec:
+  selector:
+    matchLabels:
+      app: generic-worker
+  template:
+    metadata:
+      labels:
+        app: generic-worker
+    spec:
+      containers:
+        - name: worker
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-search-service:dev-review
+""",
+            encoding="utf-8",
+        )
+
+        errors = POLICY.validate_search_applications_remain_disabled()
+
+        self.assertTrue(
+            any("Deployment', 'generic-worker" in error for error in errors)
+        )
+
+    def test_iam_origins_use_environment_external_https_api_routes(self) -> None:
+        """IAM requests need the real TLS ingress because IAM pods expose HTTP only."""
+        self.copy_search_manifests()
+        expected_origins = {
+            "development": "https://dev.api.maliev.com",
+            "staging": "https://staging.api.maliev.com",
+            "production": "https://api.maliev.com",
+        }
+        for environment, expected_origin in expected_origins.items():
+            rendered = POLICY.render(POLICY.SEARCH_ROOT / "overlays" / environment)
+            deployment = next(
+                document
+                for document in yaml.safe_load_all(rendered)
+                if document
+                and document.get("kind") == "Deployment"
+                and document.get("metadata", {}).get("name")
+                == "maliev-search-service"
+            )
+            environment_variables = {
+                item["name"]: item
+                for item in deployment["spec"]["template"]["spec"]["containers"][0][
+                    "env"
+                ]
+            }
+            self.assertEqual(
+                expected_origin,
+                environment_variables["Services__IAMService__BaseUrl"].get("value"),
+                environment,
+            )
+
+    def test_runtime_image_detection_covers_every_container_set(self) -> None:
+        """Main, init, and ephemeral Search images all identify the runtime."""
+        search_image = "registry.example/maliev-search-service@sha256:review"
+        for container_set in ("containers", "initContainers", "ephemeralContainers"):
+            pod_spec = {
+                "containers": [{"name": "main", "image": "example.invalid/generic"}],
+                container_set: [{"name": "renamed", "image": search_image}],
+            }
+            workload = {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "metadata": {"name": "generic-worker"},
+                "spec": {"template": {"spec": pod_spec}},
+            }
+
+            with self.subTest(container_set=container_set):
+                self.assertTrue(POLICY.workload_uses_search_runtime(workload))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

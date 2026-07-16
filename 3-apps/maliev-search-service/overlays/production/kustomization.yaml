@@ -25,3 +25,5 @@ patches:
                     value: Production
                   - name: Services__AuthService__BaseUrl
                     value: https://api.maliev.com
+                  - name: Services__IAMService__BaseUrl
+                    value: https://api.maliev.com

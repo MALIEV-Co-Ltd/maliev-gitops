@@ -20,13 +20,14 @@ registrations:
 - `AddStandardCors`: `CORS__AllowedOrigins`;
 - `AddAuthServiceTokenExchange`: the Search client ID and secret plus the AuthService HTTPS
   origin;
-- `AddAuthServiceIAMClient`: the IAMService internal HTTPS origin.
+- `AddAuthServiceIAMClient`: the environment's canonical external HTTPS API origin. The
+  client appends the IAM `/iam/v1/...` path to that origin.
 
 The Deployment stores these reviewed non-secret values directly:
 
 - `ServiceAuthentication__ClientId` (`service-search-service`);
 - `Services__AuthService__BaseUrl` (the environment's canonical public HTTPS origin);
-- `Services__IAMService__BaseUrl` (the internal HTTPS service origin);
+- `Services__IAMService__BaseUrl` (the environment's canonical external HTTPS API origin);
 - `ASPNETCORE_ENVIRONMENT`.
 
 The SearchService ExternalSecret selects only these properties into the generated Secret:
@@ -66,10 +67,9 @@ Before a future PR moves any SearchService Application out of `_disabled_apps`:
    `search-service` v1 workload profile with only `iam.auth.check-permission`.
 4. Verify the AuthService origin presents valid HTTPS and is reachable from the Search
    namespace. Plain HTTP is rejected outside loopback development/testing.
-5. Verify `https://maliev-iam-service:8080` is backed by namespace-local TLS whose certificate
-   is valid for that host before activation. If the cluster does not provide that internal TLS
-   boundary, keep SearchService disabled and use a separately reviewed canonical HTTPS route;
-   do not weaken the runtime's HTTPS validation.
+5. Verify the environment API origin routes `/iam/v1/...` to IAMService and presents a valid
+   certificate. IAMService pods currently expose HTTP only, so do not configure the internal
+   Kubernetes Service name as an HTTPS origin and do not weaken the runtime's HTTPS validation.
 6. Verify the configured CORS origins are exact deployed application origins without
    wildcards, and verify the Search database, RabbitMQ, and Redis dependencies are present.
 7. Render and validate without applying anything:
