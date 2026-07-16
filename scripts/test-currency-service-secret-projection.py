@@ -8,7 +8,6 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 
 import yaml
 
@@ -126,17 +125,10 @@ class CurrencyProjectionPolicyTests(unittest.TestCase):
         self.assertTrue(any("exact object contract" in error for error in errors))
 
     def test_duplicate_environment_names_cannot_hide_unreviewed_projection(self) -> None:
-        """Every env entry must be reviewed even when a later duplicate is allowlisted."""
+        """Raw source duplicates must fail before Kustomize can normalize them away."""
         self.copy_currency_manifests()
-        rendered = POLICY.render(POLICY.CURRENCY_ROOT / "overlays" / "production")
-        documents = [document for document in yaml.safe_load_all(rendered) if document]
-        deployment = next(
-            document
-            for document in documents
-            if document.get("kind") == "Deployment"
-            and document.get("metadata", {}).get("name")
-            == "maliev-currency-service"
-        )
+        deployment_path = POLICY.CURRENCY_ROOT / "base" / "deployment.yaml"
+        deployment = yaml.safe_load(deployment_path.read_text(encoding="utf-8"))
         container = deployment["spec"]["template"]["spec"]["containers"][0]
         container["env"].insert(
             0,
@@ -150,19 +142,14 @@ class CurrencyProjectionPolicyTests(unittest.TestCase):
                 },
             },
         )
-
-        with patch.object(
-            POLICY,
-            "render",
-            return_value=yaml.safe_dump_all(documents, sort_keys=False),
-        ):
-            errors = POLICY.validate_currency_overlay("production")
-
-        self.assertTrue(
-            any("duplicate environment variable names" in error for error in errors)
+        deployment_path.write_text(
+            yaml.safe_dump(deployment, sort_keys=False), encoding="utf-8"
         )
+
+        errors = POLICY.validate_currency_overlay("production")
+
         self.assertTrue(
-            any("environment entry projection is not exact" in error for error in errors)
+            any("source env list has duplicate names" in error for error in errors)
         )
 
     def test_helper_container_and_secret_volume_are_rejected(self) -> None:

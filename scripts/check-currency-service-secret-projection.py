@@ -438,9 +438,67 @@ def expected_external_secret(environment: str) -> dict[str, object]:
     }
 
 
+def validate_source_environment_lists(environment: str) -> list[str]:
+    """Reject duplicate env names in source YAML before Kustomize normalizes lists."""
+    errors: list[str] = []
+    source_paths = [CURRENCY_ROOT / "base" / "deployment.yaml"]
+    source_paths.extend(
+        sorted((CURRENCY_ROOT / "overlays" / environment).glob("*.yaml"))
+    )
+    for source_path in source_paths:
+        documents = [
+            document
+            for document in yaml.safe_load_all(source_path.read_text(encoding="utf-8"))
+            if isinstance(document, dict)
+            and document.get("kind") == "Deployment"
+            and document.get("metadata", {}).get("name")
+            == "maliev-currency-service"
+        ]
+        for document in documents:
+            pod_spec = document.get("spec", {}).get("template", {}).get("spec", {})
+            for container_set in (
+                "containers",
+                "initContainers",
+                "ephemeralContainers",
+            ):
+                containers = pod_spec.get(container_set, [])
+                if not isinstance(containers, list):
+                    errors.append(
+                        f"{environment}: {source_path.relative_to(ROOT)} "
+                        f"{container_set} must be a list"
+                    )
+                    continue
+                for container in containers:
+                    if not isinstance(container, dict) or "env" not in container:
+                        continue
+                    environment_entries = container.get("env")
+                    if not isinstance(environment_entries, list):
+                        errors.append(
+                            f"{environment}: {source_path.relative_to(ROOT)} "
+                            "source env must be a list"
+                        )
+                        continue
+                    names = [
+                        str(entry.get("name", ""))
+                        for entry in environment_entries
+                        if isinstance(entry, dict)
+                    ]
+                    duplicate_names = sorted(
+                        name
+                        for name, count in Counter(names).items()
+                        if name and count > 1
+                    )
+                    if duplicate_names:
+                        errors.append(
+                            f"{environment}: {source_path.relative_to(ROOT)} source env "
+                            f"list has duplicate names {duplicate_names!r}"
+                        )
+    return errors
+
+
 def validate_currency_overlay(environment: str) -> list[str]:
     """Validate exact rendered inventory, pod projection, and ExternalSecret."""
-    errors: list[str] = []
+    errors = validate_source_environment_lists(environment)
     rendered = render(CURRENCY_ROOT / "overlays" / environment)
     documents = [
         document for document in yaml.safe_load_all(rendered) if isinstance(document, dict)
