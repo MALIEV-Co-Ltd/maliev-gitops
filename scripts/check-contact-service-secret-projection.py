@@ -7,6 +7,7 @@ import subprocess
 import sys
 from collections import Counter
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import yaml
 
@@ -84,6 +85,8 @@ EXPECTED_RENDERED_INVENTORY = Counter(
 )
 
 GITOPS_REPOSITORY_URL = "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
+GITOPS_REPOSITORY_OWNER = "maliev-co-ltd"
+GITOPS_REPOSITORY_NAME = "maliev-gitops"
 KUSTOMIZATION_FILENAMES = (
     "kustomization.yaml",
     "kustomization.yml",
@@ -96,6 +99,55 @@ CONTACT_RENDERED_IDENTITIES = {
     ("ExternalSecret", "maliev-contact-service-secrets"),
     ("ServiceMonitor", "maliev-contact-service"),
 }
+
+
+def classify_gitops_repository_url(value: object) -> str:
+    """Classify a repository URL as this repo, another repo, or an unsafe alias."""
+    repository_url = str(value or "").strip()
+    if not repository_url:
+        return "other"
+
+    is_scp_ssh = repository_url.casefold().startswith("git@github.com:")
+    if is_scp_ssh:
+        repository_path = repository_url.split(":", 1)[1]
+        approved_transport = True
+    else:
+        try:
+            parsed = urlsplit(repository_url)
+            repository_path = parsed.path
+            approved_transport = (
+                parsed.scheme.casefold() == "https"
+                and parsed.hostname is not None
+                and parsed.hostname.casefold() == "github.com"
+                and parsed.username is None
+                and parsed.password is None
+                and parsed.port in (None, 443)
+                and not parsed.query
+                and not parsed.fragment
+            ) or (
+                parsed.scheme.casefold() == "ssh"
+                and parsed.hostname is not None
+                and parsed.hostname.casefold() == "github.com"
+                and parsed.username == "git"
+                and parsed.password is None
+                and parsed.port in (None, 22)
+                and not parsed.query
+                and not parsed.fragment
+            )
+        except ValueError:
+            return "unsafe" if "maliev-gitops" in repository_url.casefold() else "other"
+
+    normalized_path = repository_path.strip("/")
+    if normalized_path.casefold().endswith(".git"):
+        normalized_path = normalized_path[:-4]
+    path_parts = normalized_path.split("/")
+    is_this_repository = len(path_parts) == 2 and (
+        path_parts[0].casefold() == GITOPS_REPOSITORY_OWNER
+        and path_parts[1].casefold() == GITOPS_REPOSITORY_NAME
+    )
+    if not is_this_repository:
+        return "other"
+    return "same" if approved_transport else "unsafe"
 
 
 def contains_non_empty_template_override(value: object) -> bool:
@@ -652,7 +704,16 @@ def validate_contact_applications_remain_disabled() -> list[str]:
                 if isinstance(source, dict)
             )
             for source in sources:
-                if source.get("repoURL") == GITOPS_REPOSITORY_URL:
+                repository_classification = classify_gitops_repository_url(
+                    source.get("repoURL")
+                )
+                if repository_classification == "unsafe":
+                    errors.append(
+                        "ContactService activation policy rejects noncanonical MALIEV "
+                        f"GitOps repository URL {source.get('repoURL')!r} in "
+                        f"{manifest.relative_to(ROOT)}"
+                    )
+                if repository_classification == "same":
                     source_path = str(source.get("path", ""))
                     if "{{" not in source_path and "}}" not in source_path:
                         source_contract = yaml.safe_dump(source, sort_keys=True)
