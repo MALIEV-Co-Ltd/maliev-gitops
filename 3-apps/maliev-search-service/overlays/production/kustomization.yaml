@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: maliev-prod
+resources:
+  - ../../base
+images:
+  - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-search-service
+    newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-search-service
+patches:
+  - target:
+      kind: Deployment
+      name: maliev-search-service
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: maliev-search-service
+      spec:
+        template:
+          spec:
+            containers:
+              - name: maliev-search-service
+                env:
+                  - name: ASPNETCORE_ENVIRONMENT
+                    value: Production
+                  - name: Services__AuthService__BaseUrl
+                    value: https://api.maliev.com
+                  - name: Services__IAMService__BaseUrl
+                    value: https://api.maliev.com

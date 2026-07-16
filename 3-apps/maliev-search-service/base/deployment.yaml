@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-search-service
+  labels:
+    app: maliev-search-service
+spec:
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: maliev-search-service
+  template:
+    metadata:
+      labels:
+        app: maliev-search-service
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: maliev-search-service
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-search-service:latest
+          imagePullPolicy: Always
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 3000
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "128Mi"
+            limits:
+              cpu: "100m"
+              memory: "256Mi"
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /search/liveness
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /search/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
+          env:
+            - name: Jwt__PublicKey
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-search-service-secrets
+                  key: Jwt__PublicKey
+            - name: Jwt__Issuer
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-search-service-secrets
+                  key: Jwt__Issuer
+            - name: Jwt__Audience
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-search-service-secrets
+                  key: Jwt__Audience
+            - name: ServiceAuthentication__ClientId
+              value: "service-search-service"
+            - name: ServiceAuthentication__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-search-service-secrets
+                  key: ServiceAuthentication__ClientSecret
+            - name: Services__AuthService__BaseUrl
+              value: "https://api.maliev.com"
+            - name: Services__IAMService__BaseUrl
+              value: "https://api.maliev.com"
+            - name: ConnectionStrings__SearchDbContext
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-search-service-secrets
+                  key: ConnectionStrings__SearchDbContext
+            - name: ConnectionStrings__rabbitmq
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-search-service-secrets
+                  key: ConnectionStrings__rabbitmq
+            - name: ConnectionStrings__redis
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-search-service-secrets
+                  key: ConnectionStrings__redis
+            - name: CORS__AllowedOrigins
+              valueFrom:
+                secretKeyRef:
+                  name: maliev-search-service-secrets
+                  key: CORS__AllowedOrigins
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"

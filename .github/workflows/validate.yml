@@ -137,6 +137,12 @@ jobs:
       - name: Check ContactService secret projection policy
         run: python3 scripts/check-contact-service-secret-projection.py
 
+      - name: Check SearchService secret projection policy
+        run: python3 scripts/check-search-service-secret-projection.py
+
+      - name: Test SearchService secret projection policy
+        run: python3 scripts/test-search-service-secret-projection.py
+
       - name: Check AuthService ingress route structure
         run: python3 scripts/check-auth-service-ingress-routes.py
 

@@ -1,0 +1,71 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: maliev-staging
+resources:
+  - ../../base
+images:
+  - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-search-service
+    newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-staging/maliev-search-service
+patches:
+  - target:
+      kind: Deployment
+      name: maliev-search-service
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: maliev-search-service
+      spec:
+        template:
+          spec:
+            containers:
+              - name: maliev-search-service
+                env:
+                  - name: ASPNETCORE_ENVIRONMENT
+                    value: Staging
+                  - name: Services__AuthService__BaseUrl
+                    value: https://staging.api.maliev.com
+                  - name: Services__IAMService__BaseUrl
+                    value: https://staging.api.maliev.com
+  - target:
+      kind: ExternalSecret
+      name: maliev-search-service-secrets
+    patch: |-
+      apiVersion: external-secrets.io/v1
+      kind: ExternalSecret
+      metadata:
+        name: maliev-search-service-secrets
+      spec:
+        data:
+          - secretKey: Jwt__PublicKey
+            remoteRef:
+              key: maliev-staging-shared-config
+              property: Jwt__PublicKey
+          - secretKey: Jwt__Issuer
+            remoteRef:
+              key: maliev-staging-shared-config
+              property: Jwt__Issuer
+          - secretKey: Jwt__Audience
+            remoteRef:
+              key: maliev-staging-shared-config
+              property: Jwt__Audience
+          - secretKey: ServiceAuthentication__ClientSecret
+            remoteRef:
+              key: maliev-staging-search-service-config
+              property: ServiceAuthentication__ClientSecret
+          - secretKey: ConnectionStrings__SearchDbContext
+            remoteRef:
+              key: maliev-staging-search-service-config
+              property: ConnectionStrings__SearchDbContext
+          - secretKey: ConnectionStrings__rabbitmq
+            remoteRef:
+              key: maliev-staging-shared-config
+              property: ConnectionStrings__rabbitmq
+          - secretKey: ConnectionStrings__redis
+            remoteRef:
+              key: maliev-staging-shared-config
+              property: ConnectionStrings__redis
+          - secretKey: CORS__AllowedOrigins
+            remoteRef:
+              key: maliev-staging-shared-config
+              property: CORS__AllowedOrigins
