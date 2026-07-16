@@ -378,23 +378,36 @@ def validate_contact_applications_remain_disabled() -> list[str]:
             if kind not in ("Application", "ApplicationSet"):
                 continue
 
-            application_name = document.get("metadata", {}).get("name", "")
+            application_names = [document.get("metadata", {}).get("name", "")]
             specification = document.get("spec", {})
             if kind == "ApplicationSet":
-                specification = specification.get("template", {}).get("spec", {})
+                template = specification.get("template", {})
+                application_names.append(template.get("metadata", {}).get("name", ""))
+                specification = template.get("spec", {})
             source_paths = [specification.get("source", {}).get("path", "")]
             source_paths.extend(
                 source.get("path", "")
                 for source in specification.get("sources", [])
                 if isinstance(source, dict)
             )
+            has_contact_reference = any(
+                "maliev-contact-service" in name for name in application_names
+            ) or any("maliev-contact-service" in path for path in source_paths)
+            has_unresolved_dynamic_source = kind == "ApplicationSet" and any(
+                "{{" in path or "}}" in path for path in source_paths
+            )
+            has_unresolved_dynamic_name = kind == "ApplicationSet" and any(
+                "{{" in name or "}}" in name for name in application_names
+            )
             if (
-                "maliev-contact-service" in application_name
-                or any("maliev-contact-service" in path for path in source_paths)
+                has_contact_reference
+                or has_unresolved_dynamic_source
+                or has_unresolved_dynamic_name
             ):
                 errors.append(
                     "ContactService Application must remain disabled; active "
-                    f"{kind} found in {manifest.relative_to(ROOT)}"
+                    f"{kind} with a Contact or unresolved dynamic source found in "
+                    f"{manifest.relative_to(ROOT)}"
                 )
     return errors
 
