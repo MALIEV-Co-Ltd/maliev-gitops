@@ -80,6 +80,16 @@ def expected_probe_contracts(environment: str) -> dict[str, dict[str, object]]:
     }
 
 
+def expected_startup_probe_contract() -> dict[str, object]:
+    """Return the reviewed five-minute migration and seed startup budget."""
+    return {
+        "httpGet": {"path": "/accounting/liveness", "port": 8080},
+        "periodSeconds": 5,
+        "timeoutSeconds": 3,
+        "failureThreshold": 60,
+    }
+
+
 REQUIRED_SECRET_KEYS = {
     "Jwt__PublicKey",
     "Jwt__Issuer",
@@ -959,6 +969,8 @@ def validate_accounting_overlay(environment: str) -> list[str]:
     }
     if actual_probes != expected_probes:
         errors.append(f"{environment}: health probe contract is not exact")
+    if container.get("startupProbe") != expected_startup_probe_contract():
+        errors.append(f"{environment}: startup probe contract is not exact")
 
     raw_environment_entries = container.get("env", [])
     if not isinstance(raw_environment_entries, list):

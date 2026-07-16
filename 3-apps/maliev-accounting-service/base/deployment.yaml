@@ -43,6 +43,13 @@ spec:
               memory: "128Mi"
           ports:
             - containerPort: 8080
+          startupProbe:
+            httpGet:
+              path: /accounting/liveness
+              port: 8080
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 60
           livenessProbe:
             httpGet:
               path: /accounting/liveness

@@ -713,6 +713,11 @@ spec:
             container = deployment["spec"]["template"]["spec"]["containers"][0]
             self.assertEqual(
                 "/accounting/liveness",
+                container["startupProbe"]["httpGet"]["path"],
+                environment,
+            )
+            self.assertEqual(
+                "/accounting/liveness",
                 container["livenessProbe"]["httpGet"]["path"],
                 environment,
             )
@@ -737,6 +742,41 @@ spec:
         errors = POLICY.validate_accounting_overlay("production")
 
         self.assertTrue(any("health probe contract is not exact" in error for error in errors))
+
+    def test_missing_startup_probe_is_rejected(self) -> None:
+        """Migration-capable workloads must have a bounded startup failure budget."""
+        self.copy_accounting_manifests()
+        deployment_path = POLICY.ACCOUNTING_ROOT / "base" / "deployment.yaml"
+        deployment = yaml.safe_load(deployment_path.read_text(encoding="utf-8"))
+        container = deployment["spec"]["template"]["spec"]["containers"][0]
+        container.pop("startupProbe")
+        deployment_path.write_text(
+            yaml.safe_dump(deployment, sort_keys=False), encoding="utf-8"
+        )
+
+        errors = POLICY.validate_accounting_overlay("production")
+
+        self.assertTrue(any("startup probe contract is not exact" in error for error in errors))
+
+    def test_mutated_startup_probe_is_rejected(self) -> None:
+        """The startup route and five-minute migration budget are an exact contract."""
+        self.copy_accounting_manifests()
+        deployment_path = POLICY.ACCOUNTING_ROOT / "base" / "deployment.yaml"
+        deployment = yaml.safe_load(deployment_path.read_text(encoding="utf-8"))
+        container = deployment["spec"]["template"]["spec"]["containers"][0]
+        container["startupProbe"] = {
+            "httpGet": {"path": "/health/live", "port": 8080},
+            "periodSeconds": 5,
+            "timeoutSeconds": 3,
+            "failureThreshold": 59,
+        }
+        deployment_path.write_text(
+            yaml.safe_dump(deployment, sort_keys=False), encoding="utf-8"
+        )
+
+        errors = POLICY.validate_accounting_overlay("production")
+
+        self.assertTrue(any("startup probe contract is not exact" in error for error in errors))
 
     def test_service_contract_is_internal_and_monitorable(self) -> None:
         """The disabled service must be internal and expose the named monitor port."""
