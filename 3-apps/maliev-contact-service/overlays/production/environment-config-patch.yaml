@@ -9,6 +9,6 @@ spec:
         - name: maliev-contact-service
           env:
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Development"
+              value: "Production"
             - name: Services__AuthService__BaseUrl
-              value: "https://dev.api.maliev.com"
+              value: "https://api.maliev.com"
