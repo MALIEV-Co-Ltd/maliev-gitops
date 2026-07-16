@@ -10,10 +10,7 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
-          resources:
-            requests:
-              cpu: 50m
-              memory: 256Mi
-            limits:
-              cpu: 200m
-              memory: 512Mi
+            - name: Services__AuthService__BaseUrl
+              value: "https://api.maliev.com"
+            - name: Services__IAMService__BaseUrl
+              value: "https://api.maliev.com"

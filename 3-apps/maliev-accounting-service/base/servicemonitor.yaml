@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: maliev-accounting-service
+  labels:
+    app: maliev-accounting-service
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: maliev-accounting-service
+  endpoints:
+    - port: http
+      path: /accounting/metrics
+      interval: 30s
+      scrapeTimeout: 10s
