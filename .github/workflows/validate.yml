@@ -5,13 +5,21 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Lint and Static Analysis
+    permissions:
+      contents: read
+      security-events: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Install tools (jq, yq)
         run: |
@@ -96,21 +104,21 @@ jobs:
           fi
 
       - name: Upload SARIF (cluster-infra)
-        if: steps.cluster_runs.outputs.has_runs == 'true'
+        if: steps.cluster_runs.outputs.has_runs == 'true' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: kube-linter-cluster-infra.sarif
           category: kube-linter-cluster-infra
 
       - name: Upload SARIF (environments)
-        if: steps.env_runs.outputs.has_runs == 'true'
+        if: steps.env_runs.outputs.has_runs == 'true' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: kube-linter-environments.sarif
           category: kube-linter-environments
 
       - name: Upload SARIF (apps)
-        if: steps.apps_runs.outputs.has_runs == 'true'
+        if: steps.apps_runs.outputs.has_runs == 'true' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: kube-linter-apps.sarif
@@ -123,9 +131,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Install kustomize
         uses: imranismail/setup-kustomize@v3
+
+      - name: Validate PaymentService immutable image promotion contract
+        run: ./scripts/test-paymentservice-image-promotion.sh
+
+      - name: Validate workflow security contract
+        run: ./scripts/test-gitops-workflow-security.sh
 
 
       - name: Install yq
@@ -154,6 +170,9 @@ jobs:
             exit 1
           fi
 
+      - name: Validate Maliev.Web health probe contract
+        run: bash scripts/validate-maliev-web-probes.sh
+
       - name: Check for native Secrets
         run: |
           set -e
@@ -179,7 +198,7 @@ jobs:
 
             # Skip internal/shared directories (names starting with underscore)
             case "$app_name" in
-              _*) 
+              _*)
                 echo "Skipping internal directory: $app_name"
                 continue
                 ;;
@@ -206,7 +225,7 @@ jobs:
       - name: Validate ArgoCD Application paths
         run: |
           set -euo pipefail
-          
+
           YQ_BIN=/usr/local/bin/yq
 
           echo "Validating ArgoCD Application manifests under argocd/..."

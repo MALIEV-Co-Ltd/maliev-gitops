@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-web
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-web
+          env:
+            - name: BuildMetadata__ImageDigest
+              value: "sha256:bd2092c3135d4134851181669fbba28626e145c7fe02c086540e0d097680f147"

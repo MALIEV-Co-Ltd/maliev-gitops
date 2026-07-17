@@ -8,17 +8,11 @@ spec:
       containers:
         - name: maliev-web
           livenessProbe:
-            httpGet:
-              path: /
-              port: 8080
             initialDelaySeconds: 15
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
           readinessProbe:
-            httpGet:
-              path: /
-              port: 8080
             initialDelaySeconds: 20
             periodSeconds: 5
             timeoutSeconds: 5
