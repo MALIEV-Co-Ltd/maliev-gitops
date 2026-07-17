@@ -9,10 +9,10 @@ spec:
         - name: maliev-material-service
           env:
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Staging"
+              value: "Production"
             - name: Services__AuthService__BaseUrl
-              value: "https://staging.api.maliev.com"
+              value: "https://api.maliev.com"
             - name: Services__IAMService__BaseUrl
-              value: "https://staging.api.maliev.com"
+              value: "https://api.maliev.com"
             - name: Services__SupplierService__BaseUrl
-              value: "https://staging.api.maliev.com"
+              value: "https://api.maliev.com"
