@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maliev-pricing-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: maliev-pricing-service
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+            - name: Services__AuthService__BaseUrl
+              value: "https://dev.api.maliev.com"
+            - name: Services__IAMService__BaseUrl
+              value: "https://dev.api.maliev.com"
+            - name: Services__MaterialService__BaseUrl
+              value: "https://dev.api.maliev.com"
+            - name: Services__JobService__BaseUrl
+              value: "https://dev.api.maliev.com"
+            - name: Services__CurrencyService__BaseUrl
+              value: "https://dev.api.maliev.com"

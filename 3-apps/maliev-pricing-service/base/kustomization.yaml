@@ -3,5 +3,7 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
-  - service-secrets.yaml
   - hpa.yaml
+  - ../../_common
+  - service-secrets.yaml
+  - servicemonitor.yaml

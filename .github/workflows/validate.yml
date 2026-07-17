@@ -167,6 +167,12 @@ jobs:
       - name: Test AccountingService secret projection policy
         run: python3 scripts/test-accounting-service-secret-projection.py
 
+      - name: Check PricingService secret projection policy
+        run: python3 scripts/check-pricing-service-secret-projection.py
+
+      - name: Test PricingService secret projection policy
+        run: python3 scripts/test-pricing-service-secret-projection.py
+
       - name: Check AuthService ingress route structure
         run: python3 scripts/check-auth-service-ingress-routes.py
 
