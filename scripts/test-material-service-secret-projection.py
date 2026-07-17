@@ -121,6 +121,55 @@ class MaterialProjectionPolicyTests(unittest.TestCase):
             )
         )
 
+    def test_default_project_is_rejected_for_disabled_applications(self) -> None:
+        """Disabled definitions must already be scoped to environment AppProjects."""
+        self.copy_disabled_applications()
+        manifest = (
+            self.root
+            / "argocd"
+            / "environments"
+            / "_disabled_apps"
+            / "dev"
+            / "maliev-material-service.yaml"
+        )
+        application = yaml.safe_load(manifest.read_text(encoding="utf-8"))
+        application["spec"]["project"] = "default"
+        manifest.write_text(
+            yaml.safe_dump(application, sort_keys=False), encoding="utf-8"
+        )
+
+        errors = POLICY.validate_material_applications_remain_disabled()
+
+        self.assertTrue(
+            any("project must be 'maliev-dev'; found 'default'" in error for error in errors)
+        )
+
+    def test_environment_mismatched_project_is_rejected(self) -> None:
+        """A disabled definition cannot escape into another environment AppProject."""
+        self.copy_disabled_applications()
+        manifest = (
+            self.root
+            / "argocd"
+            / "environments"
+            / "_disabled_apps"
+            / "staging"
+            / "maliev-material-service.yaml"
+        )
+        application = yaml.safe_load(manifest.read_text(encoding="utf-8"))
+        application["spec"]["project"] = "maliev-prod"
+        manifest.write_text(
+            yaml.safe_dump(application, sort_keys=False), encoding="utf-8"
+        )
+
+        errors = POLICY.validate_material_applications_remain_disabled()
+
+        self.assertTrue(
+            any(
+                "project must be 'maliev-staging'; found 'maliev-prod'" in error
+                for error in errors
+            )
+        )
+
     def test_rendered_child_same_repository_tag_revision_is_rejected(self) -> None:
         """Recursive child Applications cannot redirect Argo to an unreviewed tag."""
         self.copy_disabled_applications()

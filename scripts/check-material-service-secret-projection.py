@@ -1147,18 +1147,21 @@ def validate_material_applications_remain_disabled() -> list[str]:
     disabled_contracts = {
         "dev": {
             "name": "maliev-material-service-dev",
+            "project": "maliev-dev",
             "environment": "development",
             "namespace": "maliev-dev",
             "revision": "main",
         },
         "staging": {
             "name": "maliev-material-service-staging",
+            "project": "maliev-staging",
             "environment": "staging",
             "namespace": "maliev-staging",
             "revision": "main",
         },
         "prod": {
             "name": "maliev-material-service-prod",
+            "project": "maliev-prod",
             "environment": "production",
             "namespace": "maliev-prod",
             "revision": "v1.0.0",
@@ -1189,6 +1192,7 @@ def validate_material_applications_remain_disabled() -> list[str]:
             "environment": application.get("metadata", {})
             .get("labels", {})
             .get("app.kubernetes.io/environment"),
+            "project": application.get("spec", {}).get("project"),
             "repoURL": application.get("spec", {}).get("source", {}).get("repoURL"),
             "revision": application.get("spec", {})
             .get("source", {})
@@ -1206,12 +1210,18 @@ def validate_material_applications_remain_disabled() -> list[str]:
             "namespace": "argocd",
             "app": "maliev-material-service",
             "environment": contract["environment"],
+            "project": contract["project"],
             "repoURL": GITOPS_REPOSITORY_URL,
             "revision": contract["revision"],
             "path": f"3-apps/maliev-material-service/overlays/{contract['environment']}",
             "server": "https://kubernetes.default.svc",
             "destination": contract["namespace"],
         }
+        if actual["project"] != contract["project"]:
+            errors.append(
+                f"disabled Material Application project must be {contract['project']!r}; "
+                f"found {actual['project']!r}: {path}"
+            )
         if actual != expected:
             errors.append(f"disabled Material Application contract is not exact: {path}")
 
