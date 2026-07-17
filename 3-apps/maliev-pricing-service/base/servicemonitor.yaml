@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: maliev-pricing-service
+  labels:
+    app: maliev-pricing-service
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: maliev-pricing-service
+  endpoints:
+    - port: http
+      path: /pricing/metrics
+      interval: 30s
+      scrapeTimeout: 10s
