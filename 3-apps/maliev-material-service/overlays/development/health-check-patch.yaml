@@ -9,18 +9,18 @@ spec:
         - name: maliev-material-service
           livenessProbe:
             httpGet:
-              path: /materials/liveness
+              path: /material/liveness
               port: 8080
-            initialDelaySeconds: 40
+            initialDelaySeconds: 60
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /materials/readiness
+              path: /material/readiness
               port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 5
+            initialDelaySeconds: 60
+            periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
             successThreshold: 1

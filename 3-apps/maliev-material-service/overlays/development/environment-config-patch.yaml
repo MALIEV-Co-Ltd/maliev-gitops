@@ -10,3 +10,9 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Development"
+            - name: Services__AuthService__BaseUrl
+              value: "https://dev.api.maliev.com"
+            - name: Services__IAMService__BaseUrl
+              value: "https://dev.api.maliev.com"
+            - name: Services__SupplierService__BaseUrl
+              value: "https://dev.api.maliev.com"
