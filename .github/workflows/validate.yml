@@ -173,6 +173,12 @@ jobs:
       - name: Test PricingService secret projection policy
         run: python3 scripts/test-pricing-service-secret-projection.py
 
+      - name: Check MaterialService secret projection policy
+        run: python3 scripts/check-material-service-secret-projection.py
+
+      - name: Test MaterialService secret projection policy
+        run: python3 scripts/test-material-service-secret-projection.py
+
       - name: Check AuthService ingress route structure
         run: python3 scripts/check-auth-service-ingress-routes.py
 
