@@ -9,4 +9,4 @@ resources:
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-pricing-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-dev/maliev-pricing-service
-  newTag: 5817d155947591efe42552b4a31b0fc87ab7a579
+  newTag: aa731b20636f6e9cbbd91c77853b86fbc86f809b
