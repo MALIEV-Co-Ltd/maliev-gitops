@@ -855,6 +855,34 @@ spec:
                 environment,
             )
 
+    def test_servicemonitor_drift_is_rejected(self) -> None:
+        """Monitoring discovery and scrape behavior must remain an exact allowlist."""
+        self.copy_pricing_manifests()
+        monitor_path = POLICY.PRICING_ROOT / "base" / "servicemonitor.yaml"
+        monitor = yaml.safe_load(monitor_path.read_text(encoding="utf-8"))
+        monitor["metadata"]["labels"]["unreviewed"] = "true"
+        monitor["spec"]["selector"]["matchLabels"] = {
+            "app": "unrelated-service"
+        }
+        monitor["spec"]["endpoints"][0].update(
+            {
+                "port": "wrong-port",
+                "path": "/wrong/metrics",
+                "interval": "5s",
+                "scrapeTimeout": "4s",
+                "honorLabels": True,
+            }
+        )
+        monitor_path.write_text(
+            yaml.safe_dump(monitor, sort_keys=False), encoding="utf-8"
+        )
+
+        errors = POLICY.validate_pricing_overlay("production")
+
+        self.assertTrue(
+            any("ServiceMonitor contract is not exact" in error for error in errors)
+        )
+
     def test_deployment_replicas_and_hpa_drift_are_rejected(self) -> None:
         """Argo must not fight the HPA and reviewed scaling bounds must remain exact."""
         self.copy_pricing_manifests()

@@ -473,6 +473,35 @@ def expected_external_secret(environment: str) -> dict[str, object]:
     }
 
 
+def expected_service_monitor(environment: str) -> dict[str, object]:
+    """Return the complete reviewed ServiceMonitor contract for one environment."""
+    return {
+        "apiVersion": "monitoring.coreos.com/v1",
+        "kind": "ServiceMonitor",
+        "metadata": {
+            "name": "maliev-pricing-service",
+            "namespace": ENVIRONMENT_NAMESPACES[environment],
+            "labels": {
+                "app": "maliev-pricing-service",
+                "release": "prometheus",
+            },
+        },
+        "spec": {
+            "selector": {
+                "matchLabels": {"app": "maliev-pricing-service"},
+            },
+            "endpoints": [
+                {
+                    "port": "http",
+                    "path": "/pricing/metrics",
+                    "interval": "30s",
+                    "scrapeTimeout": "10s",
+                }
+            ],
+        },
+    }
+
+
 def resolve_kustomize_source_documents(
     kustomize_root: Path,
 ) -> tuple[
@@ -916,15 +945,23 @@ def validate_pricing_overlay(environment: str) -> list[str]:
         and document.get("metadata", {}).get("name")
         == "maliev-pricing-service-secrets"
     ]
+    service_monitors = [
+        document
+        for document in documents
+        if document.get("kind") == "ServiceMonitor"
+        and document.get("metadata", {}).get("name")
+        == "maliev-pricing-service"
+    ]
     if (
         len(deployments) != 1
         or len(services) != 1
         or len(horizontal_pod_autoscalers) != 1
         or len(external_secrets) != 1
+        or len(service_monitors) != 1
     ):
         errors.append(
             f"{environment}: exactly one Pricing Deployment, Service, HPA, and "
-            "ExternalSecret must render"
+            "ExternalSecret, and ServiceMonitor must render"
         )
         return errors
 
@@ -932,6 +969,7 @@ def validate_pricing_overlay(environment: str) -> list[str]:
     service = services[0]
     horizontal_pod_autoscaler = horizontal_pod_autoscalers[0]
     external_secret = external_secrets[0]
+    service_monitor = service_monitors[0]
     if "replicas" in deployment.get("spec", {}):
         errors.append(f"{environment}: deployment replicas must remain HPA-owned")
 
@@ -942,6 +980,8 @@ def validate_pricing_overlay(environment: str) -> list[str]:
     }
     if service.get("spec") != expected_service_spec:
         errors.append(f"{environment}: Service contract is not exact")
+    if service_monitor != expected_service_monitor(environment):
+        errors.append(f"{environment}: ServiceMonitor contract is not exact")
 
     expected_minimum, expected_maximum = EXPECTED_HPA_BOUNDS[environment]
     hpa_spec = horizontal_pod_autoscaler.get("spec", {})
