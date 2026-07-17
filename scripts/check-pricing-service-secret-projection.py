@@ -140,6 +140,7 @@ POD_PRODUCING_KINDS = {
 GITOPS_REPOSITORY_OWNER = "maliev-co-ltd"
 GITOPS_REPOSITORY_NAME = "maliev-gitops"
 GITOPS_REPOSITORY_URL = "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
+ACTIVE_GITOPS_TARGET_REVISION = "main"
 KUSTOMIZATION_FILENAMES = (
     "kustomization.yaml",
     "kustomization.yml",
@@ -202,6 +203,21 @@ def classify_gitops_repository_url(value: object) -> str:
         if approved_transport and repository_url == GITOPS_REPOSITORY_URL
         else "unsafe"
     )
+
+
+def validate_active_same_repository_revision(
+    source: dict[str, object], source_label: str
+) -> list[str]:
+    """Require active same-repository sources to select the reviewed Argo branch."""
+    if classify_gitops_repository_url(source.get("repoURL")) not in ("same", "unsafe"):
+        return []
+    revision = source.get("targetRevision")
+    if revision == ACTIVE_GITOPS_TARGET_REVISION:
+        return []
+    return [
+        f"active same-repository source {source_label} must target "
+        f"{ACTIVE_GITOPS_TARGET_REVISION!r}; found {revision!r}"
+    ]
 
 
 def contains_non_empty_template_override(value: object) -> bool:
@@ -1201,6 +1217,11 @@ def validate_pricing_applications_remain_disabled() -> list[str]:
 
             for source in sources:
                 repository_class = classify_gitops_repository_url(source.get("repoURL"))
+                errors.extend(
+                    validate_active_same_repository_revision(
+                        source, str(manifest.relative_to(ROOT))
+                    )
+                )
                 if repository_class == "unsafe":
                     errors.append(
                         "noncanonical MALIEV GitOps URL in active source: "
@@ -1246,6 +1267,11 @@ def validate_pricing_applications_remain_disabled() -> list[str]:
             for child_source in child_sources:
                 repository_class = classify_gitops_repository_url(
                     child_source.get("repoURL")
+                )
+                errors.extend(
+                    validate_active_same_repository_revision(
+                        child_source, f"rendered child from {source_path!r}"
+                    )
                 )
                 if repository_class == "unsafe":
                     errors.append(

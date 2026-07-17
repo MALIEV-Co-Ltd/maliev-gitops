@@ -73,6 +73,7 @@ class PricingProjectionPolicyTests(unittest.TestCase):
         name: str,
         source_path: str,
         repository_url: str = POLICY.GITOPS_REPOSITORY_URL,
+        target_revision: str | None = POLICY.ACTIVE_GITOPS_TARGET_REVISION,
     ) -> None:
         """Write a minimal static Argo Application fixture."""
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -86,12 +87,68 @@ class PricingProjectionPolicyTests(unittest.TestCase):
                         "source": {
                             "repoURL": repository_url,
                             "path": source_path,
+                            "targetRevision": target_revision,
                         }
                     },
                 },
                 sort_keys=False,
             ),
             encoding="utf-8",
+        )
+
+    def test_active_same_repository_branch_revision_is_rejected(self) -> None:
+        """An active source must not render this checkout while Argo reads another branch."""
+        self.copy_disabled_applications()
+        self.write_application(
+            self.root / "argocd" / "environments" / "dev" / "root.yaml",
+            "generic-root",
+            "harmless-root",
+            target_revision="attacker-controlled-branch",
+        )
+        harmless_root = self.root / "harmless-root"
+        harmless_root.mkdir()
+        (harmless_root / "environment.yaml").write_text(
+            "apiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: harmless\n",
+            encoding="utf-8",
+        )
+
+        errors = POLICY.validate_pricing_applications_remain_disabled()
+
+        self.assertTrue(
+            any(
+                "must target 'main'; found 'attacker-controlled-branch'" in error
+                for error in errors
+            )
+        )
+
+    def test_rendered_child_same_repository_tag_revision_is_rejected(self) -> None:
+        """Recursive child Applications cannot redirect Argo to an unreviewed tag."""
+        self.copy_disabled_applications()
+        self.write_application(
+            self.root / "argocd" / "environments" / "dev" / "root.yaml",
+            "generic-root",
+            "raw-root",
+        )
+        self.write_application(
+            self.root / "raw-root" / "child.yaml",
+            "generic-child",
+            "harmless-child",
+            target_revision="unreviewed-release-tag",
+        )
+        harmless_child = self.root / "harmless-child"
+        harmless_child.mkdir()
+        (harmless_child / "environment.yaml").write_text(
+            "apiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: harmless\n",
+            encoding="utf-8",
+        )
+
+        errors = POLICY.validate_pricing_applications_remain_disabled()
+
+        self.assertTrue(
+            any(
+                "must target 'main'; found 'unreviewed-release-tag'" in error
+                for error in errors
+            )
         )
 
     def add_duplicate_env_patch(self, environment: str, relative_path: str) -> None:
