@@ -70,6 +70,11 @@ spec:
                 secretKeyRef:
                   name: legacy-redis
                   key: REDIS_PASSWORD
+            - name: REDISCLI_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-redis
+                  key: REDIS_PASSWORD
           ports:
             - name: redis
               containerPort: 6379
@@ -107,6 +112,7 @@ spec:
             exec:
               command:
                 - redis-cli
+                - --no-auth-warning
                 - ping
             initialDelaySeconds: 5
             periodSeconds: 5
