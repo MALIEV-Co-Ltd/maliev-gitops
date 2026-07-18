@@ -1,0 +1,46 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: legacy-postgres-recovery-rehearsal
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+    app.kubernetes.io/component: recovery-rehearsal
+    app.kubernetes.io/part-of: maliev-legacy
+  annotations:
+    maliev.com/readiness-only: "true"
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-standard-bookworm
+  enablePDB: false
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: legacy-postgres-superuser
+  serviceAccountTemplate:
+    metadata:
+      name: legacy-postgres-main
+      annotations:
+        iam.gke.io/gcp-service-account: legacy-postgres-main@maliev-website.iam.gserviceaccount.com
+  bootstrap:
+    recovery:
+      source: legacy-postgres-main-backup
+  externalClusters:
+    - name: legacy-postgres-main-backup
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: legacy-postgres-backup-main
+          serverName: legacy-postgres-main
+  storage:
+    size: 20Gi
+    storageClass: standard-rwo
+  resources:
+    requests:
+      cpu: 150m
+      memory: 512Mi
+    limits:
+      cpu: 750m
+      memory: 1Gi
+  postgresql:
+    parameters:
+      max_connections: "50"
+      shared_buffers: 256MB
