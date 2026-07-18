@@ -181,6 +181,38 @@ class LegacyPostgresManifestTests(unittest.TestCase):
             "legacy-postgres-main",
         )
 
+    def test_write_pooler_is_resource_bounded_and_targets_the_legacy_cluster(self) -> None:
+        poolers = resources_by_kind(self.legacy, "Pooler")
+        self.assertEqual(len(poolers), 1)
+        pooler = poolers[0]
+
+        self.assertEqual(pooler["metadata"]["name"], "legacy-postgres-pooler-rw")
+        self.assertNotEqual(pooler["metadata"]["name"], "legacy-postgres-main-rw")
+        self.assertEqual(pooler["spec"]["cluster"]["name"], "legacy-postgres-main")
+        self.assertEqual(pooler["spec"]["instances"], 1)
+        self.assertEqual(pooler["spec"]["type"], "rw")
+        self.assertEqual(pooler["spec"]["pgbouncer"]["poolMode"], "transaction")
+        self.assertEqual(
+            pooler["spec"]["pgbouncer"]["parameters"],
+            {
+                "default_pool_size": "3",
+                "max_client_conn": "200",
+                "min_pool_size": "0",
+                "reserve_pool_size": "1",
+                "server_idle_timeout": "60",
+            },
+        )
+
+        containers = pooler["spec"]["template"]["spec"]["containers"]
+        self.assertEqual([container["name"] for container in containers], ["pgbouncer"])
+        self.assertEqual(
+            containers[0]["resources"],
+            {
+                "requests": {"cpu": "20m", "memory": "32Mi"},
+                "limits": {"cpu": "100m", "memory": "96Mi"},
+            },
+        )
+
     def test_all_active_databases_have_distinct_owner_roles(self) -> None:
         databases = resources_by_kind(self.legacy, "Database")
         actual = {item["spec"]["name"]: item["spec"]["owner"] for item in databases}
