@@ -93,7 +93,7 @@ spec:
       dnsConfig:
         options:
           - name: ndots
-            value: "1"
+            value: "2"
       restartPolicy: Always
       securityContext:
         runAsNonRoot: true

@@ -62,7 +62,7 @@ class LegacyNotificationServiceManifestTests(unittest.TestCase):
         self.assertEqual(deployment["metadata"]["annotations"]["email"], "info@maliev.com")
         self.assertFalse(pod["automountServiceAccountToken"])
         self.assertEqual(pod["restartPolicy"], "Always")
-        self.assertEqual(pod["dnsConfig"]["options"], [{"name": "ndots", "value": "1"}])
+        self.assertEqual(pod["dnsConfig"]["options"], [{"name": "ndots", "value": "2"}])
         self.assertEqual(
             pod["affinity"]["nodeAffinity"]["requiredDuringSchedulingIgnoredDuringExecution"]
             ["nodeSelectorTerms"][0]["matchExpressions"][0],
