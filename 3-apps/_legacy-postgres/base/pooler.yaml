@@ -1,0 +1,41 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: legacy-postgres-pooler-rw
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+    app.kubernetes.io/component: connection-pooler
+    app.kubernetes.io/part-of: maliev-legacy
+spec:
+  cluster:
+    name: legacy-postgres-main
+  instances: 1
+  type: rw
+  pgbouncer:
+    poolMode: transaction
+    parameters:
+      default_pool_size: "3"
+      max_client_conn: "200"
+      min_pool_size: "0"
+      reserve_pool_size: "1"
+      server_idle_timeout: "60"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: legacy-postgres
+        app.kubernetes.io/component: connection-pooler
+        app.kubernetes.io/part-of: maliev-legacy
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: pgbouncer
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 96Mi
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
