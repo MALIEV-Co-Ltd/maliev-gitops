@@ -85,7 +85,8 @@ class LegacyCountryServiceManifestTests(unittest.TestCase):
             {"maliev-legacy-secrets"},
         )
         template = external["spec"]["target"]["template"]["data"]
-        self.assertIn("legacy-postgres-main-rw", template["ConnectionStrings__CountryDbContext"])
+        self.assertIn("legacy-postgres-pooler-rw", template["ConnectionStrings__CountryDbContext"])
+        self.assertNotIn("legacy-postgres-main-rw", template["ConnectionStrings__CountryDbContext"])
         self.assertIn("Database=Country", template["ConnectionStrings__CountryDbContext"])
         self.assertIn("legacy-redis:6379", template["ConnectionStrings__redis"])
         self.assertIn("password={{ .redisPassword }}", template["ConnectionStrings__redis"])
