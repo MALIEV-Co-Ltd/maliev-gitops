@@ -10,3 +10,6 @@ verification contract. Sender addresses and display names remain non-secret appl
 
 The NetworkPolicy permits same-namespace HTTP callers, cluster DNS, and outbound HTTPS for the Brevo API.
 There is no ingress, PostgreSQL, Redis, GCS, or Kubernetes API access.
+
+The dormant overlay deliberately renders the non-runnable `not-published` image tag. A later owner-approved
+promotion must replace it with the exact published commit tag while enabling the overlay in a separate change.

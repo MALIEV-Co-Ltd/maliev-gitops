@@ -1,40 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: legacy-maliev-notification-service
+  annotations:
+    email: info@maliev.com
   labels:
     app.kubernetes.io/name: legacy-maliev-notification-service
     app.kubernetes.io/part-of: maliev-legacy
+    owner: maliev
+  name: legacy-maliev-notification-service
+  namespace: maliev-legacy
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: legacy-maliev-notification-service
   strategy:
-    type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
+    type: RollingUpdate
   template:
     metadata:
       labels:
         app.kubernetes.io/name: legacy-maliev-notification-service
         app.kubernetes.io/part-of: maliev-legacy
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
       automountServiceAccountToken: false
-      securityContext:
-        runAsNonRoot: true
-        seccompProfile:
-          type: RuntimeDefault
       containers:
-        - name: notification-service
-          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/legacy-maliev-notification-service:latest
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          env:
+        - env:
             - name: ASPNETCORE_ENVIRONMENT
               value: Production
             - name: ASPNETCORE_HTTP_PORTS
@@ -42,43 +44,59 @@ spec:
           envFrom:
             - secretRef:
                 name: legacy-maliev-notification-service
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 1654
-            runAsGroup: 1654
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-          resources:
-            requests:
-              cpu: 20m
-              memory: 96Mi
-            limits:
-              cpu: 150m
-              memory: 192Mi
+          image: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/legacy-maliev-notification-service:not-published
+          imagePullPolicy: IfNotPresent
           livenessProbe:
+            failureThreshold: 3
             httpGet:
               path: /emails/liveness
               port: http
             initialDelaySeconds: 10
             periodSeconds: 15
             timeoutSeconds: 3
-            failureThreshold: 3
+          name: notification-service
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
           readinessProbe:
+            failureThreshold: 3
             httpGet:
               path: /emails/readiness
               port: http
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
-            failureThreshold: 3
+          resources:
+            limits:
+              cpu: 150m
+              memory: 192Mi
+            requests:
+              cpu: 20m
+              memory: 96Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 1654
+            runAsNonRoot: true
+            runAsUser: 1654
           startupProbe:
+            failureThreshold: 12
             httpGet:
               path: /emails/liveness
               port: http
             periodSeconds: 5
             timeoutSeconds: 3
-            failureThreshold: 12
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      restartPolicy: Always
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       terminationGracePeriodSeconds: 30

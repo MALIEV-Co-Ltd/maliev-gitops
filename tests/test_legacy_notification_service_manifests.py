@@ -12,7 +12,7 @@ OVERLAY = "3-apps/_legacy-notification-service/overlays/legacy"
 LEGACY_ENVIRONMENT = "2-environments/4-legacy"
 IMAGE = (
     "asia-southeast1-docker.pkg.dev/maliev-website/"
-    "maliev-website-artifact-prod/legacy-maliev-notification-service:latest"
+    "maliev-website-artifact-prod/legacy-maliev-notification-service:not-published"
 )
 
 
@@ -57,7 +57,17 @@ class LegacyNotificationServiceManifestTests(unittest.TestCase):
 
         self.assertEqual(deployment["spec"]["replicas"], 1)
         self.assertEqual(container["image"], IMAGE)
+        self.assertEqual(deployment["metadata"]["namespace"], "maliev-legacy")
+        self.assertEqual(deployment["metadata"]["labels"]["owner"], "maliev")
+        self.assertEqual(deployment["metadata"]["annotations"]["email"], "info@maliev.com")
         self.assertFalse(pod["automountServiceAccountToken"])
+        self.assertEqual(pod["restartPolicy"], "Always")
+        self.assertEqual(pod["dnsConfig"]["options"], [{"name": "ndots", "value": "1"}])
+        self.assertEqual(
+            pod["affinity"]["nodeAffinity"]["requiredDuringSchedulingIgnoredDuringExecution"]
+            ["nodeSelectorTerms"][0]["matchExpressions"][0],
+            {"key": "kubernetes.io/os", "operator": "In", "values": ["linux"]},
+        )
         self.assertTrue(container["securityContext"]["runAsNonRoot"])
         self.assertTrue(container["securityContext"]["readOnlyRootFilesystem"])
         self.assertFalse(container["securityContext"]["allowPrivilegeEscalation"])
