@@ -10,4 +10,4 @@ labels:
 images:
 - name: legacy-maliev-country-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/legacy-maliev-country-service
-  newTag: 8edb92507edf02ac49faf3b51bc33708f9a44cdf
+  newTag: dcc1958bc21e1aa223ee7b4a1c01704e53cb829a
