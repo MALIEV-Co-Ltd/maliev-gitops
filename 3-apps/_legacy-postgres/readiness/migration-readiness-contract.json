@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "sourceEvidenceRepository": "https://github.com/MALIEV-Co-Ltd/maliev-web",
+  "sourceEvidenceCommit": "eb8ed86672bd9afccc6560b547b734d0fcd7363b",
+  "receiptFiles": {
+    "restore": "docs/migration/evidence/legacy-database-restore-2026-07-14.json",
+    "identity": "docs/migration/evidence/legacy-identity-copy-2026-07-15.json",
+    "nonidentity": "docs/migration/evidence/legacy-postgresql-copy-all-nonidentity-2026-07-16.json"
+  },
+  "receiptSha256": {
+    "restore": "7cb05d75b32bed30bd4cbf2aee7fa81cf99cf9d710320f8c320a447978862b87",
+    "identity": "226bcfa8fee00b45c3a0692df5b0d6d9f67f2cedeb3564c9d85864afa7660d90",
+    "nonidentity": "996e6b1a73b6eb37a6af2295ad355e0ce4a11831502dfa7ccbfe3f4f3f173127"
+  },
+  "sourceBackup": {
+    "gcsPrefix": "gs://maliev.com/database/full/2026-07-14/",
+    "backupCount": 23,
+    "backupBytes": 510709760,
+    "integrityCleanCount": 23
+  },
+  "activeDatabases": [
+    "Country",
+    "Currency",
+    "Customer",
+    "CustomerIdentity",
+    "DataProtectionKeys",
+    "DataProtectionKeysEmployee",
+    "Employee",
+    "EmployeeIdentity",
+    "Invoice",
+    "JobOffers",
+    "Material",
+    "Message",
+    "Order",
+    "OrderStatus",
+    "Payment",
+    "PurchaseOrder",
+    "Quotation",
+    "QuotationRequest",
+    "Receipt",
+    "Supplier",
+    "Upload"
+  ],
+  "identityRowCounts": {
+    "CustomerIdentity": 3048,
+    "EmployeeIdentity": 4
+  },
+  "dispositions": {
+    "Log": "archive_only",
+    "MachineLearningData": "exclude"
+  },
+  "verifiedBaselineGates": [
+    "source-backup-integrity",
+    "initial-copy-parity"
+  ],
+  "requiredCutoverGates": [
+    "source-backup-integrity",
+    "initial-copy-parity",
+    "existing-cluster-capacity",
+    "cnpg-backup-wal",
+    "cnpg-recovery-drill",
+    "shadow-read-parity",
+    "final-sync-parity",
+    "rollback-rehearsal",
+    "owner-aspire-review",
+    "service-owner-approval"
+  ],
+  "cutoverAuthorized": false,
+  "productionMutationAuthorized": false
+}
