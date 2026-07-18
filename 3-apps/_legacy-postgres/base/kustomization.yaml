@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - cluster.yaml
   - databases.yaml
+  - pooler.yaml
   - external-secrets.yaml
   - object-store.yaml
   - scheduled-backup.yaml
