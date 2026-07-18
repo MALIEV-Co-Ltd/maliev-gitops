@@ -170,6 +170,9 @@ jobs:
             exit 1
           fi
 
+      - name: Validate dormant legacy data readiness contracts
+        run: python -m unittest tests.test_legacy_data_readiness -v
+
       - name: Validate Maliev.Web health probe contract
         run: bash scripts/validate-maliev-web-probes.sh
 
