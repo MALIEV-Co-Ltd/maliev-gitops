@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: legacy-maliev-notification-service
+  labels:
+    app.kubernetes.io/name: legacy-maliev-notification-service
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: legacy-maliev-notification-service
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
