@@ -5,6 +5,15 @@ This package runs the temporary legacy data plane as one CloudNativePG cluster n
 or reuse the new platform's `maliev-dev`, `maliev-staging`, or `maliev-prod`
 database resources.
 
+Application traffic uses the CloudNativePG-managed PgBouncer service
+`legacy-postgres-pooler-rw.maliev-legacy.svc:5432`. The pooler is deliberately a
+single, resource-bounded instance for the temporary legacy runtime and uses
+transaction pooling. Migration, bootstrap, backup, and administrative operations
+continue to use the direct CloudNativePG services; only application connection
+strings should target PgBouncer after the owner-approved cutover. The pooler name
+is intentionally distinct from CloudNativePG's generated
+`legacy-postgres-main-rw` service.
+
 ## Topology and tradeoff
 
 The legacy applications share one physical PostgreSQL cluster while retaining a
@@ -85,9 +94,11 @@ capacity sample found all five single-zone nodes at roughly 77% to 110% memory u
 the two PostgreSQL pods request 512Mi each and cannot be assumed safely schedulable.
 Before the first sync, use both `kubectl top nodes` and node allocated-request data
 to prove that two distinct schedulable nodes each retain at least 1Gi of memory
-headroom after existing workloads. If that gate fails, reclaim or add capacity and
-do not sync the Application. Re-check because the later cluster API reads timed out
-and the snapshot may have changed.
+headroom after existing workloads and that the existing cluster can also absorb
+the pooler's 20m CPU/32Mi memory request. If that gate fails, reclaim existing
+capacity and do not sync the Application; this migration does not authorize a new
+node pool or any paid infrastructure. Re-check because the later cluster API reads
+timed out and the snapshot may have changed.
 
 Create the GCP service account
 `legacy-postgres-main@maliev-website.iam.gserviceaccount.com`, then:
