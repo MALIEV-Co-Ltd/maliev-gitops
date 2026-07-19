@@ -155,7 +155,7 @@ jobs:
               fi
 
               head_sha="$(gh pr view "$pr_number" --json headRefOid --jq .headRefOid)"
-              if gh pr merge "$pr_number" --merge --delete-branch --match-head-commit "$head_sha"; then
+              if gh pr merge "$pr_number" --squash --delete-branch --match-head-commit "$head_sha"; then
                 echo "Merged PR ${pr_number}."
                 break
               fi
