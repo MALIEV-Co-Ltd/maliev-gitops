@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: legacy-maliev-employee-service-cutover
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: legacy-maliev-employee-service
+    app.kubernetes.io/part-of: legacy-maliev-cutover
+    app.kubernetes.io/environment: validation
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/MALIEV-Co-Ltd/maliev-gitops.git
+    targetRevision: main
+    path: 3-apps/_legacy-cutover/employee
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: maliev-legacy

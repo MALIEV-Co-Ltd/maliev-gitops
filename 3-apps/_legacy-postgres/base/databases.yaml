@@ -1,0 +1,272 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-country
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Country
+  owner: legacy_country_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-currency
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Currency
+  owner: legacy_currency_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-customer
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Customer
+  owner: legacy_customer_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-customer-identity
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: CustomerIdentity
+  owner: legacy_customer_identity_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-data-protection-keys
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: DataProtectionKeys
+  owner: legacy_data_protection_keys_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-data-protection-keys-employee
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: DataProtectionKeysEmployee
+  owner: legacy_data_protection_keys_employee_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-employee
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Employee
+  owner: legacy_employee_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-employee-identity
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: EmployeeIdentity
+  owner: legacy_employee_identity_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-invoice
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Invoice
+  owner: legacy_invoice_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-job-offers
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: JobOffers
+  owner: legacy_job_offers_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-material
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Material
+  owner: legacy_material_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-message
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Message
+  owner: legacy_message_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-order
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Order
+  owner: legacy_order_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-order-status
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: OrderStatus
+  owner: legacy_order_status_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-payment
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Payment
+  owner: legacy_payment_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-purchase-order
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: PurchaseOrder
+  owner: legacy_purchase_order_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-quotation
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Quotation
+  owner: legacy_quotation_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-quotation-request
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: QuotationRequest
+  owner: legacy_quotation_request_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-receipt
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Receipt
+  owner: legacy_receipt_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-supplier
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Supplier
+  owner: legacy_supplier_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-upload
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: Upload
+  owner: legacy_upload_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
