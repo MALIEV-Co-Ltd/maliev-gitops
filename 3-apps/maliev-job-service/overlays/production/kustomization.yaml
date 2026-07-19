@@ -5,3 +5,7 @@ resources:
 - ../../base
 patches:
 - path: environment-config-patch.yaml
+images:
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-job-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-job-service
+  newTag: 941a9994c807baf2816ca0dc725396672432e0d2
