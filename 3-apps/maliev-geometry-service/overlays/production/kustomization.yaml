@@ -1,12 +1,12 @@
 resources:
-  - ../../base
+- ../../base
 namespace: maliev-prod
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 patches:
-  - path: environment-config-patch.yaml
-  - path: service-secrets-patch.yaml
+- path: environment-config-patch.yaml
+- path: service-secrets-patch.yaml
 images:
 - name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-geometry-service
   newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-geometry-service
-  newTag: ea8a038213d5cba9540cf3ebef4f4d84ef940e61
+  newTag: aa3b983954bfbf53d1429fc6f5bca2c5ecf9ce22
