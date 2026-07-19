@@ -1,0 +1,4 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - https://github.com/MALIEV-Co-Ltd/Legacy.Maliev.AuthService.git//deploy/base?ref=abbe40e494ee77ba10c82331847073f97f2ab6e7
