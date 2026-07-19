@@ -187,6 +187,10 @@ jobs:
             echo "No native Secret resources found (outside argocd)."
           fi
 
+      - name: Verify dormant legacy cutover boundary
+        shell: pwsh
+        run: ./scripts/validate-legacy-cutover.ps1
+
       - name: Validate repository structure (3-apps)
         run: |
           set -euo pipefail
