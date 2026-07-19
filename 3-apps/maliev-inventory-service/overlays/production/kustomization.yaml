@@ -5,3 +5,7 @@ resources:
 - ../../base
 patches:
 - path: environment-config-patch.yaml
+images:
+- name: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact/maliev-inventory-service
+  newName: asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod/maliev-inventory-service
+  newTag: d2a70cb95261152d1c6814fe9926cfa56bbcfd6c
