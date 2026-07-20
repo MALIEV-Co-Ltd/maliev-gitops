@@ -80,6 +80,16 @@ class LegacyPostgresManifestTests(unittest.TestCase):
             "plugin-barman-cloud-m5m67kfh8f",
             {resource["metadata"]["name"] for resource in sidecar_config},
         )
+        sidecar_image = next(
+            resource["data"]["SIDECAR_IMAGE"]
+            for resource in sidecar_config
+            if resource["metadata"]["name"] == "plugin-barman-cloud-m5m67kfh8f"
+        )
+        self.assertEqual(
+            sidecar_image,
+            "Z2hjci5pby9jbG91ZG5hdGl2ZS1wZy9wbHVnaW4tYmFybWFuLWNsb3VkLXNpZGVjYXI6djAuMTMuMA==",
+        )
+        self.assertNotRegex(sidecar_image, r"\s")
 
         crds = resources_by_kind(first_render, "CustomResourceDefinition")
         self.assertIn(
@@ -117,6 +127,17 @@ class LegacyPostgresManifestTests(unittest.TestCase):
                     "maliev-legacy",
                     f"{resource['kind']}/{resource['metadata']['name']} escaped maliev-legacy",
                 )
+
+    def test_active_legacy_environment_contains_database_foundation_only(self) -> None:
+        names = {
+            (resource["kind"], resource["metadata"]["name"])
+            for resource in self.legacy
+        }
+        self.assertNotIn(("Deployment", "legacy-maliev-country-service"), names)
+        self.assertNotIn(("Deployment", "legacy-redis"), names)
+        self.assertNotIn(("Service", "legacy-maliev-country-service"), names)
+        self.assertNotIn(("Service", "legacy-redis"), names)
+        self.assertIn(("Cluster", "legacy-postgres-main"), names)
 
     def test_cluster_uses_cnpg_i_gcs_backup_and_resource_limits(self) -> None:
         cluster = resources_by_kind(self.legacy, "Cluster")[0]
@@ -203,6 +224,7 @@ class LegacyPostgresManifestTests(unittest.TestCase):
             },
         )
 
+        self.assertTrue(pooler["spec"]["template"]["spec"]["automountServiceAccountToken"])
         containers = pooler["spec"]["template"]["spec"]["containers"]
         self.assertEqual([container["name"] for container in containers], ["pgbouncer"])
         self.assertEqual(

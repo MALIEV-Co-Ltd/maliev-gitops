@@ -8,7 +8,8 @@ import yaml
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-LEGACY_ENVIRONMENT = "2-environments/4-legacy"
+LEGACY_ENVIRONMENT = "3-apps/_legacy-country-service/overlays/legacy"
+REDIS_ENVIRONMENT = "3-apps/_legacy-redis/overlays/legacy"
 REGISTRY = "asia-southeast1-docker.pkg.dev/maliev-website/maliev-website-artifact-prod"
 
 
@@ -38,6 +39,7 @@ class LegacyCountryServiceManifestTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.documents = render(LEGACY_ENVIRONMENT)
+        cls.redis_documents = render(REDIS_ENVIRONMENT)
 
     def test_country_service_is_internal_hardened_and_resource_bounded(self) -> None:
         deployment = one(self.documents, "Deployment", "legacy-maliev-country-service")
@@ -92,7 +94,7 @@ class LegacyCountryServiceManifestTests(unittest.TestCase):
         self.assertIn("password={{ .redisPassword }}", template["ConnectionStrings__redis"])
 
     def test_legacy_redis_is_ephemeral_private_and_capacity_bounded(self) -> None:
-        deployment = one(self.documents, "Deployment", "legacy-redis")
+        deployment = one(self.redis_documents, "Deployment", "legacy-redis")
         container = deployment["spec"]["template"]["spec"]["containers"][0]
         self.assertTrue(container["image"].startswith("redis:8."))
         self.assertEqual(container["resources"]["requests"], {"cpu": "10m", "memory": "48Mi"})
@@ -103,9 +105,9 @@ class LegacyCountryServiceManifestTests(unittest.TestCase):
             deployment["spec"]["template"]["spec"]["volumes"][0]["emptyDir"],
             {"sizeLimit": "64Mi"},
         )
-        service = one(self.documents, "Service", "legacy-redis")
+        service = one(self.redis_documents, "Service", "legacy-redis")
         self.assertEqual(service["spec"]["clusterIP"], "None")
-        external = one(self.documents, "ExternalSecret", "legacy-redis")
+        external = one(self.redis_documents, "ExternalSecret", "legacy-redis")
         self.assertEqual(
             external["spec"]["data"][0]["remoteRef"],
             {"key": "maliev-legacy-secrets", "property": "legacy-redis-password"},
