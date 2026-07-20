@@ -26,7 +26,9 @@ spec:
         app.kubernetes.io/component: connection-pooler
         app.kubernetes.io/part-of: maliev-legacy
     spec:
-      automountServiceAccountToken: false
+      # CloudNativePG 1.28's PgBouncer manager uses the pooler's namespace
+      # service account to reconcile its generated configuration and secrets.
+      automountServiceAccountToken: true
       containers:
         - name: pgbouncer
           resources:

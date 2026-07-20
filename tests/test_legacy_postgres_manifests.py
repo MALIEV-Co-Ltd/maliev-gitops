@@ -214,6 +214,7 @@ class LegacyPostgresManifestTests(unittest.TestCase):
             },
         )
 
+        self.assertTrue(pooler["spec"]["template"]["spec"]["automountServiceAccountToken"])
         containers = pooler["spec"]["template"]["spec"]["containers"]
         self.assertEqual([container["name"] for container in containers], ["pgbouncer"])
         self.assertEqual(
