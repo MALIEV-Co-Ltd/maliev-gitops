@@ -6,13 +6,17 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-20"
 spec:
-  description: Legacy migration workloads isolated from the new platform environments
+  description: Legacy database migration workloads isolated from the new platform environments
   sourceRepos:
     - https://github.com/MALIEV-Co-Ltd/maliev-gitops.git
   destinations:
     - namespace: maliev-legacy
       server: https://kubernetes.default.svc
-  permitOnlyProjectScopedClusters: true
+  # The built-in in-cluster target is not represented by a project-scoped
+  # cluster credential. Keep the destination, source repository, and cluster
+  # resource allowlists strict while the dedicated legacy cluster credential is
+  # provisioned; this lets the database-only application reconcile safely.
+  permitOnlyProjectScopedClusters: false
   clusterResourceWhitelist:
     - group: ""
       kind: Namespace
