@@ -19251,7 +19251,7 @@ spec:
       annotations:
         # Reload vendored plugin metadata after the Barman sidecar ConfigMap
         # was normalized; this is a controller rollout marker only.
-        maliev.com/reconcile-marker: barman-sidecar-v0.13.0-20260720
+        maliev.com/reconcile-marker: barman-sidecar-v0.13.0-20260720-r2
       labels:
         app.kubernetes.io/name: cloudnative-pg
     spec:
