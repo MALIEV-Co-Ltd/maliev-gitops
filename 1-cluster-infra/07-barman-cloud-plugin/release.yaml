@@ -961,9 +961,7 @@ subjects:
 ---
 apiVersion: v1
 data:
-  SIDECAR_IMAGE: |
-    Z2hjci5pby9jbG91ZG5hdGl2ZS1wZy9wbHVnaW4tYmFybWFuLWNsb3VkLXNpZGVjYXI6dj
-    AuMTMuMA==
+  SIDECAR_IMAGE: Z2hjci5pby9jbG91ZG5hdGl2ZS1wZy9wbHVnaW4tYmFybWFuLWNsb3VkLXNpZGVjYXI6djAuMTMuMA==
 kind: ConfigMap
 metadata:
   name: plugin-barman-cloud-m5m67kfh8f

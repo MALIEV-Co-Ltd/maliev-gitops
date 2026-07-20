@@ -80,6 +80,16 @@ class LegacyPostgresManifestTests(unittest.TestCase):
             "plugin-barman-cloud-m5m67kfh8f",
             {resource["metadata"]["name"] for resource in sidecar_config},
         )
+        sidecar_image = next(
+            resource["data"]["SIDECAR_IMAGE"]
+            for resource in sidecar_config
+            if resource["metadata"]["name"] == "plugin-barman-cloud-m5m67kfh8f"
+        )
+        self.assertEqual(
+            sidecar_image,
+            "Z2hjci5pby9jbG91ZG5hdGl2ZS1wZy9wbHVnaW4tYmFybWFuLWNsb3VkLXNpZGVjYXI6djAuMTMuMA==",
+        )
+        self.assertNotRegex(sidecar_image, r"\s")
 
         crds = resources_by_kind(first_render, "CustomResourceDefinition")
         self.assertIn(
