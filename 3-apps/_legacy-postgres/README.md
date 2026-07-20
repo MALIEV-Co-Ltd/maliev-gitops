@@ -78,8 +78,10 @@ absent. GCS access uses keyless GKE Workload Identity.
 
 The vendored upstream bundle labels the public `SIDECAR_IMAGE` value as a native
 Kubernetes Secret. This repository represents that non-sensitive image metadata as
-a ConfigMap instead and updates the Deployment reference accordingly, preserving
-the upstream value while complying with the repository-wide ExternalSecret policy.
+a ConfigMap instead and updates the Deployment reference accordingly. Because the
+plugin consumes the value as a container image, the ConfigMap stores the decoded
+literal image reference (not Secret-style base64) while complying with the
+repository-wide ExternalSecret policy.
 
 The initial `Country` database and `legacy_country_owner` role are created by
 `bootstrap.initdb` from the same basic-auth Secret used by declarative role
