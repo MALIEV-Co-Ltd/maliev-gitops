@@ -961,7 +961,8 @@ subjects:
 ---
 apiVersion: v1
 data:
-  SIDECAR_IMAGE: Z2hjci5pby9jbG91ZG5hdGl2ZS1wZy9wbHVnaW4tYmFybWFuLWNsb3VkLXNpZGVjYXI6djAuMTMuMA==
+  # ConfigMap data is consumed as the literal container image by the plugin.
+  SIDECAR_IMAGE: ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar:v0.13.0
 kind: ConfigMap
 metadata:
   name: plugin-barman-cloud-m5m67kfh8f
@@ -1003,6 +1004,9 @@ spec:
     type: Recreate
   template:
     metadata:
+      annotations:
+        # Reload SIDECAR_IMAGE after the vendored ConfigMap is normalized.
+        maliev.com/reconcile-marker: barman-sidecar-v0.13.0-20260720-r3
       labels:
         app: barman-cloud
     spec:

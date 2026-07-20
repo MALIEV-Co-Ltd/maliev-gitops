@@ -87,7 +87,7 @@ class LegacyPostgresManifestTests(unittest.TestCase):
         )
         self.assertEqual(
             sidecar_image,
-            "Z2hjci5pby9jbG91ZG5hdGl2ZS1wZy9wbHVnaW4tYmFybWFuLWNsb3VkLXNpZGVjYXI6djAuMTMuMA==",
+            "ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar:v0.13.0",
         )
         self.assertNotRegex(sidecar_image, r"\s")
 
