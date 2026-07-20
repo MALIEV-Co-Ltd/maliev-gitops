@@ -8,7 +8,7 @@ import yaml
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-LEGACY_ENVIRONMENT = "2-environments/4-legacy"
+LEGACY_ENVIRONMENT = "3-apps/_legacy-redis/overlays/legacy"
 
 
 def render() -> list[dict]:

@@ -4,5 +4,3 @@ namespace: maliev-legacy
 resources:
   - namespace.yaml
   - ../../3-apps/_legacy-postgres/overlays/legacy
-  - ../../3-apps/_legacy-redis/overlays/legacy
-  - ../../3-apps/_legacy-country-service/overlays/legacy
