@@ -1003,6 +1003,9 @@ spec:
     type: Recreate
   template:
     metadata:
+      annotations:
+        # Reload SIDECAR_IMAGE after the vendored ConfigMap is normalized.
+        maliev.com/reconcile-marker: barman-sidecar-v0.13.0-20260720
       labels:
         app: barman-cloud
     spec:
