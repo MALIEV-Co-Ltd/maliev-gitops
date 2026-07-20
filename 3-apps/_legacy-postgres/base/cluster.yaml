@@ -5,7 +5,7 @@ metadata:
   annotations:
     # Bump when a vendored CNPG plugin ConfigMap is corrected so the operator
     # re-evaluates a failed instance without recreating the database resource.
-    maliev.com/reconcile-marker: barman-sidecar-v0.13.0-20260720
+    maliev.com/reconcile-marker: barman-sidecar-v0.13.0-20260720-r3
   labels:
     app.kubernetes.io/name: legacy-postgres
     app.kubernetes.io/part-of: maliev-legacy
