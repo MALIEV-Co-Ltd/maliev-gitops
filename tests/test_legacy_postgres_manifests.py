@@ -118,6 +118,17 @@ class LegacyPostgresManifestTests(unittest.TestCase):
                     f"{resource['kind']}/{resource['metadata']['name']} escaped maliev-legacy",
                 )
 
+    def test_active_legacy_environment_contains_database_foundation_only(self) -> None:
+        names = {
+            (resource["kind"], resource["metadata"]["name"])
+            for resource in self.legacy
+        }
+        self.assertNotIn(("Deployment", "legacy-maliev-country-service"), names)
+        self.assertNotIn(("Deployment", "legacy-redis"), names)
+        self.assertNotIn(("Service", "legacy-maliev-country-service"), names)
+        self.assertNotIn(("Service", "legacy-redis"), names)
+        self.assertIn(("Cluster", "legacy-postgres-main"), names)
+
     def test_cluster_uses_cnpg_i_gcs_backup_and_resource_limits(self) -> None:
         cluster = resources_by_kind(self.legacy, "Cluster")[0]
         self.assertEqual(cluster["metadata"]["name"], "legacy-postgres-main")
