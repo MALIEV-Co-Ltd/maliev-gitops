@@ -15,6 +15,13 @@ raw SHA-256 digest. The executable verifier accepts:
 `MachineLearningData` is always excluded and `Log` remains archive-only. Passing those historical
 receipts proves only the disposable copy baseline. It never authorizes cutover.
 
+`legacy-service-database-contract.json` is the companion service-boundary ledger. It accounts for
+all 21 CNPG databases, their owner roles, every database-consuming Legacy service and connection
+key, the explicitly retained source-only databases, and the active/deferred GitOps resources. The
+`tests.test_legacy_service_database_contract` suite checks this ledger against the CNPG manifests,
+the active Country pooler secret, and the locally available Legacy repositories without reading
+secret values or connecting to production.
+
 From a checkout containing both repositories, run:
 
 ```powershell
@@ -22,6 +29,12 @@ python .\scripts\legacy_data_readiness.py `
   --restore-evidence ..\maliev-web\docs\migration\evidence\legacy-database-restore-2026-07-14.json `
   --identity-evidence ..\maliev-web\docs\migration\evidence\legacy-identity-copy-2026-07-15.json `
   --nonidentity-evidence ..\maliev-web\docs\migration\evidence\legacy-postgresql-copy-all-nonidentity-2026-07-16.json
+```
+
+Run the local contract tests with:
+
+```powershell
+python -m unittest tests.test_legacy_data_readiness tests.test_legacy_service_database_contract -v
 ```
 
 Adding `--require-cutover` must fail until a separate live receipt proves every required gate and
