@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "namespace": "maliev-legacy",
+  "cluster": "legacy-postgres-main",
+  "poolerService": "legacy-postgres-pooler-rw",
+  "poolerPort": 5432,
+  "serviceDefaultsProject": "Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Legacy.Maliev.ServiceDefaults.csproj",
+  "databases": {
+    "Country": { "owner": "legacy_country_owner", "binding": "Legacy.Maliev.CountryService" },
+    "Currency": { "owner": "legacy_currency_owner", "binding": null },
+    "Customer": { "owner": "legacy_customer_owner", "binding": "Legacy.Maliev.CustomerService" },
+    "CustomerIdentity": { "owner": "legacy_customer_identity_owner", "binding": "Legacy.Maliev.AuthService" },
+    "DataProtectionKeys": { "owner": "legacy_data_protection_keys_owner", "binding": null },
+    "DataProtectionKeysEmployee": { "owner": "legacy_data_protection_keys_employee_owner", "binding": null },
+    "Employee": { "owner": "legacy_employee_owner", "binding": "Legacy.Maliev.EmployeeService" },
+    "EmployeeIdentity": { "owner": "legacy_employee_identity_owner", "binding": "Legacy.Maliev.AuthService" },
+    "Invoice": { "owner": "legacy_invoice_owner", "binding": "Legacy.Maliev.AccountingService" },
+    "JobOffers": { "owner": "legacy_job_offers_owner", "binding": "Legacy.Maliev.CareerService" },
+    "Material": { "owner": "legacy_material_owner", "binding": "Legacy.Maliev.CatalogService" },
+    "Message": { "owner": "legacy_message_owner", "binding": "Legacy.Maliev.ContactService" },
+    "Order": { "owner": "legacy_order_owner", "binding": "Legacy.Maliev.OrderService" },
+    "OrderStatus": { "owner": "legacy_order_status_owner", "binding": "Legacy.Maliev.OrderService" },
+    "Payment": { "owner": "legacy_payment_owner", "binding": "Legacy.Maliev.AccountingService" },
+    "PurchaseOrder": { "owner": "legacy_purchase_order_owner", "binding": "Legacy.Maliev.ProcurementService" },
+    "Quotation": { "owner": "legacy_quotation_owner", "binding": "Legacy.Maliev.QuotationService" },
+    "QuotationRequest": { "owner": "legacy_quotation_request_owner", "binding": "Legacy.Maliev.QuotationService" },
+    "Receipt": { "owner": "legacy_receipt_owner", "binding": "Legacy.Maliev.AccountingService" },
+    "Supplier": { "owner": "legacy_supplier_owner", "binding": "Legacy.Maliev.ProcurementService" },
+    "Upload": { "owner": "legacy_upload_owner", "binding": "Legacy.Maliev.FileService" }
+  },
+  "services": {
+    "Legacy.Maliev.AccountingService": {
+      "repository": "Legacy.Maliev.AccountingService",
+      "databases": ["Payment", "Invoice", "Receipt"],
+      "connectionKeys": ["PaymentDbContext", "InvoiceDbContext", "ReceiptDbContext"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.AuthService": {
+      "repository": "Legacy.Maliev.AuthService",
+      "databases": ["CustomerIdentity", "EmployeeIdentity"],
+      "connectionKeys": ["CustomerIdentity", "EmployeeIdentity"],
+      "localOnlyConnectionKeys": ["RefreshSessions"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.CareerService": {
+      "repository": "Legacy.Maliev.CareerService",
+      "databases": ["JobOffers"],
+      "connectionKeys": ["CareerDbContext"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.CatalogService": {
+      "repository": "Legacy.Maliev.CatalogService",
+      "databases": ["Material"],
+      "connectionKeys": ["CatalogDbContext"],
+      "notes": ["Country and Currency tables are currently modeled inside the Material database context; the retained Currency source database remains explicitly unbound until a reviewed data-source decision is recorded."],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.ContactService": {
+      "repository": "Legacy.Maliev.ContactService",
+      "databases": ["Message"],
+      "connectionKeys": ["ContactRequestDbContext"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.CountryService": {
+      "repository": "Legacy.Maliev.CountryService",
+      "databases": ["Country"],
+      "connectionKeys": ["CountryDbContext"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.CustomerService": {
+      "repository": "Legacy.Maliev.CustomerService",
+      "databases": ["Customer"],
+      "connectionKeys": ["CustomerDbContext"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.DocumentService": {
+      "repository": "Legacy.Maliev.DocumentService",
+      "databases": [],
+      "connectionKeys": []
+    },
+    "Legacy.Maliev.EmployeeService": {
+      "repository": "Legacy.Maliev.EmployeeService",
+      "databases": ["Employee"],
+      "connectionKeys": ["EmployeeDbContext"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.FileService": {
+      "repository": "Legacy.Maliev.FileService",
+      "databases": ["Upload"],
+      "connectionKeys": ["FileDbContext"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.Intranet": {
+      "repository": "Legacy.Maliev.Intranet",
+      "databases": [],
+      "connectionKeys": [],
+      "notes": ["Uses the shared Redis data-protection key ring; it must not receive a PostgreSQL connection string."]
+    },
+    "Legacy.Maliev.NotificationService": {
+      "repository": "Legacy.Maliev.NotificationService",
+      "databases": [],
+      "connectionKeys": [],
+      "notes": ["Stateless Brevo adapter; it must not receive a PostgreSQL connection string."]
+    },
+    "Legacy.Maliev.OrderService": {
+      "repository": "Legacy.Maliev.OrderService",
+      "databases": ["Order", "OrderStatus"],
+      "connectionKeys": ["OrderDbContext", "OrderStatusDbContext"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.ProcurementService": {
+      "repository": "Legacy.Maliev.ProcurementService",
+      "databases": ["PurchaseOrder", "Supplier"],
+      "connectionKeys": ["PurchaseOrderDbContext", "SupplierDbContext"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.QuotationService": {
+      "repository": "Legacy.Maliev.QuotationService",
+      "databases": ["Quotation", "QuotationRequest"],
+      "connectionKeys": ["QuotationDbContext", "QuotationRequestDbContext"],
+      "testPackage": "Testcontainers.PostgreSql"
+    },
+    "Legacy.Maliev.Web": {
+      "repository": "Legacy.Maliev.Web-main-merge-20260726",
+      "databases": [],
+      "connectionKeys": [],
+      "notes": ["Uses Redis data protection and downstream service APIs; it must not own a PostgreSQL database."]
+    }
+  },
+  "nonDatabaseRepositories": [
+    "Legacy.Maliev.AppHost",
+    "Legacy.Maliev.CompatibilityContracts",
+    "Legacy.Maliev.ServiceDefaults",
+    "Legacy.Maliev.Workflows"
+  ],
+  "sourceOnlyDatabases": {
+    "Currency": "Retained source database; Catalog currently reads the Currency table from its Material database context and no merge parity receipt exists.",
+    "DataProtectionKeys": "Retained source database; runtime key ring is Redis-backed.",
+    "DataProtectionKeysEmployee": "Retained source database; runtime key ring is Redis-backed."
+  },
+  "activeGitOpsServiceResources": ["_legacy-country-service"],
+  "deferredGitOpsServiceResources": [
+    "_legacy-auth-service",
+    "_legacy-accounting-service",
+    "_legacy-career-service",
+    "_legacy-catalog-service",
+    "_legacy-contact-service",
+    "_legacy-customer-service",
+    "_legacy-document-service",
+    "_legacy-employee-service",
+    "_legacy-file-service",
+    "_legacy-intranet",
+    "_legacy-notification-service",
+    "_legacy-order-service",
+    "_legacy-procurement-service",
+    "_legacy-quotation-service",
+    "_legacy-web"
+  ]
+}
