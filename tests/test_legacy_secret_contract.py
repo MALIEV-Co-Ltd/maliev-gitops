@@ -101,6 +101,17 @@ class LegacySecretContractTests(unittest.TestCase):
         for pair in pairs:
             self.assertIn(pair["hashProperty"], auth_properties, pair["clientId"])
 
+    def test_every_pending_property_has_a_lifecycle_destination(self) -> None:
+        projected: set[str] = set()
+        for lifecycle in ("activeProjections", "dormantProjections", "plannedProjections"):
+            for projection in self.contract[lifecycle]:
+                if isinstance(projection["properties"], list):
+                    projected.update(projection["properties"])
+        for pair in self.contract["rules"]["pairedServiceCredentialProperties"]:
+            projected.update((pair["rawProperty"], pair["hashProperty"]))
+
+        self.assertEqual(self.pending, self.pending & projected)
+
     def test_present_properties_are_unique_and_pending_properties_are_explicit(self) -> None:
         self.assertEqual(len(self.present), len(self.contract["presentProperties"]))
         self.assertTrue(self.pending)
