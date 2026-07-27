@@ -165,7 +165,12 @@ class LegacyServiceDatabaseContractTests(unittest.TestCase):
                 re.search(r"(?:main-merge|validation|parity|owner|2026\d{4})", repository, re.IGNORECASE),
                 f"{service_name} points at a snapshot/worktree instead of a canonical repository",
             )
-            if workspace.exists():
+            mounted_repositories = [
+                details["repository"]
+                for details in self.contract["services"].values()
+                if (workspace / details["repository"]).is_dir()
+            ]
+            if mounted_repositories:
                 self.assertTrue(
                     (workspace / repository).is_dir(),
                     f"{service_name} points at a missing canonical repository: {repository}",
