@@ -80,6 +80,20 @@ def validate_value_shapes(payload: dict[str, object], expected: set[str]) -> lis
     return sorted(set(invalid))
 
 
+def classify_live_keys(
+    live: set[str], present: set[str], pending: set[str]
+) -> dict[str, object]:
+    """Classify live key names without exposing any secret values."""
+
+    return {
+        "missingFromLive": sorted(present - live),
+        "uncataloguedLiveKeys": sorted(live - present),
+        "pendingPresentInLive": sorted(live & pending),
+        "pendingMissingFromLive": sorted(pending - live),
+        "matchesCatalog": live == present,
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Validate the legacy Secret Manager key contract without printing values."
@@ -102,6 +116,7 @@ def main() -> int:
     contract = load_contract()
     manager = contract["secretManager"]
     expected = set(contract["presentProperties"])
+    pending = {item["name"] for item in contract["pendingProperties"]}
     report: dict[str, object] = {
         "secret": manager["secret"],
         "catalogPresentKeyCount": len(expected),
@@ -113,9 +128,7 @@ def main() -> int:
         live_payload = read_live_payload(manager["project"], manager["secret"])
         live = set(live_payload)
         report["liveKeyCount"] = len(live)
-        report["missingFromLive"] = sorted(expected - live)
-        report["uncataloguedLiveKeys"] = sorted(live - expected)
-        report["matchesCatalog"] = live == expected
+        report.update(classify_live_keys(live, expected, pending))
         if args.validate_values:
             invalid_properties = validate_value_shapes(live_payload, expected)
             report["valueValidation"] = {
@@ -128,6 +141,8 @@ def main() -> int:
 
     print(json.dumps(report, sort_keys=True))
     if args.live and not report["matchesCatalog"]:
+        return 1
+    if args.live and report["pendingPresentInLive"]:
         return 1
     if args.validate_values and not report["valueValidation"]["valid"]:
         return 1
