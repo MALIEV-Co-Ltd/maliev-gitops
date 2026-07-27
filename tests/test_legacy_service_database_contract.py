@@ -156,6 +156,20 @@ class LegacyServiceDatabaseContractTests(unittest.TestCase):
                 f"{service_name} still references current-generation ServiceDefaults",
             )
 
+    def test_service_repository_references_are_canonical_legacy_repositories(self) -> None:
+        workspace = Path(os.environ.get("MALIEV_WORKSPACE_ROOT", REPO_ROOT.parent))
+        for service_name, details in self.contract["services"].items():
+            repository = details["repository"]
+            self.assertFalse(
+                re.search(r"(?:main-merge|validation|parity|owner|2026\d{4})", repository, re.IGNORECASE),
+                f"{service_name} points at a snapshot/worktree instead of a canonical repository",
+            )
+            if workspace.exists():
+                self.assertTrue(
+                    (workspace / repository).is_dir(),
+                    f"{service_name} points at a missing canonical repository: {repository}",
+                )
+
     def test_non_database_repositories_do_not_claim_database_bindings(self) -> None:
         services = self.contract["services"]
         for repository in self.contract["nonDatabaseRepositories"]:

@@ -121,7 +121,7 @@
       "testPackage": "Testcontainers.PostgreSql"
     },
     "Legacy.Maliev.Web": {
-      "repository": "Legacy.Maliev.Web-main-merge-20260726",
+      "repository": "Legacy.Maliev.Web",
       "databases": [],
       "connectionKeys": [],
       "notes": ["Uses Redis data protection and downstream service APIs; it must not own a PostgreSQL database."]
