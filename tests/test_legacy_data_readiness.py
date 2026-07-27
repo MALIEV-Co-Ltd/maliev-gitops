@@ -111,6 +111,11 @@ class LegacyDataReadinessTests(unittest.TestCase):
         )
 
     def test_verified_rehearsal_receipts_are_accepted_but_cutover_stays_blocked(self) -> None:
+        self.assertEqual(
+            self.contract["latestSourceAudit"]["commit"],
+            "edf451e367ce774d63a74778731bb3c20daf1063",
+        )
+        self.assertFalse(self.contract["latestSourceAudit"]["secretValuesCopied"])
         report = verify_evidence(
             restore_receipt(), identity_receipt(), nonidentity_receipt(), self.contract
         )

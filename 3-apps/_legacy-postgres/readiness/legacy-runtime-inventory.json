@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "namespace": "maliev-legacy",
+  "containerPort": 8080,
+  "healthPathSuffixes": {
+    "liveness": "/liveness",
+    "readiness": "/readiness"
+  },
+  "services": [
+    {
+      "service": "Legacy.Maliev.AccountingService",
+      "repository": "Legacy.Maliev.AccountingService",
+      "gitOpsResource": "_legacy-accounting-service",
+      "lifecycle": "planned",
+      "healthPrefixes": ["accounting"]
+    },
+    {
+      "service": "Legacy.Maliev.AuthService",
+      "repository": "Legacy.Maliev.AuthService",
+      "gitOpsResource": "_legacy-auth-service",
+      "lifecycle": "deferred",
+      "healthPrefixes": ["auth"]
+    },
+    {
+      "service": "Legacy.Maliev.CareerService",
+      "repository": "Legacy.Maliev.CareerService",
+      "gitOpsResource": "_legacy-career-service",
+      "lifecycle": "planned",
+      "healthPrefixes": ["Jobs"]
+    },
+    {
+      "service": "Legacy.Maliev.CatalogService",
+      "repository": "Legacy.Maliev.CatalogService",
+      "gitOpsResource": "_legacy-catalog-service",
+      "lifecycle": "planned",
+      "healthPrefixes": ["catalog"]
+    },
+    {
+      "service": "Legacy.Maliev.ContactService",
+      "repository": "Legacy.Maliev.ContactService",
+      "gitOpsResource": "_legacy-contact-service",
+      "lifecycle": "planned",
+      "healthPrefixes": ["messages"]
+    },
+    {
+      "service": "Legacy.Maliev.CountryService",
+      "repository": "Legacy.Maliev.CountryService",
+      "gitOpsResource": "_legacy-country-service",
+      "lifecycle": "deferred",
+      "healthPrefixes": ["countries"]
+    },
+    {
+      "service": "Legacy.Maliev.CustomerService",
+      "repository": "Legacy.Maliev.CustomerService",
+      "gitOpsResource": "_legacy-customer-service",
+      "lifecycle": "planned",
+      "healthPrefixes": ["customer"]
+    },
+    {
+      "service": "Legacy.Maliev.DocumentService",
+      "repository": "Legacy.Maliev.DocumentService",
+      "gitOpsResource": "_legacy-document-service",
+      "lifecycle": "planned",
+      "healthPrefixes": ["documents"]
+    },
+    {
+      "service": "Legacy.Maliev.EmployeeService",
+      "repository": "Legacy.Maliev.EmployeeService",
+      "gitOpsResource": "_legacy-employee-service",
+      "lifecycle": "deferred",
+      "healthPrefixes": ["employee"]
+    },
+    {
+      "service": "Legacy.Maliev.FileService",
+      "repository": "Legacy.Maliev.FileService",
+      "gitOpsResource": "_legacy-file-service",
+      "lifecycle": "planned",
+      "healthPrefixes": ["file"]
+    },
+    {
+      "service": "Legacy.Maliev.Intranet",
+      "repository": "Legacy.Maliev.Intranet",
+      "gitOpsResource": "_legacy-intranet",
+      "lifecycle": "deferred",
+      "healthPrefixes": ["intranet", "intranet-bff"]
+    },
+    {
+      "service": "Legacy.Maliev.NotificationService",
+      "repository": "Legacy.Maliev.NotificationService",
+      "gitOpsResource": "_legacy-notification-service",
+      "lifecycle": "deferred",
+      "healthPrefixes": ["emails"]
+    },
+    {
+      "service": "Legacy.Maliev.OrderService",
+      "repository": "Legacy.Maliev.OrderService",
+      "gitOpsResource": "_legacy-order-service",
+      "lifecycle": "planned",
+      "healthPrefixes": ["order"]
+    },
+    {
+      "service": "Legacy.Maliev.ProcurementService",
+      "repository": "Legacy.Maliev.ProcurementService",
+      "gitOpsResource": "_legacy-procurement-service",
+      "lifecycle": "planned",
+      "healthPrefixes": ["procurement"]
+    },
+    {
+      "service": "Legacy.Maliev.QuotationService",
+      "repository": "Legacy.Maliev.QuotationService",
+      "gitOpsResource": "_legacy-quotation-service",
+      "lifecycle": "planned",
+      "healthPrefixes": ["quotation"]
+    },
+    {
+      "service": "Legacy.Maliev.Web",
+      "repository": "Legacy.Maliev.Web",
+      "gitOpsResource": "_legacy-web",
+      "lifecycle": "planned",
+      "healthPrefixes": ["web"]
+    }
+  ]
+}
