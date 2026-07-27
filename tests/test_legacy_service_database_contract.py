@@ -98,6 +98,33 @@ class LegacyServiceDatabaseContractTests(unittest.TestCase):
         for resource in self.contract["deferredGitOpsServiceResources"]:
             self.assertNotIn(resource, active)
 
+    def test_gitops_resource_states_match_directories_and_are_disjoint(self) -> None:
+        states = {
+            state: set(self.contract.get(state, []))
+            for state in (
+                "activeGitOpsServiceResources",
+                "deferredGitOpsServiceResources",
+                "plannedGitOpsServiceResources",
+            )
+        }
+        all_resources = set().union(*states.values())
+        self.assertEqual(
+            sum(len(resources) for resources in states.values()),
+            len(all_resources),
+            "a GitOps service resource must have exactly one lifecycle state",
+        )
+        for state in ("activeGitOpsServiceResources", "deferredGitOpsServiceResources"):
+            for resource in states[state]:
+                self.assertTrue(
+                    (REPO_ROOT / "3-apps" / resource).is_dir(),
+                    f"{state} claims a missing GitOps directory: {resource}",
+                )
+        for resource in states["plannedGitOpsServiceResources"]:
+            self.assertFalse(
+                (REPO_ROOT / "3-apps" / resource).exists(),
+                f"planned resource now exists but was not moved to deferred/active: {resource}",
+            )
+
     def test_active_country_secret_uses_the_legacy_pooler_and_exact_database(self) -> None:
         secret = COUNTRY_SECRET.read_text(encoding="utf-8")
         self.assertIn("Host=legacy-postgres-pooler-rw;Port=5432;Database=Country;", secret)

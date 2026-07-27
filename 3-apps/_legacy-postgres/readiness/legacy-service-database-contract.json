@@ -141,16 +141,18 @@
   "activeGitOpsServiceResources": ["_legacy-country-service"],
   "deferredGitOpsServiceResources": [
     "_legacy-auth-service",
+    "_legacy-employee-service",
+    "_legacy-intranet",
+    "_legacy-notification-service"
+  ],
+  "plannedGitOpsServiceResources": [
     "_legacy-accounting-service",
     "_legacy-career-service",
     "_legacy-catalog-service",
     "_legacy-contact-service",
     "_legacy-customer-service",
     "_legacy-document-service",
-    "_legacy-employee-service",
     "_legacy-file-service",
-    "_legacy-intranet",
-    "_legacy-notification-service",
     "_legacy-order-service",
     "_legacy-procurement-service",
     "_legacy-quotation-service",
