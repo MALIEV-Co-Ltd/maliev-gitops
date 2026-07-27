@@ -29,6 +29,12 @@ active CNPG database and the deferred Auth refresh-session store. The secret-con
 these bindings to cover the database ledger exactly and keep the deferred binding out of the active
 environment until its database and recovery gates are approved.
 
+`legacy-runtime-inventory.json` is the deployment-surface ledger for all Legacy application
+repositories. It records each service's active/deferred/planned GitOps resource and the health
+prefix implemented by its migrated .NET host. `tests.test_legacy_runtime_inventory` compares the
+ledger with the database/resource contract and the checked-in source while never applying a
+manifest or contacting a cluster.
+
 From a checkout containing both repositories, run:
 
 ```powershell
