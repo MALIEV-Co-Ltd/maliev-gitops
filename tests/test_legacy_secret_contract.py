@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import unittest
 from pathlib import Path
@@ -13,6 +14,10 @@ CONTRACT_PATH = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-secret-con
 DATABASE_CONTRACT_PATH = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-service-database-contract.json"
 LEGACY_APPS = REPO_ROOT / "3-apps"
 ACTIVE_ENVIRONMENT = REPO_ROOT / "2-environments/4-legacy/kustomization.yaml"
+APPHOST_SOURCE = (
+    Path(os.environ.get("MALIEV_WORKSPACE_ROOT", REPO_ROOT.parent))
+    / "Legacy.Maliev.AppHost/Legacy.Maliev.AppHost/AppHost.cs"
+)
 
 
 def load_contract() -> dict:
@@ -133,6 +138,23 @@ class LegacySecretContractTests(unittest.TestCase):
             self.assertNotIn("connection", binding)
             self.assertNotIn("password", binding)
             self.assertNotIn("username", binding)
+
+    def test_apphost_gke_secret_references_are_catalogued(self) -> None:
+        if not APPHOST_SOURCE.is_file():
+            self.skipTest(f"Legacy AppHost is not mounted: {APPHOST_SOURCE}")
+
+        source = APPHOST_SOURCE.read_text(encoding="utf-8")
+        properties = set(
+            re.findall(
+                r"(?:RequireGkeSecret|SetGkeAspireParameter)\s*\(\s*gkeSecrets!\s*,\s*\"(legacy-[a-z0-9-]+)\"",
+                source,
+            )
+        )
+        self.assertTrue(properties)
+        self.assertTrue(
+            properties <= (self.present | self.pending),
+            f"AppHost references uncatalogued secret properties: {sorted(properties - (self.present | self.pending))}",
+        )
 
     def test_every_pending_property_has_a_lifecycle_destination(self) -> None:
         projected: set[str] = set()
