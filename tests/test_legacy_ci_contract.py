@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import unittest
 from pathlib import Path
 
@@ -28,6 +29,13 @@ class LegacyCiContractTests(unittest.TestCase):
         workflow_directory = repository / ".github/workflows"
         return sorted(
             [*workflow_directory.glob("publish*.yml"), *workflow_directory.glob("publish*.yaml")]
+        )
+
+    @staticmethod
+    def _workflow_files(repository: Path) -> list[Path]:
+        workflow_directory = repository / ".github/workflows"
+        return sorted(
+            [*workflow_directory.glob("*.yml"), *workflow_directory.glob("*.yaml")]
         )
 
     def test_every_runtime_service_has_a_gated_publication_workflow(self) -> None:
@@ -124,6 +132,40 @@ class LegacyCiContractTests(unittest.TestCase):
                             )
                             dockerfile = repository / inputs.get("dockerfile", "")
                             self.assertTrue(dockerfile.is_file(), str(dockerfile))
+
+    def test_every_legacy_workflow_has_no_direct_publication_or_runtime_secret_access(self) -> None:
+        """Publication must go through the pinned reusable workflow, never caller shell code."""
+
+        forbidden_fragments = (
+            "docker push",
+            "gcloud auth configure-docker",
+            "kustomize edit set image",
+            "gh pr create",
+            "git clone https://x-access-token:",
+            "gcloud secrets versions access",
+            "maliev-legacy-secrets",
+            "maliev-prod-",
+            "${{ secrets.",
+        )
+
+        for item in self.inventory["services"]:
+            repository = WORKSPACE_ROOT / item["repository"]
+            if not repository.is_dir():
+                self.skipTest(f"Legacy workspace is not mounted: {repository}")
+
+            workflow_paths = self._workflow_files(repository)
+            self.assertTrue(workflow_paths, item["service"])
+            for workflow_path in workflow_paths:
+                source = workflow_path.read_text(encoding="utf-8")
+                with self.subTest(service=item["service"], workflow=workflow_path.name):
+                    for fragment in forbidden_fragments:
+                        self.assertNotIn(fragment, source, fragment)
+
+                    if re.search(r"(?m)^\s+id-token:\s*write\s*$", source):
+                        self.assertTrue(
+                            workflow_path.name.startswith("publish"),
+                            f"OIDC publication permission escaped publish workflow: {workflow_path}",
+                        )
 
 
 if __name__ == "__main__":
