@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import fnmatch
+import os
+import re
 import unittest
 from pathlib import Path
 
@@ -19,6 +22,37 @@ DATABASE_CONTRACT_PATH = (
 RUNTIME_INVENTORY_PATH = (
     REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-runtime-inventory.json"
 )
+WORKSPACE_ROOT = Path(os.environ.get("MALIEV_WORKSPACE_ROOT", REPO_ROOT.parent))
+
+SENSITIVE_ROOTS = {
+    "Authentication",
+    "Brevo",
+    "ConnectionStrings",
+    "DataProtection",
+    "GoogleIdentity",
+    "GoogleMaps",
+    "Jwt",
+    "Recaptcha",
+    "ServiceAuthentication",
+    "ServiceClients",
+}
+CONFIGURATION_PATTERNS = (
+    re.compile(r"(?:builder\.)?Configuration\s*\[\s*[\"']([^\"']+)[\"']"),
+    re.compile(r"GetSection\(\s*[\"']([^\"']+)[\"']"),
+    re.compile(r"GetConnectionString\(\s*[\"']([^\"']+)[\"']"),
+    re.compile(r"UseSetting\(\s*[\"']([^\"']+)[\"']"),
+    re.compile(r"WithEnvironment\(\s*[\"']([^\"']+)[\"']"),
+    re.compile(r"connectionName\s*:\s*[\"']([^\"']+)[\"']"),
+)
+SKIPPED_SOURCE_PARTS = {
+    ".git",
+    ".worktrees",
+    "bin",
+    "obj",
+    "node_modules",
+    "Migrations",
+    ".dependencies",
+}
 
 
 def load(path: Path) -> dict:
@@ -159,6 +193,78 @@ class LegacyServiceConfigurationContractTests(unittest.TestCase):
             "Host, port, database and pool settings are non-secret runtime configuration; only the username/password components are projected from maliev-legacy-secrets.",
             self.contract["databaseConnectionClass"]["note"],
         )
+
+    def test_mounted_legacy_source_sensitive_paths_are_classified(self) -> None:
+        """Audit real mounted Legacy source without printing configuration values."""
+
+        if "MALIEV_WORKSPACE_ROOT" not in os.environ or not WORKSPACE_ROOT.is_dir():
+            self.skipTest(f"Legacy workspace is not mounted: {WORKSPACE_ROOT}")
+
+        for service, binding in self.services.items():
+            repository = WORKSPACE_ROOT / service
+            if not repository.is_dir():
+                self.fail(f"Missing mounted Legacy repository: {repository}")
+
+            known_paths = set()
+            for class_name in binding["classes"]:
+                known_paths.update(self.classes[class_name]["configurationPaths"])
+            known_paths.update(
+                f"ConnectionStrings:{connection['name']}"
+                for connection in binding["connections"]
+            )
+            if "redis" in binding["classes"]:
+                known_paths.add("ConnectionStrings:redis")
+
+            non_secret_paths = set(binding["nonSecretConfigurationPaths"])
+            observed = set()
+            for path in repository.rglob("*"):
+                if not path.is_file() or SKIPPED_SOURCE_PARTS.intersection(path.parts):
+                    continue
+                if any(part.endswith(".Tests") for part in path.parts):
+                    continue
+                if path.suffix == ".json" and path.name != "appsettings.json":
+                    continue
+                if path.suffix not in {".cs", ".json"}:
+                    continue
+
+                text = path.read_text(encoding="utf-8", errors="ignore")
+                for pattern in CONFIGURATION_PATTERNS:
+                    for match in pattern.finditer(text):
+                        candidate = match.group(1).replace("__", ":")
+                        if ":" not in candidate:
+                            continue
+                        if candidate.startswith("ConnectionStrings:"):
+                            observed.add(candidate)
+                            continue
+                        if candidate.split(":", 1)[0] in SENSITIVE_ROOTS:
+                            observed.add(candidate)
+
+                if path.name == "appsettings.json":
+                    try:
+                        document = json.loads(text)
+                    except json.JSONDecodeError:
+                        continue
+
+                    def walk(value: object, prefix: str = "") -> None:
+                        if isinstance(value, dict):
+                            for key, child in value.items():
+                                current = f"{prefix}:{key}" if prefix else key
+                                if ":" in current and current.split(":", 1)[0] in SENSITIVE_ROOTS:
+                                    observed.add(current)
+                                walk(child, current)
+                        elif isinstance(value, list):
+                            for child in value:
+                                walk(child, prefix)
+
+                    walk(document)
+
+            unknown = sorted(
+                path
+                for path in observed
+                if path not in known_paths
+                and not any(fnmatch.fnmatch(path, pattern) for pattern in non_secret_paths)
+            )
+            self.assertEqual([], unknown, service)
 
 
 if __name__ == "__main__":
