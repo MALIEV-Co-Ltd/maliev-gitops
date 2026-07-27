@@ -79,6 +79,28 @@ class LegacySecretContractTests(unittest.TestCase):
             ],
         )
 
+    def test_service_credentials_pair_raw_values_with_auth_hash_projections(self) -> None:
+        catalogued = self.present | self.pending
+        pairs = self.contract["rules"]["pairedServiceCredentialProperties"]
+        self.assertEqual(
+            {pair["clientId"] for pair in pairs},
+            {"legacy-web", "legacy-intranet", "legacy-quotation", "legacy-accounting"},
+        )
+        self.assertEqual(
+            len(pairs),
+            len({pair["clientId"] for pair in pairs}),
+        )
+        for pair in pairs:
+            self.assertIn(pair["rawProperty"], catalogued, pair["clientId"])
+            self.assertIn(pair["hashProperty"], catalogued, pair["clientId"])
+            self.assertTrue(pair["rawProperty"].endswith("-service-client-secret"))
+            self.assertTrue(pair["hashProperty"].endswith("-secret-sha256"))
+
+        auth = next(item for item in self.contract["dormantProjections"] if item["service"] == "auth")
+        auth_properties = set(auth["properties"])
+        for pair in pairs:
+            self.assertIn(pair["hashProperty"], auth_properties, pair["clientId"])
+
     def test_present_properties_are_unique_and_pending_properties_are_explicit(self) -> None:
         self.assertEqual(len(self.present), len(self.contract["presentProperties"]))
         self.assertTrue(self.pending)
