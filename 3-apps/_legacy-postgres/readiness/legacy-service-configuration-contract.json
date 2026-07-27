@@ -9,7 +9,7 @@
       "classification": "single-secret-backed"
     },
     "jwt-auth": {
-      "configurationPaths": ["Jwt:Issuer", "Jwt:Audience", "Jwt:PrivateKey", "Jwt:KeyId"],
+      "configurationPaths": ["Jwt:Issuer", "Jwt:Audience", "Jwt:PrivateKeyPem", "Jwt:KeyId"],
       "secretProperties": ["legacy-jwt-issuer", "legacy-jwt-audience", "legacy-jwt-private-key", "legacy-jwt-key-id"],
       "classification": "single-secret-backed"
     },
@@ -44,7 +44,12 @@
       "classification": "single-secret-backed"
     },
     "auth-service-client-hashes": {
-      "configurationPaths": [],
+      "configurationPaths": [
+        "ServiceClients:Clients:legacy-accounting:SecretSha256",
+        "ServiceClients:Clients:legacy-intranet:SecretSha256",
+        "ServiceClients:Clients:legacy-quotation:SecretSha256",
+        "ServiceClients:Clients:legacy-web:SecretSha256"
+      ],
       "secretProperties": [
         "legacy-service-client-legacy-accounting-secret-sha256",
         "legacy-service-client-legacy-intranet-secret-sha256",
@@ -79,9 +84,14 @@
       "classification": "single-secret-backed"
     },
     "google-identity-auth": {
-      "configurationPaths": ["Authentication:Google:HostedDomain", "Authentication:Google:Audience", "Authentication:Google:ClientId"],
-      "secretProperties": ["legacy-google-identity-employee-hosted-domain", "legacy-google-identity-employee-audience-intranet", "legacy-google-identity-client-id"],
+      "configurationPaths": ["GoogleIdentity:Employee:HostedDomain", "GoogleIdentity:Employee:Audiences:intranet"],
+      "secretProperties": ["legacy-google-identity-employee-hosted-domain", "legacy-google-identity-employee-audience-intranet"],
       "classification": "single-secret-backed"
+    },
+    "google-identity-client-id-runtime": {
+      "configurationPaths": [],
+      "secretProperties": ["legacy-google-identity-client-id"],
+      "classification": "runtime-only-apphost-routing"
     },
     "google-identity-intranet": {
       "configurationPaths": ["Authentication:Google:ClientId"],
@@ -112,7 +122,7 @@
     },
     {
       "service": "Legacy.Maliev.AuthService",
-      "classes": ["jwt-auth", "auth-service-client-hashes", "google-identity-auth"],
+      "classes": ["jwt-auth", "auth-service-client-hashes", "google-identity-auth", "google-identity-client-id-runtime"],
       "connections": [
         {"name": "CustomerIdentity", "database": "CustomerIdentity"},
         {"name": "EmployeeIdentity", "database": "EmployeeIdentity"},
