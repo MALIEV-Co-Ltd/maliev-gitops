@@ -5,7 +5,9 @@ This directory is deliberately dormant. Nothing below it is referenced by
 Cloud SQL instance, or cluster mutation.
 
 `migration-readiness-contract.json` anchors the redacted receipts already committed at
-`MALIEV-Co-Ltd/maliev-web@eb8ed86672bd9afccc6560b547b734d0fcd7363b` and pins each receipt's
+`MALIEV-Co-Ltd/maliev-web@eb8ed86672bd9afccc6560b547b734d0fcd7363b` and records the latest
+read-only source audit at `MALIEV-Co-Ltd/maliev-web@edf451e367ce774d63a74778731bb3c20daf1063`.
+It pins each receipt's
 raw SHA-256 digest. The executable verifier accepts:
 
 - `legacy-database-restore-2026-07-14.json`: 23 backups, 510,709,760 bytes, 23 clean DBCC checks;
