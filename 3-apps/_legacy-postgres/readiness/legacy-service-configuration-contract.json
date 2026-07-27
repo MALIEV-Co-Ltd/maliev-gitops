@@ -4,7 +4,7 @@
   "sourceBoundary": "Legacy.Maliev.* application configuration and runtime projection names; values are intentionally excluded",
   "classes": {
     "jwt-standard": {
-      "configurationPaths": ["Jwt:Issuer", "Jwt:Audience", "Jwt:PublicKey"],
+      "configurationPaths": ["Jwt:Issuer", "Jwt:Audience", "Jwt:PublicKey", "Jwt:PublicKeyPem"],
       "secretProperties": ["legacy-jwt-issuer", "legacy-jwt-audience", "legacy-jwt-public-key"],
       "classification": "single-secret-backed"
     },
@@ -128,7 +128,7 @@
         {"name": "EmployeeIdentity", "database": "EmployeeIdentity"},
         {"name": "RefreshSessions", "database": "Auth", "lifecycle": "deferred"}
       ],
-      "nonSecretConfigurationPaths": ["IdentityStorage:Provider", "Logging:*", "AllowedHosts"]
+      "nonSecretConfigurationPaths": ["IdentityStorage:Provider", "Jwt:AccessTokenLifetimeSeconds", "Logging:*", "AllowedHosts"]
     },
     {
       "service": "Legacy.Maliev.CareerService",
@@ -182,13 +182,13 @@
       "service": "Legacy.Maliev.Intranet",
       "classes": ["jwt-standard", "jwt-key-id", "redis", "service-client-intranet", "data-protection-intranet", "google-maps-intranet", "google-identity-intranet"],
       "connections": [],
-      "nonSecretConfigurationPaths": ["Services:*", "LegacyEmployeeCompatibility:*", "Logging:*", "AllowedHosts"]
+      "nonSecretConfigurationPaths": ["Services:*", "LegacyEmployeeCompatibility:*", "Authentication:Google", "ServiceAuthentication:ClientId", "GoogleMaps:MapId", "GoogleMaps:DefaultLatitude", "GoogleMaps:DefaultLongitude", "GoogleMaps:DefaultZoom", "Logging:*", "AllowedHosts"]
     },
     {
       "service": "Legacy.Maliev.NotificationService",
       "classes": ["jwt-standard", "brevo"],
       "connections": [],
-      "nonSecretConfigurationPaths": ["Brevo:Senders:*", "Cache:RedisEnabled", "CORS:AllowedOrigins", "Logging:*", "AllowedHosts"]
+      "nonSecretConfigurationPaths": ["Brevo:Senders", "Brevo:Senders:*", "Brevo:AttemptTimeoutMilliseconds", "Brevo:MaxRetryAttempts", "Brevo:MaxRetryDelayMilliseconds", "Brevo:RetryDelayMilliseconds", "Cache:RedisEnabled", "CORS:AllowedOrigins", "Logging:*", "AllowedHosts"]
     },
     {
       "service": "Legacy.Maliev.OrderService",
@@ -221,7 +221,7 @@
       "service": "Legacy.Maliev.Web",
       "classes": ["redis", "service-client-web", "data-protection-web", "google-maps-web", "recaptcha-web"],
       "connections": [],
-      "nonSecretConfigurationPaths": ["BlazorRouting:*", "Career:*", "CORS:AllowedOrigins", "Services:*", "Logging:*", "AllowedHosts", "LocalAspireLoginReview:Enabled"]
+      "nonSecretConfigurationPaths": ["BlazorRouting:*", "Career:*", "CORS:AllowedOrigins", "Services:*", "ServiceAuthentication:ClientId", "GoogleMaps:PlaceId", "Recaptcha:MinimumScore", "Logging:*", "AllowedHosts", "LocalAspireLoginReview:Enabled"]
     }
   ],
   "forbiddenSourcePatterns": [
