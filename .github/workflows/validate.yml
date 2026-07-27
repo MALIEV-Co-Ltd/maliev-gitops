@@ -171,7 +171,7 @@ jobs:
           fi
 
       - name: Validate dormant legacy data readiness contracts
-        run: python -m unittest tests.test_legacy_data_readiness -v
+        run: python -m unittest tests.test_legacy_data_readiness tests.test_legacy_service_database_contract -v
 
       - name: Validate Maliev.Web health probe contract
         run: bash scripts/validate-maliev-web-probes.sh
