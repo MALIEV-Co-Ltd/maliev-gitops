@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import unittest
 from pathlib import Path
 
@@ -22,6 +23,20 @@ class LegacyCiContractTests(unittest.TestCase):
         import json
 
         cls.inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8"))
+
+    @staticmethod
+    def _publication_workflows(repository: Path) -> list[Path]:
+        workflow_directory = repository / ".github/workflows"
+        return sorted(
+            [*workflow_directory.glob("publish*.yml"), *workflow_directory.glob("publish*.yaml")]
+        )
+
+    @staticmethod
+    def _workflow_files(repository: Path) -> list[Path]:
+        workflow_directory = repository / ".github/workflows"
+        return sorted(
+            [*workflow_directory.glob("*.yml"), *workflow_directory.glob("*.yaml")]
+        )
 
     def test_every_runtime_service_has_a_gated_publication_workflow(self) -> None:
         for item in self.inventory["services"]:
@@ -66,9 +81,91 @@ class LegacyCiContractTests(unittest.TestCase):
             repository = WORKSPACE_ROOT / item["repository"]
             if not repository.is_dir():
                 self.skipTest(f"Legacy workspace is not mounted: {repository}")
-            source = (repository / ".github/workflows/publish-image.yml").read_text(encoding="utf-8")
-            self.assertNotRegex(source, r"(?i)(password|private[-_]?key|client[-_]?secret)\s*:")
-            self.assertNotIn("maliev-legacy-secrets", source)
+            for workflow_path in self._publication_workflows(repository):
+                source = workflow_path.read_text(encoding="utf-8")
+                self.assertNotRegex(
+                    source,
+                    r"(?i)(password|private[-_]?key|client[-_]?secret)\s*:",
+                    str(workflow_path),
+                )
+                self.assertNotIn("maliev-legacy-secrets", source, str(workflow_path))
+
+    def test_every_publication_entrypoint_is_fail_closed_and_pinned(self) -> None:
+        """Cover secondary image workflows such as Auth identity migration and Intranet BFF."""
+
+        for item in self.inventory["services"]:
+            repository = WORKSPACE_ROOT / item["repository"]
+            if not repository.is_dir():
+                self.skipTest(f"Legacy workspace is not mounted: {repository}")
+
+            workflow_paths = self._publication_workflows(repository)
+            self.assertTrue(workflow_paths, item["service"])
+            for workflow_path in workflow_paths:
+                with self.subTest(service=item["service"], workflow=workflow_path.name):
+                    workflow = yaml.safe_load(workflow_path.read_text(encoding="utf-8"))
+                    self.assertEqual(workflow["permissions"]["id-token"], "write")
+                    jobs = workflow["jobs"]
+                    self.assertIn("deployment-gate", jobs)
+                    self.assertIn(
+                        "LEGACY_DEPLOY_ENABLED != 'true'",
+                        jobs["deployment-gate"]["if"],
+                    )
+
+                    publication_jobs = {
+                        name: job
+                        for name, job in jobs.items()
+                        if name != "deployment-gate"
+                    }
+                    self.assertTrue(publication_jobs)
+                    for name, job in publication_jobs.items():
+                        with self.subTest(job=name):
+                            self.assertEqual(
+                                job.get("if"),
+                                "vars.LEGACY_DEPLOY_ENABLED == 'true'",
+                            )
+                            self.assertEqual(job.get("uses"), PINNED_WORKFLOW)
+                            inputs = job.get("with", {})
+                            self.assertEqual(inputs.get("context"), ".")
+                            self.assertRegex(
+                                inputs.get("image", ""),
+                                r"^\$\{\{ vars\.LEGACY_ARTIFACT_REGISTRY \}\}/legacy-maliev-[a-z0-9-]+$",
+                            )
+                            dockerfile = repository / inputs.get("dockerfile", "")
+                            self.assertTrue(dockerfile.is_file(), str(dockerfile))
+
+    def test_every_legacy_workflow_has_no_direct_publication_or_runtime_secret_access(self) -> None:
+        """Publication must go through the pinned reusable workflow, never caller shell code."""
+
+        forbidden_fragments = (
+            "docker push",
+            "gcloud auth configure-docker",
+            "kustomize edit set image",
+            "gh pr create",
+            "git clone https://x-access-token:",
+            "gcloud secrets versions access",
+            "maliev-legacy-secrets",
+            "maliev-prod-",
+            "${{ secrets.",
+        )
+
+        for item in self.inventory["services"]:
+            repository = WORKSPACE_ROOT / item["repository"]
+            if not repository.is_dir():
+                self.skipTest(f"Legacy workspace is not mounted: {repository}")
+
+            workflow_paths = self._workflow_files(repository)
+            self.assertTrue(workflow_paths, item["service"])
+            for workflow_path in workflow_paths:
+                source = workflow_path.read_text(encoding="utf-8")
+                with self.subTest(service=item["service"], workflow=workflow_path.name):
+                    for fragment in forbidden_fragments:
+                        self.assertNotIn(fragment, source, fragment)
+
+                    if re.search(r"(?m)^\s+id-token:\s*write\s*$", source):
+                        self.assertTrue(
+                            workflow_path.name.startswith("publish"),
+                            f"OIDC publication permission escaped publish workflow: {workflow_path}",
+                        )
 
 
 if __name__ == "__main__":
