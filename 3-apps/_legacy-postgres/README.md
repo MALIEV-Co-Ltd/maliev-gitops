@@ -119,6 +119,16 @@ Create the GCP service account
 
 ## Required `maliev-legacy-secrets` properties
 
+The value-free [legacy secret contract](readiness/legacy-secret-contract.json)
+is the canonical inventory for the single JSON document. It records the
+properties currently present, the properties required by dormant service
+projections, and the rule that only already-present properties may be used by
+the active `maliev-legacy` overlay. The companion
+`tests/test_legacy_secret_contract.py` test rejects a second Secret Manager
+reference, uncatalogued properties, and activation of a projection before its
+property exists. Secret values, access/refresh tokens, cookies, and service
+account key files are intentionally absent from the contract.
+
 `legacy-postgres-superuser-username` must be exactly `postgres`; CloudNativePG
 requires that username for `spec.superuserSecret`. Generate a unique high-entropy
 value for every password property.
