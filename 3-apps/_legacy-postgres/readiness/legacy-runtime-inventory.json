@@ -11,7 +11,7 @@
       "service": "Legacy.Maliev.AccountingService",
       "repository": "Legacy.Maliev.AccountingService",
       "gitOpsResource": "_legacy-accounting-service",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["accounting"]
     },
     {
@@ -74,7 +74,7 @@
       "service": "Legacy.Maliev.FileService",
       "repository": "Legacy.Maliev.FileService",
       "gitOpsResource": "_legacy-file-service",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["file"]
     },
     {
@@ -116,7 +116,7 @@
       "service": "Legacy.Maliev.Web",
       "repository": "Legacy.Maliev.Web",
       "gitOpsResource": "_legacy-web",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["web"]
     }
   ]

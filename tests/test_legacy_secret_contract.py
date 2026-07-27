@@ -147,7 +147,7 @@ class LegacySecretContractTests(unittest.TestCase):
         self.assertEqual(active, set(database_contract["databases"]))
         self.assertEqual(
             {database["database"] for database in bindings if database["lifecycle"] == "deferred"},
-            {"Auth"},
+            set(),
         )
 
         catalogued = self.present | self.pending

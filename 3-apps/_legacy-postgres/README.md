@@ -28,16 +28,21 @@ and failure blast radius: logical credentials prevent normal cross-database acce
 but they do not provide physical fault isolation. This is temporary migration
 infrastructure, not the target architecture.
 
+`Auth` is the PostgreSQL database for the migrated AuthService refresh-session
+store. It is provisioned in the same cluster with its own owner role and
+credential Secret; it does not replace the source identity databases.
+
 `Log` is archive-only and is not provisioned as an active database.
 `MachineLearningData` is excluded because deterministic pricing replaced the
 prediction service. The source backup remains
 `gs://maliev.com/database/full/2026-07-14/`; restoring it is a separately validated
 migration operation and is not triggered automatically by these manifests.
 
-## Active ownership inventory (21)
+## Active ownership inventory (22)
 
 | Database | Owner role | Ownership |
 | --- | --- | --- |
+| Auth | legacy_auth_owner | Legacy AuthService refresh-session store |
 | Country | legacy_country_owner | Legacy service owning the existing Country schema |
 | Currency | legacy_currency_owner | Legacy service owning the existing Currency schema |
 | Customer | legacy_customer_owner | Legacy service owning the existing Customer schema |
@@ -87,6 +92,26 @@ management. The matching `Database/Country` resource then reconciles the existin
 database with `ALTER DATABASE`, which CloudNativePG supports; the other 20 databases
 are created declaratively after bootstrap.
 
+## Legacy application Workload Identity (provisioned, workloads dormant)
+
+The application identities below are provisioned without JSON key files and are
+bound only to their matching Kubernetes service accounts in `maliev-legacy`.
+These bindings do not authorize a workload rollout; the cutover overlay remains
+manual and owner-gated for Aspire review.
+
+| Workload | Kubernetes service account | Google service account | Direct GCS access |
+| --- | --- | --- | --- |
+| Web | `legacy-maliev-web` | `legacy-maliev-web@maliev-website.iam.gserviceaccount.com` | None |
+| FileService | `legacy-maliev-file` | `legacy-maliev-file@maliev-website.iam.gserviceaccount.com` | `roles/storage.objectAdmin` on `maliev.com`, `maliev-instant-quotations`, and `maliev-quotation-requests` for upload quarantine/promotion |
+| Accounting | `legacy-maliev-accounting` | `legacy-maliev-accounting@maliev-website.iam.gserviceaccount.com` | None |
+| Notification | `legacy-maliev-notification` | `legacy-maliev-notification@maliev-website.iam.gserviceaccount.com` | None |
+
+Each binding uses the form
+`serviceAccount:maliev-website.svc.id.goog[maliev-legacy/<service-account>]`.
+The identities are intentionally dormant until the owner approves the local
+Aspire validation and the existing-cluster capacity gate. No new node pool or
+additional paid infrastructure is part of this migration.
+
 ## Required before merge
 
 The `maliev-legacy` Argo Application is deliberately manual-sync. A July 14, 2026
@@ -107,6 +132,10 @@ Create the GCP service account
    preferably with an IAM condition limited to the
    `database/legacy-postgres/main/` object prefix. `roles/storage.objectAdmin`
    at bucket scope is the simplest role that supports backup retention deletion.
+   The dormant FileService identity separately uses `roles/storage.objectAdmin`
+   only on `maliev.com`, `maliev-instant-quotations`, and
+   `maliev-quotation-requests`; it has no access to the database backup prefix
+   outside the bucket-level grants recorded above.
 2. Grant `roles/iam.workloadIdentityUser` on that GSA to
    `serviceAccount:maliev-website.svc.id.goog[maliev-legacy/legacy-postgres-main]`.
 3. Verify External Secrets Operator can read the single GSM secret

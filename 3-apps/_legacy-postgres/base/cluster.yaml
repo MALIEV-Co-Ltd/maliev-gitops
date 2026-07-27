@@ -46,6 +46,11 @@ spec:
       work_mem: 2MB
   managed:
     roles:
+      - name: legacy_auth_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-auth
       - name: legacy_country_owner
         login: true
         connectionLimit: 4
