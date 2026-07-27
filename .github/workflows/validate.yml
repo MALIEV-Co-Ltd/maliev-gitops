@@ -176,6 +176,7 @@ jobs:
           tests.test_legacy_data_readiness
           tests.test_legacy_service_database_contract
           tests.test_legacy_secret_contract
+          tests.test_legacy_service_configuration_contract
           tests.test_legacy_runtime_inventory
           tests.test_legacy_ci_contract
           -v
