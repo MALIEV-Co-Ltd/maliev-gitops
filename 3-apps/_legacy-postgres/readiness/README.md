@@ -17,7 +17,9 @@ receipts proves only the disposable copy baseline. It never authorizes cutover.
 
 `legacy-service-database-contract.json` is the companion service-boundary ledger. It accounts for
 all 21 CNPG databases, their owner roles, every database-consuming Legacy service and connection
-key, the explicitly retained source-only databases, and the active/deferred GitOps resources. The
+key, the explicitly retained source-only databases, and the active/deferred/planned GitOps
+resources. A deferred resource has a checked-in dormant projection; a planned resource is named
+for audit purposes but has no deployment directory yet. The
 `tests.test_legacy_service_database_contract` suite checks this ledger against the CNPG manifests,
 the active Country pooler secret, and the locally available Legacy repositories without reading
 secret values or connecting to production.
