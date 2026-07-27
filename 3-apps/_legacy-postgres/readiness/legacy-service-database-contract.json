@@ -139,10 +139,11 @@
     "DataProtectionKeys": "Retained source database; runtime key ring is Redis-backed.",
     "DataProtectionKeysEmployee": "Retained source database; runtime key ring is Redis-backed."
   },
-  "activeGitOpsServiceResources": ["_legacy-country-service"],
+  "activeGitOpsServiceResources": [],
   "deferredGitOpsServiceResources": [
     "_legacy-accounting-service",
     "_legacy-auth-service",
+    "_legacy-country-service",
     "_legacy-employee-service",
     "_legacy-file-service",
     "_legacy-intranet",

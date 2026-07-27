@@ -92,11 +92,12 @@ class LegacyServiceDatabaseContractTests(unittest.TestCase):
     def test_active_overlay_exposes_only_explicitly_active_service_resources(self) -> None:
         active = ACTIVE_KUSTOMIZATION.read_text(encoding="utf-8")
         self.assertIn("../../3-apps/_legacy-postgres/overlays/legacy", active)
-        self.assertIn("../../3-apps/_legacy-redis/overlays/legacy", active)
         for resource in self.contract["activeGitOpsServiceResources"]:
             self.assertIn(resource, active)
         for resource in self.contract["deferredGitOpsServiceResources"]:
             self.assertNotIn(resource, active)
+        self.assertNotIn("../../3-apps/_legacy-redis/overlays/legacy", active)
+        self.assertNotIn("../../3-apps/_legacy-country-service/overlays/legacy", active)
 
     def test_gitops_resource_states_match_directories_and_are_disjoint(self) -> None:
         states = {
