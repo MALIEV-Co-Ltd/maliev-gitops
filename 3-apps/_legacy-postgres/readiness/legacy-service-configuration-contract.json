@@ -188,7 +188,7 @@
       "service": "Legacy.Maliev.NotificationService",
       "classes": ["jwt-standard", "brevo"],
       "connections": [],
-      "nonSecretConfigurationPaths": ["Brevo:Senders", "Brevo:Senders:*", "Cache:RedisEnabled", "CORS:AllowedOrigins", "Logging:*", "AllowedHosts"]
+      "nonSecretConfigurationPaths": ["Brevo:Senders", "Brevo:Senders:*", "Brevo:AttemptTimeoutMilliseconds", "Brevo:MaxRetryAttempts", "Brevo:MaxRetryDelayMilliseconds", "Brevo:RetryDelayMilliseconds", "Cache:RedisEnabled", "CORS:AllowedOrigins", "Logging:*", "AllowedHosts"]
     },
     {
       "service": "Legacy.Maliev.OrderService",
