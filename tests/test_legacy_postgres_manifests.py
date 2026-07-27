@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import re
+import json
 import subprocess
 import unittest
 from pathlib import Path
@@ -10,6 +10,7 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LEGACY_ENVIRONMENT = "2-environments/4-legacy"
+SECRET_CONTRACT = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-secret-contract.json"
 PLUGIN_INFRA = "1-cluster-infra/07-barman-cloud-plugin"
 PLUGIN_IMAGE = (
     "ghcr.io/cloudnative-pg/plugin-barman-cloud:v0.13.0@"
@@ -55,10 +56,6 @@ def render(relative_path: str) -> list[dict]:
 
 def resources_by_kind(documents: list[dict], kind: str) -> list[dict]:
     return [document for document in documents if document.get("kind") == kind]
-
-
-def camel_to_kebab(value: str) -> str:
-    return re.sub(r"(?<!^)(?=[A-Z])", "-", value).lower()
 
 
 class LegacyPostgresManifestTests(unittest.TestCase):
@@ -254,9 +251,16 @@ class LegacyPostgresManifestTests(unittest.TestCase):
             "legacy-postgres-superuser-username",
             "legacy-postgres-superuser-password",
         }
-        for database_name in ACTIVE_DATABASES:
-            prefix = f"legacy-postgres-{camel_to_kebab(database_name)}"
-            expected.update({f"{prefix}-username", f"{prefix}-password"})
+        contract = json.loads(SECRET_CONTRACT.read_text(encoding="utf-8"))
+        expected.update(
+            property_name
+            for binding in contract["rules"]["databaseCredentialProperties"]
+            if binding["lifecycle"] == "active"
+            for property_name in (
+                binding["usernameProperty"],
+                binding["passwordProperty"],
+            )
+        )
         self.assertEqual(properties, expected)
 
     def test_argo_project_and_app_are_exactly_scoped_to_legacy(self) -> None:
