@@ -119,6 +119,17 @@ class LegacySecretContractTests(unittest.TestCase):
                     projection["service"],
                 )
 
+    def test_planned_projection_lifecycle_matches_planned_gitops_resources(self) -> None:
+        database_contract = load_database_contract()
+        planned_resources = {
+            resource.removeprefix("_legacy-").removesuffix("-service")
+            for resource in database_contract["plannedGitOpsServiceResources"]
+        }
+        planned_projections = {
+            projection["service"] for projection in self.contract["plannedProjections"]
+        }
+        self.assertEqual(planned_resources, planned_projections)
+
     def test_active_projection_properties_are_already_present(self) -> None:
         for projection in self.contract["activeProjections"]:
             if isinstance(projection["properties"], list):
