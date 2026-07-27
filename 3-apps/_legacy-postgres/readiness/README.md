@@ -5,7 +5,9 @@ This directory is deliberately dormant. Nothing below it is referenced by
 Cloud SQL instance, or cluster mutation.
 
 `migration-readiness-contract.json` anchors the redacted receipts already committed at
-`MALIEV-Co-Ltd/maliev-web@eb8ed86672bd9afccc6560b547b734d0fcd7363b` and pins each receipt's
+`MALIEV-Co-Ltd/maliev-web@eb8ed86672bd9afccc6560b547b734d0fcd7363b` and records the latest
+read-only source audit at `MALIEV-Co-Ltd/maliev-web@edf451e367ce774d63a74778731bb3c20daf1063`.
+It pins each receipt's
 raw SHA-256 digest. The executable verifier accepts:
 
 - `legacy-database-restore-2026-07-14.json`: 23 backups, 510,709,760 bytes, 23 clean DBCC checks;
@@ -15,6 +17,26 @@ raw SHA-256 digest. The executable verifier accepts:
 `MachineLearningData` is always excluded and `Log` remains archive-only. Passing those historical
 receipts proves only the disposable copy baseline. It never authorizes cutover.
 
+`legacy-service-database-contract.json` is the companion service-boundary ledger. It accounts for
+all 21 CNPG databases, their owner roles, every database-consuming Legacy service and connection
+key, the explicitly retained source-only databases, and the active/deferred/planned GitOps
+resources. A deferred resource has a checked-in dormant projection; a planned resource is named
+for audit purposes but has no deployment directory yet. The
+`tests.test_legacy_service_database_contract` suite checks this ledger against the CNPG manifests,
+the active Country pooler secret, and the locally available Legacy repositories without reading
+secret values or connecting to production.
+
+`legacy-secret-contract.json` also records the value-free username/password property for every
+active CNPG database and the deferred Auth refresh-session store. The secret-contract tests require
+these bindings to cover the database ledger exactly and keep the deferred binding out of the active
+environment until its database and recovery gates are approved.
+
+`legacy-runtime-inventory.json` is the deployment-surface ledger for all Legacy application
+repositories. It records each service's active/deferred/planned GitOps resource and the health
+prefix implemented by its migrated .NET host. `tests.test_legacy_runtime_inventory` compares the
+ledger with the database/resource contract and the checked-in source while never applying a
+manifest or contacting a cluster.
+
 From a checkout containing both repositories, run:
 
 ```powershell
@@ -22,6 +44,12 @@ python .\scripts\legacy_data_readiness.py `
   --restore-evidence ..\maliev-web\docs\migration\evidence\legacy-database-restore-2026-07-14.json `
   --identity-evidence ..\maliev-web\docs\migration\evidence\legacy-identity-copy-2026-07-15.json `
   --nonidentity-evidence ..\maliev-web\docs\migration\evidence\legacy-postgresql-copy-all-nonidentity-2026-07-16.json
+```
+
+Run the local contract tests with:
+
+```powershell
+python -m unittest tests.test_legacy_data_readiness tests.test_legacy_service_database_contract -v
 ```
 
 Adding `--require-cutover` must fail until a separate live receipt proves every required gate and

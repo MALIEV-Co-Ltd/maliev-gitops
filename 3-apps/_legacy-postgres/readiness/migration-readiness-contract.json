@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "sourceEvidenceRepository": "https://github.com/MALIEV-Co-Ltd/maliev-web",
   "sourceEvidenceCommit": "eb8ed86672bd9afccc6560b547b734d0fcd7363b",
+  "latestSourceAudit": {
+    "repository": "https://github.com/MALIEV-Co-Ltd/maliev-web",
+    "commit": "edf451e367ce774d63a74778731bb3c20daf1063",
+    "scope": "read-only legacy source comparison; original repository remains unmodified",
+    "secretValuesCopied": false
+  },
   "receiptFiles": {
     "restore": "docs/migration/evidence/legacy-database-restore-2026-07-14.json",
     "identity": "docs/migration/evidence/legacy-identity-copy-2026-07-15.json",
