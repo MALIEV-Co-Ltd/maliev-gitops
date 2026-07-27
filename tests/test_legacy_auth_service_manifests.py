@@ -47,13 +47,15 @@ class LegacyAuthServiceManifestTests(unittest.TestCase):
         properties = {item["remoteRef"]["property"] for item in external["spec"]["data"]}
         self.assertIn("legacy-jwt-private-key", properties)
         self.assertIn("legacy-jwt-key-id", properties)
-        self.assertNotIn("legacy-auth-refresh-sessions-username", properties)
-        self.assertNotIn("legacy-auth-refresh-sessions-password", properties)
+        self.assertIn("legacy-auth-refresh-sessions-username", properties)
+        self.assertIn("legacy-auth-refresh-sessions-password", properties)
         self.assertNotIn("legacy-jwt-public-key", properties)
         template = external["spec"]["target"]["template"]["data"]
         self.assertIn("Jwt__PrivateKeyPem", template)
         self.assertIn("IdentityStorage__Provider", template)
         self.assertEqual(template["IdentityStorage__Provider"], "PostgreSql")
+        self.assertIn("ConnectionStrings__RefreshSessions", template)
+        self.assertIn("Database=Auth", template["ConnectionStrings__RefreshSessions"])
 
 
 if __name__ == "__main__":
