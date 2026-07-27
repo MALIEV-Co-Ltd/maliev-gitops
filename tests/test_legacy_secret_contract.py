@@ -12,10 +12,12 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-secret-contract.json"
 DATABASE_CONTRACT_PATH = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-service-database-contract.json"
+RUNTIME_INVENTORY_PATH = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-runtime-inventory.json"
 LEGACY_APPS = REPO_ROOT / "3-apps"
 ACTIVE_ENVIRONMENT = REPO_ROOT / "2-environments/4-legacy/kustomization.yaml"
+MIGRATED_ROOT = Path(os.environ.get("MALIEV_WORKSPACE_ROOT", REPO_ROOT.parent))
 APPHOST_SOURCE = (
-    Path(os.environ.get("MALIEV_WORKSPACE_ROOT", REPO_ROOT.parent))
+    MIGRATED_ROOT
     / "Legacy.Maliev.AppHost/Legacy.Maliev.AppHost/AppHost.cs"
 )
 
@@ -26,6 +28,29 @@ def load_contract() -> dict:
 
 def load_database_contract() -> dict:
     return json.loads(DATABASE_CONTRACT_PATH.read_text(encoding="utf-8"))
+
+
+def load_runtime_inventory() -> dict:
+    return json.loads(RUNTIME_INVENTORY_PATH.read_text(encoding="utf-8"))
+
+
+def migrated_configuration_files() -> list[Path]:
+    inventory = load_runtime_inventory()
+    paths: list[Path] = []
+    for service in inventory["services"]:
+        repository = MIGRATED_ROOT / service["repository"]
+        if not repository.is_dir():
+            continue
+        for pattern in ("appsettings*.json", "*.yaml", "*.yml", "Dockerfile*"):
+            paths.extend(
+                path
+                for path in repository.rglob(pattern)
+                if ".worktrees" not in path.parts
+                and "bin" not in path.parts
+                and "obj" not in path.parts
+                and "node_modules" not in path.parts
+            )
+    return sorted(set(paths))
 
 
 def tracked_legacy_manifests() -> list[Path]:
@@ -277,6 +302,29 @@ class LegacySecretContractTests(unittest.TestCase):
         names = self.present | self.pending
         for value in forbidden:
             self.assertNotIn(value, names)
+
+    def test_migrated_configuration_does_not_embed_source_only_credentials(self) -> None:
+        source_only_patterns = (
+            re.compile(
+                r"(?is)\b(?:server|data\s+source)\s*=.*?;\s*"
+                r"(?:initial\s+catalog|database)\s*=.*?;"
+            ),
+            re.compile(r"(?is)\b(?:user\s+id|uid)\s*=.*?;\s*password\s*="),
+            re.compile(r"(?im)-----BEGIN [A-Z ]*PRIVATE KEY-----"),
+            re.compile(r'(?im)[\"\']private_key[\"\']\s*:'),
+        )
+        findings: list[str] = []
+        for path in migrated_configuration_files():
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            if any(pattern.search(text) for pattern in source_only_patterns):
+                findings.append(str(path))
+
+        self.assertEqual(
+            findings,
+            [],
+            "migrated runtime configuration embeds source-only SQL Server/key material: "
+            + ", ".join(findings),
+        )
 
 
 if __name__ == "__main__":
