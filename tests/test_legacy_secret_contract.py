@@ -101,6 +101,39 @@ class LegacySecretContractTests(unittest.TestCase):
         for pair in pairs:
             self.assertIn(pair["hashProperty"], auth_properties, pair["clientId"])
 
+    def test_database_secret_bindings_cover_active_and_deferred_databases(self) -> None:
+        database_contract = load_database_contract()
+        bindings = self.contract["rules"]["databaseCredentialProperties"]
+        self.assertEqual(
+            len(bindings),
+            len({binding["database"] for binding in bindings}),
+        )
+
+        active = {
+            database["database"]
+            for database in bindings
+            if database["lifecycle"] == "active"
+        }
+        self.assertEqual(active, set(database_contract["databases"]))
+        self.assertEqual(
+            {database["database"] for database in bindings if database["lifecycle"] == "deferred"},
+            {"Auth"},
+        )
+
+        catalogued = self.present | self.pending
+        for binding in bindings:
+            self.assertIn(binding["usernameProperty"], catalogued, binding["database"])
+            self.assertIn(binding["passwordProperty"], catalogued, binding["database"])
+            self.assertTrue(binding["usernameProperty"].endswith("-username"))
+            self.assertTrue(binding["passwordProperty"].endswith("-password"))
+
+    def test_database_secret_bindings_are_value_free(self) -> None:
+        for binding in self.contract["rules"]["databaseCredentialProperties"]:
+            self.assertNotIn("value", binding)
+            self.assertNotIn("connection", binding)
+            self.assertNotIn("password", binding)
+            self.assertNotIn("username", binding)
+
     def test_every_pending_property_has_a_lifecycle_destination(self) -> None:
         projected: set[str] = set()
         for lifecycle in ("activeProjections", "dormantProjections", "plannedProjections"):
