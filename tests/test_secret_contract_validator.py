@@ -3,10 +3,26 @@ from __future__ import annotations
 import base64
 import unittest
 
-from scripts.validate_legacy_secret_contract import validate_value_shapes
+from scripts.validate_legacy_secret_contract import classify_live_keys, validate_value_shapes
 
 
 class SecretContractValueValidationTests(unittest.TestCase):
+    def test_classifies_present_pending_and_uncatalogued_key_names_without_values(self) -> None:
+        self.assertEqual(
+            classify_live_keys(
+                {"present", "pending", "unexpected"},
+                {"present"},
+                {"pending", "missing"},
+            ),
+            {
+                "missingFromLive": [],
+                "uncataloguedLiveKeys": ["pending", "unexpected"],
+                "pendingPresentInLive": ["pending"],
+                "pendingMissingFromLive": ["missing"],
+                "matchesCatalog": False,
+            },
+        )
+
     def test_accepts_non_empty_values_encoded_key_material_and_hashes(self) -> None:
         key = base64.b64encode(b"key-material" * 4).decode("ascii")
         payload = {

@@ -176,9 +176,28 @@ jobs:
           tests.test_legacy_data_readiness
           tests.test_legacy_service_database_contract
           tests.test_legacy_secret_contract
+          tests.test_legacy_service_configuration_contract
           tests.test_legacy_runtime_inventory
           tests.test_legacy_ci_contract
           -v
+
+      - name: Checkout public Legacy sources for configuration audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          workspace="$GITHUB_WORKSPACE/legacy-workspace"
+          mkdir -p "$workspace"
+          while IFS= read -r repository; do
+            git clone --depth 1 --branch main --single-branch \
+              "https://github.com/MALIEV-Co-Ltd/${repository}.git" \
+              "$workspace/${repository}"
+          done < <(jq -r '.services[].repository' 3-apps/_legacy-postgres/readiness/legacy-runtime-inventory.json)
+
+      - name: Audit mounted Legacy source configuration paths
+        shell: bash
+        env:
+          MALIEV_WORKSPACE_ROOT: ${{ github.workspace }}/legacy-workspace
+        run: python -m unittest tests.test_legacy_service_configuration_contract -v
 
       - name: Validate Maliev.Web health probe contract
         run: bash scripts/validate-maliev-web-probes.sh
