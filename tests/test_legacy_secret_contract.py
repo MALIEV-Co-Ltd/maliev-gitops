@@ -56,6 +56,24 @@ class LegacySecretContractTests(unittest.TestCase):
         self.assertTrue(manager["valuesOmitted"])
         self.assertTrue(self.contract["rules"]["workloadIdentityReplacesServiceAccountKeyFiles"])
 
+    def test_non_secret_storage_auth_and_source_credential_exclusions_are_explicit(self) -> None:
+        rules = self.contract["rules"]
+        self.assertIn(
+            "gke-workload-identity-for-google-cloud-storage",
+            rules["nonSecretRuntimeConfiguration"],
+        )
+        self.assertIn(
+            "google-cloud-storage-bucket-and-object-names",
+            rules["nonSecretRuntimeConfiguration"],
+        )
+        self.assertEqual(
+            rules["sourceOnlyCredentialsMustNotBeCopied"],
+            [
+                "legacy-sql-server-connection-strings",
+                "legacy-source-service-account-key-files",
+            ],
+        )
+
     def test_present_properties_are_unique_and_pending_properties_are_explicit(self) -> None:
         self.assertEqual(len(self.present), len(self.contract["presentProperties"]))
         self.assertTrue(self.pending)
