@@ -24,6 +24,11 @@ for audit purposes but has no deployment directory yet. The
 the active Country pooler secret, and the locally available Legacy repositories without reading
 secret values or connecting to production.
 
+`legacy-secret-contract.json` also records the value-free username/password property for every
+active CNPG database and the deferred Auth refresh-session store. The secret-contract tests require
+these bindings to cover the database ledger exactly and keep the deferred binding out of the active
+environment until its database and recovery gates are approved.
+
 From a checkout containing both repositories, run:
 
 ```powershell
