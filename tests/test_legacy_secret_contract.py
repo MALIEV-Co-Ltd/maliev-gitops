@@ -10,12 +10,17 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-secret-contract.json"
+DATABASE_CONTRACT_PATH = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-service-database-contract.json"
 LEGACY_APPS = REPO_ROOT / "3-apps"
 ACTIVE_ENVIRONMENT = REPO_ROOT / "2-environments/4-legacy/kustomization.yaml"
 
 
 def load_contract() -> dict:
     return json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
+
+
+def load_database_contract() -> dict:
+    return json.loads(DATABASE_CONTRACT_PATH.read_text(encoding="utf-8"))
 
 
 def tracked_legacy_manifests() -> list[Path]:
@@ -79,6 +84,48 @@ class LegacySecretContractTests(unittest.TestCase):
         self.assertTrue(self.pending)
         self.assertTrue(self.present.isdisjoint(self.pending))
         self.assertTrue(all(item["name"].startswith("legacy-") for item in self.contract["pendingProperties"]))
+
+    def test_every_legacy_application_has_one_lifecycle_projection(self) -> None:
+        database_contract = load_database_contract()
+        expected = set()
+        for service_name in database_contract["services"]:
+            short_name = service_name.rsplit(".", 1)[-1]
+            expected.add(short_name.removesuffix("Service").lower())
+
+        projections = (
+            self.contract["activeProjections"]
+            + self.contract["dormantProjections"]
+            + self.contract["plannedProjections"]
+        )
+        by_service = {}
+        for projection in projections:
+            self.assertNotIn(
+                projection["service"],
+                by_service,
+                f"duplicate lifecycle projection for {projection['service']}",
+            )
+            by_service[projection["service"]] = projection
+
+        self.assertEqual(expected, set(by_service) - {"postgres", "redis"})
+
+    def test_planned_and_dormant_projection_properties_are_catalogued(self) -> None:
+        catalogued = self.present | self.pending
+        for lifecycle in ("dormantProjections", "plannedProjections"):
+            for projection in self.contract[lifecycle]:
+                properties = set(projection["properties"])
+                self.assertTrue(properties <= catalogued, projection["service"])
+                self.assertTrue(
+                    projection["targetSecret"].startswith("legacy-maliev-"),
+                    projection["service"],
+                )
+
+    def test_active_projection_properties_are_already_present(self) -> None:
+        for projection in self.contract["activeProjections"]:
+            if isinstance(projection["properties"], list):
+                self.assertTrue(
+                    set(projection["properties"]) <= self.present,
+                    projection["service"],
+                )
 
     def test_every_gitops_reference_uses_the_single_secret_and_is_catalogued(self) -> None:
         catalogued = self.present | self.pending
