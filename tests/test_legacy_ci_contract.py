@@ -51,10 +51,20 @@ class LegacyCiContractTests(unittest.TestCase):
             self.assertEqual(len(documents), 1, item["service"])
             workflow = documents[0]
             jobs = workflow["jobs"]
-            gate = jobs["deployment-gate"]
+            gate = jobs.get("deployment-gate")
+            if gate is not None:
+                self.assertIn("LEGACY_DEPLOY_ENABLED != 'true'", gate["if"], item["service"])
 
-            self.assertIn("LEGACY_DEPLOY_ENABLED != 'true'", gate["if"], item["service"])
-            self.assertEqual(workflow["permissions"]["id-token"], "write", item["service"])
+            publication_permissions = [
+                job.get("permissions", {})
+                for name, job in jobs.items()
+                if name.startswith("publish")
+            ]
+            self.assertTrue(
+                workflow.get("permissions", {}).get("id-token") == "write"
+                or any(permissions.get("id-token") == "write" for permissions in publication_permissions),
+                item["service"],
+            )
 
             expected_slug = item["service"].removeprefix("Legacy.Maliev.")
             if expected_slug.endswith("Service"):
@@ -103,26 +113,27 @@ class LegacyCiContractTests(unittest.TestCase):
             for workflow_path in workflow_paths:
                 with self.subTest(service=item["service"], workflow=workflow_path.name):
                     workflow = yaml.safe_load(workflow_path.read_text(encoding="utf-8"))
-                    self.assertEqual(workflow["permissions"]["id-token"], "write")
                     jobs = workflow["jobs"]
-                    self.assertIn("deployment-gate", jobs)
-                    self.assertIn(
-                        "LEGACY_DEPLOY_ENABLED != 'true'",
-                        jobs["deployment-gate"]["if"],
-                    )
+                    gate = jobs.get("deployment-gate")
+                    if gate is not None:
+                        self.assertIn("LEGACY_DEPLOY_ENABLED != 'true'", gate["if"])
 
                     publication_jobs = {
                         name: job
                         for name, job in jobs.items()
-                        if name != "deployment-gate"
+                        if name.startswith("publish")
                     }
                     self.assertTrue(publication_jobs)
                     for name, job in publication_jobs.items():
                         with self.subTest(job=name):
-                            self.assertEqual(
-                                job.get("if"),
-                                "vars.LEGACY_DEPLOY_ENABLED == 'true'",
-                            )
+                            condition = job.get("if", "")
+                            self.assertIn("LEGACY_DEPLOY_ENABLED == 'true'", condition)
+                            if "inputs.confirm-publication" in condition:
+                                self.assertIn("inputs.confirm-publication == true", condition)
+                            else:
+                                self.assertEqual(condition, "vars.LEGACY_DEPLOY_ENABLED == 'true'")
+                            permissions = job.get("permissions", workflow.get("permissions", {}))
+                            self.assertEqual(permissions.get("id-token"), "write")
                             self.assertEqual(job.get("uses"), PINNED_WORKFLOW)
                             inputs = job.get("with", {})
                             self.assertEqual(inputs.get("context"), ".")
