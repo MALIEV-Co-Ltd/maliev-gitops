@@ -25,6 +25,7 @@ spec:
         app.kubernetes.io/name: legacy-maliev-notification-service
         app.kubernetes.io/part-of: maliev-legacy
     spec:
+      serviceAccountName: legacy-maliev-notification
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

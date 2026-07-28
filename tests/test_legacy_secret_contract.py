@@ -147,7 +147,7 @@ class LegacySecretContractTests(unittest.TestCase):
         self.assertEqual(active, set(database_contract["databases"]))
         self.assertEqual(
             {database["database"] for database in bindings if database["lifecycle"] == "deferred"},
-            {"Auth"},
+            set(),
         )
 
         catalogued = self.present | self.pending
@@ -275,6 +275,8 @@ class LegacySecretContractTests(unittest.TestCase):
     def test_active_overlay_references_only_properties_already_present(self) -> None:
         active_text = ACTIVE_ENVIRONMENT.read_text(encoding="utf-8")
         self.assertIn("../../3-apps/_legacy-postgres/overlays/legacy", active_text)
+        self.assertNotIn("../../3-apps/_legacy-redis/overlays/legacy", active_text)
+        self.assertNotIn("../../3-apps/_legacy-country-service/overlays/legacy", active_text)
 
         active_services = set(
             re.findall(r"../../3-apps/(_legacy-[a-z0-9-]+)", active_text)
