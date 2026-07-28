@@ -96,6 +96,8 @@ class LegacyServiceDatabaseContractTests(unittest.TestCase):
             self.assertIn(resource, active)
         for resource in self.contract["deferredGitOpsServiceResources"]:
             self.assertNotIn(resource, active)
+        self.assertNotIn("../../3-apps/_legacy-redis/overlays/legacy", active)
+        self.assertNotIn("../../3-apps/_legacy-country-service/overlays/legacy", active)
 
     def test_gitops_resource_states_match_directories_and_are_disjoint(self) -> None:
         states = {
@@ -136,12 +138,10 @@ class LegacyServiceDatabaseContractTests(unittest.TestCase):
         missing = [
             details["repository"]
             for details in self.contract["services"].values()
-            if not (workspace / details["repository"]).is_dir()
+            if not (workspace / details["repository"]).exists()
         ]
-        if not workspace.is_dir() or missing:
-            self.skipTest(
-                f"local Legacy workspace is not mounted; missing {', '.join(missing) or workspace}"
-            )
+        if missing:
+            self.skipTest(f"local Legacy workspace is not mounted; missing {', '.join(missing)}")
 
         for service_name, details in self.contract["services"].items():
             repository = workspace / details["repository"]
@@ -165,15 +165,16 @@ class LegacyServiceDatabaseContractTests(unittest.TestCase):
                 re.search(r"(?:main-merge|validation|parity|owner|2026\d{4})", repository, re.IGNORECASE),
                 f"{service_name} points at a snapshot/worktree instead of a canonical repository",
             )
-        missing = [
-            details["repository"]
-            for details in self.contract["services"].values()
-            if not (workspace / details["repository"]).is_dir()
-        ]
-        if not workspace.is_dir() or missing:
-            self.skipTest(
-                f"local Legacy workspace is not mounted; missing {', '.join(missing) or workspace}"
-            )
+            mounted_repositories = [
+                details["repository"]
+                for details in self.contract["services"].values()
+                if (workspace / details["repository"]).is_dir()
+            ]
+            if mounted_repositories:
+                self.assertTrue(
+                    (workspace / repository).is_dir(),
+                    f"{service_name} points at a missing canonical repository: {repository}",
+                )
 
     def test_non_database_repositories_do_not_claim_database_bindings(self) -> None:
         services = self.contract["services"]

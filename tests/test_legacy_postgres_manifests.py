@@ -19,6 +19,7 @@ PLUGIN_IMAGE = (
 REPOSITORY = "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
 
 ACTIVE_DATABASES = {
+    "Auth": "legacy_auth_owner",
     "Country": "legacy_country_owner",
     "Currency": "legacy_currency_owner",
     "Customer": "legacy_customer_owner",
