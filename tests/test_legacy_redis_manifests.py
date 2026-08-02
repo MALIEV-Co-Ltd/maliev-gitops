@@ -71,6 +71,19 @@ class LegacyRedisManifestTests(unittest.TestCase):
             {"key": "maliev-legacy-secrets", "property": "legacy-redis-password"},
         )
 
+    def test_network_policy_allows_only_legacy_workloads_to_reach_redis(self) -> None:
+        policy = next(
+            resource
+            for resource in self.documents
+            if resource.get("kind") == "NetworkPolicy"
+            and resource["metadata"]["name"] == "legacy-redis"
+        )
+        self.assertEqual(policy["spec"]["policyTypes"], ["Ingress", "Egress"])
+        allowed_labels = policy["spec"]["ingress"][0]["from"][0]["podSelector"]["matchLabels"]
+        self.assertEqual(allowed_labels["app.kubernetes.io/part-of"], "maliev-legacy")
+        self.assertEqual(allowed_labels["app.kubernetes.io/environment"], "legacy")
+        self.assertEqual(policy["spec"]["egress"], [])
+
 
 if __name__ == "__main__":
     unittest.main()

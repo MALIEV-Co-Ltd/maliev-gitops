@@ -92,11 +92,12 @@ class LegacyServiceDatabaseContractTests(unittest.TestCase):
     def test_active_overlay_exposes_only_explicitly_active_service_resources(self) -> None:
         active = ACTIVE_KUSTOMIZATION.read_text(encoding="utf-8")
         self.assertIn("../../3-apps/_legacy-postgres/overlays/legacy", active)
+        for resource in self.contract.get("activeGitOpsInfrastructureResources", []):
+            self.assertIn(f"../../3-apps/{resource}/overlays/legacy", active)
         for resource in self.contract["activeGitOpsServiceResources"]:
             self.assertIn(resource, active)
         for resource in self.contract["deferredGitOpsServiceResources"]:
             self.assertNotIn(resource, active)
-        self.assertNotIn("../../3-apps/_legacy-redis/overlays/legacy", active)
         self.assertNotIn("../../3-apps/_legacy-country-service/overlays/legacy", active)
 
     def test_gitops_resource_states_match_directories_and_are_disjoint(self) -> None:
@@ -120,6 +121,11 @@ class LegacyServiceDatabaseContractTests(unittest.TestCase):
                     (REPO_ROOT / "3-apps" / resource).is_dir(),
                     f"{state} claims a missing GitOps directory: {resource}",
                 )
+        for resource in self.contract.get("activeGitOpsInfrastructureResources", []):
+            self.assertTrue(
+                (REPO_ROOT / "3-apps" / resource).is_dir(),
+                f"active GitOps infrastructure resource is missing: {resource}",
+            )
         for resource in states["plannedGitOpsServiceResources"]:
             self.assertFalse(
                 (REPO_ROOT / "3-apps" / resource).exists(),
