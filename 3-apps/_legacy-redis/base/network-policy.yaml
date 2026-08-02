@@ -13,7 +13,7 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app.kubernetes.io/name: legacy-maliev-country-service
+              app.kubernetes.io/part-of: maliev-legacy
       ports:
         - protocol: TCP
           port: 6379
