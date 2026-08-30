@@ -17,10 +17,13 @@ SECRET_CONTRACT = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-secret-c
 DATABASE_CONTRACT = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-service-database-contract.json"
 PROJECT = REPO_ROOT / "argocd/projects/maliev-legacy-project.yaml"
 WORKSPACE_ROOT = Path(os.environ.get("MALIEV_WORKSPACE_ROOT", REPO_ROOT.parent))
-SOURCE_POLICY = (
-    WORKSPACE_ROOT
-    / "Legacy.Maliev.DataMigration/deploy/cloudnativepg-shadow-provisioner-policy.yaml"
+DATA_MIGRATION_ROOT = Path(
+    os.environ.get(
+        "LEGACY_DATA_MIGRATION_ROOT",
+        WORKSPACE_ROOT / "Legacy.Maliev.DataMigration",
+    )
 )
+SOURCE_POLICY = DATA_MIGRATION_ROOT / "deploy/cloudnativepg-shadow-provisioner-policy.yaml"
 
 
 def render(relative_path: str) -> list[dict]:
@@ -122,12 +125,15 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
         # The reviewed source contract stores CEL as unquoted plain scalars. Its
         # ternary colons are not valid YAML, so canonicalize only expression
         # scalar quoting before semantic comparison with the deployable copy.
-        source_text = re.sub(
-            r"(?m)^(\s+(?:- )?expression:) (.+)$",
-            lambda match: f"{match.group(1)} {json.dumps(match.group(2))}",
-            source_text,
-        )
-        source = [document for document in yaml.safe_load_all(source_text) if document]
+        try:
+            source = [document for document in yaml.safe_load_all(source_text) if document]
+        except yaml.YAMLError:
+            source_text = re.sub(
+                r"(?m)^(\s+(?:- )?expression:) (.+)$",
+                lambda match: f"{match.group(1)} {json.dumps(match.group(2))}",
+                source_text,
+            )
+            source = [document for document in yaml.safe_load_all(source_text) if document]
         source_by_identity = {
             (resource["kind"], resource["metadata"]["name"]): resource
             for resource in source
@@ -153,6 +159,40 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
         )
         policy = by_kind(self.foundation, "ValidatingAdmissionPolicy")[0]
         self.assertEqual(policy["spec"]["failurePolicy"], "Fail")
+        self.assertEqual(
+            policy["spec"]["matchConditions"],
+            [{
+                "name": "shadow-resources-only",
+                "expression": "request.namespace == 'maliev-legacy' && ((object != null && object.metadata.name.matches('^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$')) || (oldObject != null && oldObject.metadata.name.matches('^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$')))",
+            }],
+        )
+        self.assertNotIn(
+            "request.userInfo",
+            policy["spec"]["matchConditions"][0]["expression"],
+        )
+        shadow_name = re.compile(r"^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$")
+        self.assertIsNotNone(shadow_name.fullmatch("legacy-shadow-order-0123456789abcdef0123456789abcdef"))
+        self.assertIsNone(shadow_name.fullmatch("legacy-postgres-order"))
+        validations = {
+            item["message"]: item["expression"]
+            for item in policy["spec"]["validations"]
+        }
+        self.assertEqual(
+            validations["Only the dedicated migration identity may mutate legacy shadow resources."],
+            "request.userInfo.username == 'system:serviceaccount:maliev-legacy:legacy-data-migration-shadow-provisioner'",
+        )
+        self.assertEqual(
+            validations["Shadow creation requires delete reclaim policy."],
+            "request.operation != 'CREATE' || object.spec.databaseReclaimPolicy == 'delete'",
+        )
+        self.assertEqual(
+            validations["Shadow PostgreSQL names are immutable during updates."],
+            "request.operation != 'UPDATE' || (object.spec.databaseReclaimPolicy == 'delete' && oldObject.spec.databaseReclaimPolicy == 'delete' && oldObject.spec.name == object.spec.name)",
+        )
+        self.assertEqual(
+            validations["Shadow deletion requires the fenced disabled absent state and delete reclaim policy."],
+            "request.operation != 'DELETE' || (oldObject.spec.databaseReclaimPolicy == 'delete' && oldObject.spec.allowConnections == false && oldObject.spec.ensure == 'absent')",
+        )
         binding = by_kind(self.foundation, "ValidatingAdmissionPolicyBinding")[0]
         self.assertEqual(binding["spec"]["validationActions"], ["Deny"])
 
