@@ -1,0 +1,32 @@
+- op: add
+  path: /spec/managed/roles/-
+  value:
+    name: legacy_quotation_migrator
+    login: true
+    connectionLimit: 1
+    superuser: false
+    createdb: false
+    createrole: false
+    inherit: true
+    replication: false
+    bypassrls: false
+    inRoles:
+      - legacy_quotation_owner
+    passwordSecret:
+      name: legacy-postgres-quotation-migrator
+- op: add
+  path: /spec/managed/roles/-
+  value:
+    name: legacy_quotation_request_migrator
+    login: true
+    connectionLimit: 1
+    superuser: false
+    createdb: false
+    createrole: false
+    inherit: true
+    replication: false
+    bypassrls: false
+    inRoles:
+      - legacy_quotation_request_owner
+    passwordSecret:
+      name: legacy-postgres-quotation-request-migrator
