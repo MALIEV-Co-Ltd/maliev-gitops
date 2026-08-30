@@ -151,25 +151,30 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
         role = by_kind(self.foundation, "Role")[0]
         self.assertEqual(
             role["rules"],
-            [{
-                "apiGroups": ["postgresql.cnpg.io"],
-                "resources": ["databases"],
-                "verbs": ["get", "create", "patch", "delete"],
-            }],
+            [
+                {
+                    "apiGroups": ["postgresql.cnpg.io"],
+                    "resources": ["databases"],
+                    "verbs": ["get", "create", "patch", "delete"],
+                },
+                {
+                    "apiGroups": ["postgresql.cnpg.io"],
+                    "resources": ["clusters"],
+                    "resourceNames": ["legacy-postgres-main"],
+                    "verbs": ["get"],
+                },
+            ],
         )
         policy = by_kind(self.foundation, "ValidatingAdmissionPolicy")[0]
         self.assertEqual(policy["spec"]["failurePolicy"], "Fail")
         self.assertEqual(
             policy["spec"]["matchConditions"],
             [{
-                "name": "shadow-resources-only",
-                "expression": "request.namespace == 'maliev-legacy' && ((object != null && (object.metadata.name.matches('^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$') || object.spec.name.matches('^legacy_shadow_[a-z0-9_]+_[0-9a-f]{32}$'))) || (oldObject != null && (oldObject.metadata.name.matches('^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$') || oldObject.spec.name.matches('^legacy_shadow_[a-z0-9_]+_[0-9a-f]{32}$'))))",
+                "name": "migration-identity-or-shadow-object",
+                "expression": "request.userInfo.username == 'system:serviceaccount:maliev-legacy:legacy-data-migration-shadow-provisioner' || (object != null && (object.metadata.name.startsWith('legacy-shadow-') || object.spec.name.startsWith('legacy_shadow_'))) || (oldObject != null && (oldObject.metadata.name.startsWith('legacy-shadow-') || oldObject.spec.name.startsWith('legacy_shadow_')))",
             }],
         )
-        self.assertNotIn(
-            "request.userInfo",
-            policy["spec"]["matchConditions"][0]["expression"],
-        )
+        self.assertIn("request.userInfo", policy["spec"]["matchConditions"][0]["expression"])
         shadow_name = re.compile(r"^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$")
         shadow_database = re.compile(r"^legacy_shadow_[a-z0-9_]+_[0-9a-f]{32}$")
         self.assertIsNotNone(shadow_name.fullmatch("legacy-shadow-order-0123456789abcdef0123456789abcdef"))

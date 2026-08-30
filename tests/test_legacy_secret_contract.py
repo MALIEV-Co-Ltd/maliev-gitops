@@ -195,6 +195,9 @@ class LegacySecretContractTests(unittest.TestCase):
         projected.update(
             self.contract["rules"]["exact25ShadowMigration"]["credentialProperties"]
         )
+        projected.update(
+            self.contract["rules"]["quotationSchemaMigration"]["credentialProperties"]
+        )
 
         self.assertEqual(self.pending, self.pending & projected)
 

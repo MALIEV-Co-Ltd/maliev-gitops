@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "active": false,
+  "namespace": "maliev-legacy",
+  "cluster": "legacy-postgres-main",
+  "poolerService": "legacy-postgres-pooler-rw",
+  "cutoverAuthorized": false,
+  "requiresSeparateActivationReview": true,
+  "runnerContract": {
+    "repository": "Legacy.Maliev.QuotationService",
+    "schemaVersion": "1.0",
+    "domainSeparator": "Legacy.Maliev.QuotationService.SchemaBaselineReceipt.v1",
+    "signatureAlgorithm": "ECDSA-P256-SHA256",
+    "workloads": ["quotation-request", "quotation"],
+    "targetDatabases": ["QuotationRequest", "Quotation"]
+  },
+  "schemaBaselineProducer": {
+    "ownerRepository": "Legacy.Maliev.DataMigration",
+    "status": "blocked",
+    "reason": "Protected main does not publish the exact signed QuotationService schema-baseline v1 envelope consumed by the migration runner.",
+    "requiredKubernetesSecret": "legacy-quotation-schema-baseline-evidence",
+    "secretIsDefinedByThisOverlay": false
+  },
+  "postgresSnapshotGate": {
+    "status": "blocked",
+    "reason": "The QuotationService migration runner does not consume and verify a recoverable PostgreSQL snapshot receipt. A presence-only volume would not be an enforceable gate.",
+    "requiredEvidence": "signed snapshot identity, target identity, recovery point, checksum, and successful restore rehearsal bound to this migration run",
+    "evidenceIsDefinedByThisOverlay": false
+  },
+  "consolidatedSecret": "maliev-legacy-secrets",
+  "consolidatedSecretPendingProperties": [
+    "legacy-postgres-quotation-migrator-username",
+    "legacy-postgres-quotation-migrator-password",
+    "legacy-postgres-quotation-request-migrator-username",
+    "legacy-postgres-quotation-request-migrator-password",
+    "legacy-quotation-schema-baseline-public-key",
+    "legacy-quotation-schema-baseline-key-id"
+  ],
+  "jobs": [
+    {
+      "name": "legacy-quotation-request-schema-migration",
+      "order": 20,
+      "suspended": true,
+      "image": "example.invalid/maliev/legacy-maliev-quotation-migration@sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "legacy-quotation-schema-migration",
+      "order": 30,
+      "suspended": true,
+      "image": "example.invalid/maliev/legacy-maliev-quotation-migration@sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "requiredOrder": [
+    "signed-schema-baseline-evidence",
+    "recoverable-postgres-snapshot",
+    "quotation-request-schema-migration",
+    "quotation-schema-migration",
+    "aspire-consumer-proof",
+    "owner-release-approval"
+  ]
+}
