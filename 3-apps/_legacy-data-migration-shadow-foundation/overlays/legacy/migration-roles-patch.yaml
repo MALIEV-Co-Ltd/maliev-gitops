@@ -1,0 +1,28 @@
+- op: add
+  path: /spec/managed/roles/-
+  value:
+    name: legacy_migration_control
+    login: true
+    connectionLimit: 2
+    superuser: false
+    createdb: false
+    createrole: false
+    inherit: false
+    replication: false
+    bypassrls: false
+    passwordSecret:
+      name: legacy-postgres-migration-control
+- op: add
+  path: /spec/managed/roles/-
+  value:
+    name: legacy_migration_shadow
+    login: true
+    connectionLimit: 2
+    superuser: false
+    createdb: false
+    createrole: false
+    inherit: false
+    replication: false
+    bypassrls: false
+    passwordSecret:
+      name: legacy-postgres-migration-shadow
