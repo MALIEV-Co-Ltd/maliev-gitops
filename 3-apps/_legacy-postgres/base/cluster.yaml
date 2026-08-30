@@ -50,7 +50,10 @@ spec:
       work_mem: 2MB
   managed:
     roles:
-      - name: legacy_auth_owner
+      # Refresh-session credentials are projected from the consolidated secret.
+      # Keep the CNPG managed role identical to that username so the Auth database
+      # can reconcile instead of remaining permanently unapplied.
+      - name: legacy_auth_refresh
         login: true
         connectionLimit: 4
         passwordSecret:

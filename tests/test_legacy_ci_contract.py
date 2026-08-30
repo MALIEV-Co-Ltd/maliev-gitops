@@ -38,11 +38,18 @@ class LegacyCiContractTests(unittest.TestCase):
             [*workflow_directory.glob("*.yml"), *workflow_directory.glob("*.yaml")]
         )
 
+    def _require_repository(self, repository: Path) -> None:
+        if repository.is_dir():
+            return
+        message = f"Legacy workspace is not mounted: {repository}"
+        if "MALIEV_WORKSPACE_ROOT" in os.environ:
+            self.fail(message)
+        self.skipTest(message)
+
     def test_every_runtime_service_has_a_gated_publication_workflow(self) -> None:
         for item in self.inventory["services"]:
             repository = WORKSPACE_ROOT / item["repository"]
-            if not repository.is_dir():
-                self.skipTest(f"Legacy workspace is not mounted: {repository}")
+            self._require_repository(repository)
 
             workflow_path = repository / ".github/workflows/publish-image.yml"
             self.assertTrue(workflow_path.is_file(), item["service"])
@@ -86,11 +93,17 @@ class LegacyCiContractTests(unittest.TestCase):
                     self.assertTrue(dockerfile.is_file(), f"missing Dockerfile for {item['service']}")
                     self.assertIn(expected_image_suffix, publish["with"]["image"])
 
+    def test_gitops_validation_discovers_every_legacy_contract_module(self) -> None:
+        workflow = (REPO_ROOT / ".github/workflows/validate.yml").read_text(encoding="utf-8")
+        self.assertIn("python -m unittest discover -s tests -p 'test_legacy*.py' -v", workflow)
+        self.assertIn("python -m unittest tests.test_secret_contract_validator -v", workflow)
+        self.assertIn("MALIEV-Co-Ltd/Legacy.Maliev.AppHost.git", workflow)
+        self.assertIn('"$workspace/Legacy.Maliev.AppHost"', workflow)
+
     def test_publication_workflows_do_not_contain_secret_values(self) -> None:
         for item in self.inventory["services"]:
             repository = WORKSPACE_ROOT / item["repository"]
-            if not repository.is_dir():
-                self.skipTest(f"Legacy workspace is not mounted: {repository}")
+            self._require_repository(repository)
             for workflow_path in self._publication_workflows(repository):
                 source = workflow_path.read_text(encoding="utf-8")
                 self.assertNotRegex(
@@ -105,8 +118,7 @@ class LegacyCiContractTests(unittest.TestCase):
 
         for item in self.inventory["services"]:
             repository = WORKSPACE_ROOT / item["repository"]
-            if not repository.is_dir():
-                self.skipTest(f"Legacy workspace is not mounted: {repository}")
+            self._require_repository(repository)
 
             workflow_paths = self._publication_workflows(repository)
             self.assertTrue(workflow_paths, item["service"])
@@ -161,8 +173,7 @@ class LegacyCiContractTests(unittest.TestCase):
 
         for item in self.inventory["services"]:
             repository = WORKSPACE_ROOT / item["repository"]
-            if not repository.is_dir():
-                self.skipTest(f"Legacy workspace is not mounted: {repository}")
+            self._require_repository(repository)
 
             workflow_paths = self._workflow_files(repository)
             self.assertTrue(workflow_paths, item["service"])

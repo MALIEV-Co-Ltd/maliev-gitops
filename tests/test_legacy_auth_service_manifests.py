@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import subprocess
 import unittest
 from pathlib import Path
@@ -52,10 +53,29 @@ class LegacyAuthServiceManifestTests(unittest.TestCase):
         self.assertNotIn("legacy-jwt-public-key", properties)
         template = external["spec"]["target"]["template"]["data"]
         self.assertIn("Jwt__PrivateKeyPem", template)
-        self.assertIn("IdentityStorage__Provider", template)
-        self.assertEqual(template["IdentityStorage__Provider"], "PostgreSql")
+        self.assertIn("Jwt__KeyId", template)
+        self.assertNotIn("IdentityStorage__Provider", template)
+        self.assertFalse(any("SqlServer" in value for value in template.values()))
         self.assertIn("ConnectionStrings__RefreshSessions", template)
         self.assertIn("Database=Auth", template["ConnectionStrings__RefreshSessions"])
+        for key in (
+            "ConnectionStrings__CustomerIdentity",
+            "ConnectionStrings__EmployeeIdentity",
+            "ConnectionStrings__RefreshSessions",
+        ):
+            self.assertIn("SSL Mode=Disable", template[key])
+            self.assertNotIn("SSL Mode=Require", template[key])
+
+    def test_refresh_sessions_is_a_deferred_gke_binding_not_a_local_only_connection(self) -> None:
+        contract = json.loads(
+            (
+                REPO_ROOT
+                / "3-apps/_legacy-postgres/readiness/legacy-service-database-contract.json"
+            ).read_text(encoding="utf-8")
+        )
+        auth = contract["services"]["Legacy.Maliev.AuthService"]
+        self.assertIn("RefreshSessions", auth["connectionKeys"])
+        self.assertNotIn("RefreshSessions", auth.get("localOnlyConnectionKeys", []))
 
 
 if __name__ == "__main__":

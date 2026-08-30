@@ -42,7 +42,7 @@ migration operation and is not triggered automatically by these manifests.
 
 | Database | Owner role | Ownership |
 | --- | --- | --- |
-| Auth | legacy_auth_owner | Legacy AuthService refresh-session store |
+| Auth | legacy_auth_refresh | Legacy AuthService refresh-session store |
 | Country | legacy_country_owner | Legacy service owning the existing Country schema |
 | Currency | legacy_currency_owner | Legacy service owning the existing Currency schema |
 | Customer | legacy_customer_owner | Legacy service owning the existing Customer schema |

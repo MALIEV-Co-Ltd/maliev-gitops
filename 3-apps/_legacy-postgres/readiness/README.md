@@ -37,13 +37,32 @@ prefix implemented by its migrated .NET host. `tests.test_legacy_runtime_invento
 ledger with the database/resource contract and the checked-in source while never applying a
 manifest or contacting a cluster.
 
-From a checkout containing both repositories, run:
+`current-parity-audit-2026-08-07.json` is a redacted, read-only observation of the current
+reconciliation boundary. It deliberately records that the latest visible SQL Server backup is
+2026-07-20 (not 2026-08-07), that the Auth Database resource is unapplied, and that no Legacy
+application workloads are deployed. It also records that only the four identity databases have
+`__EFMigrationsHistory`; the 17 domain databases do not, and no schema-baseline receipt files are
+currently projected. `LEGACY_SKIP_MIGRATE=true` therefore remains required until each imported
+domain schema has a source-backed receipt and a reviewed migration-history reconciliation. It is
+an audit checkpoint, not a migration receipt and it cannot authorize cutover.
+
+The same audit found that the live domain timestamp columns are `timestamp without time zone`,
+while the imported service models had previously declared `timestamp with time zone`. The
+canonical Legacy services now carry explicit UTC-preserving conversions and model mappings for
+Accounting, Catalog, Career, Contact, Country, Customer, Employee, Order, Procurement, and
+Quotation. Those migrations are local code evidence only: they have not been applied to the live
+target because the migration runner remains skipped and the schema-history gate is still closed.
+The `domain-timestamp-schema-activation` blocker therefore remains until an owner-approved,
+row-preserving schema application and verification receipt exists.
+
+From the GitOps checkout with the read-only source evidence checkout available, run:
 
 ```powershell
+$sourceRoot = if ($env:MALIEV_SOURCE_ROOT) { $env:MALIEV_SOURCE_ROOT } else { 'R:\maliev-web' }
 python .\scripts\legacy_data_readiness.py `
-  --restore-evidence ..\maliev-web\docs\migration\evidence\legacy-database-restore-2026-07-14.json `
-  --identity-evidence ..\maliev-web\docs\migration\evidence\legacy-identity-copy-2026-07-15.json `
-  --nonidentity-evidence ..\maliev-web\docs\migration\evidence\legacy-postgresql-copy-all-nonidentity-2026-07-16.json
+  --restore-evidence (Join-Path $sourceRoot 'docs\migration\evidence\legacy-database-restore-2026-07-14.json') `
+  --identity-evidence (Join-Path $sourceRoot 'docs\migration\evidence\legacy-identity-copy-2026-07-15.json') `
+  --nonidentity-evidence (Join-Path $sourceRoot 'docs\migration\evidence\legacy-postgresql-copy-all-nonidentity-2026-07-16.json')
 ```
 
 Run the local contract tests with:
