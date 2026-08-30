@@ -19,6 +19,14 @@ class LegacyRuntimeInventoryTests(unittest.TestCase):
         cls.inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8"))
         cls.database_contract = json.loads(DATABASE_CONTRACT_PATH.read_text(encoding="utf-8"))
 
+    def _require_repository(self, repository: Path) -> None:
+        if repository.is_dir():
+            return
+        message = f"Legacy workspace is not mounted: {repository}"
+        if "MALIEV_WORKSPACE_ROOT" in os.environ:
+            self.fail(message)
+        self.skipTest(message)
+
     def test_inventory_is_value_free_and_namespace_scoped(self) -> None:
         self.assertEqual(self.inventory["namespace"], "maliev-legacy")
         self.assertEqual(self.inventory["containerPort"], 8080)
@@ -62,8 +70,7 @@ class LegacyRuntimeInventoryTests(unittest.TestCase):
     def test_migrated_programs_declare_every_recorded_health_prefix(self) -> None:
         for item in self.inventory["services"]:
             repository = WORKSPACE_ROOT / item["repository"]
-            if not repository.is_dir():
-                self.skipTest(f"Legacy workspace is not mounted: {repository}")
+            self._require_repository(repository)
 
             source = "\n".join(
                 path.read_text(encoding="utf-8", errors="replace")

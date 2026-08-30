@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-08-07T14:32:39.0680714Z",
+  "purpose": "read-only current-state audit; not a cutover receipt",
+  "source": {
+    "expectedAsOfDate": "2026-08-07",
+    "latestVisibleSqlServerBackupPrefix": "gs://maliev.com/database/full/2026-07-20/",
+    "latestVisibleSqlServerBackupDate": "2026-07-20",
+    "latestVisibleSqlServerBackupCount": 25,
+    "latestVisibleSqlServerBackupBytes": 215617536,
+    "currentAsOfBackupPresent": false,
+    "additionalUnclassifiedBackups": ["ContactRequest", "Hangfire", "LocationData"]
+  },
+  "target": {
+    "namespace": "maliev-legacy",
+    "cluster": "legacy-postgres-main",
+    "clusterReady": true,
+    "instancesReady": 2,
+    "activeDatabaseCount": 21,
+    "authDatabaseApplied": false,
+    "authDatabaseFailure": "role legacy_auth_owner does not exist",
+    "authDatabaseDesiredOwner": "legacy_auth_refresh",
+    "authDatabaseObservedOwner": "legacy_auth_owner",
+    "authDatabaseManifestMatchesLive": false,
+    "applicationWorkloadsDeployed": false,
+    "latestTargetBackupUtc": "2026-08-06T19:00:01Z",
+    "migrationHistory": {
+      "identityDatabasesWithEfHistory": [
+        "CustomerIdentity",
+        "EmployeeIdentity",
+        "DataProtectionKeys",
+        "DataProtectionKeysEmployee"
+      ],
+      "domainDatabasesWithoutEfHistory": 17,
+      "migrationRunnerSkipped": true,
+      "baselineReceiptFilesPresent": false,
+      "safeActivation": "blocked-until-schema-baselines-and-history-reconciliation"
+    },
+    "timestampSchemaContract": {
+      "observedLiveDomainColumnType": "timestamp without time zone",
+      "codeAlignedRepositories": [
+        "Legacy.Maliev.AccountingService@6909079",
+        "Legacy.Maliev.CatalogService@c5f31db",
+        "Legacy.Maliev.CareerService@773fb32",
+        "Legacy.Maliev.ContactService@0f32706",
+        "Legacy.Maliev.CountryService@eeaff93",
+        "Legacy.Maliev.CustomerService@973a1ca",
+        "Legacy.Maliev.EmployeeService@eda7558",
+        "Legacy.Maliev.OrderService@b2e64dd",
+        "Legacy.Maliev.ProcurementService@6344abb",
+        "Legacy.Maliev.QuotationService@2f440e7"
+      ],
+      "migrationAppliedToLiveTarget": false,
+      "safeActivation": "blocked-until-explicit-schema-migrations-and-row-preserving-verification"
+    }
+  },
+  "historicalComparison": {
+    "receiptAsOfDate": "2026-07-16",
+    "liveTargetRowCountMismatchedTables": 24,
+    "missingHistoricalRows": 0,
+    "targetOnlySchemaObjects": ["Material.Country", "Material.Currency", "QuotationRequest.RequestCreateIdempotency"],
+    "exactCurrentSourceParity": "unproven"
+  },
+  "freshReadOnlyComparison": {
+    "observedAtUtc": "2026-08-07T15:26:19Z",
+    "comparedWithReceiptAsOfDate": "2026-07-16",
+    "nonidentityTablesCompared": 60,
+    "nonidentityTablesWithChangedCounts": 21,
+    "identityTablesWithChangedCounts": 1,
+    "changedTableCount": 22,
+    "targetGrowthObserved": true,
+    "sourceExportAvailable": false,
+    "exactCurrentSourceParity": "unproven",
+    "note": "Read-only target comparison only; no current SQL Server export or source-target content hash was available. Changed counts are not evidence of data loss."
+  },
+  "blockingGates": [
+    "current-sql-server-export",
+    "additional-backup-disposition",
+    "live-source-target-reconciliation",
+    "migration-history-baseline",
+    "domain-timestamp-schema-activation",
+    "auth-database-apply",
+    "application-runtime-validation"
+  ],
+  "cutoverAuthorized": false,
+  "productionMutationPerformed": false
+}

@@ -197,8 +197,10 @@ class LegacyServiceConfigurationContractTests(unittest.TestCase):
     def test_mounted_legacy_source_sensitive_paths_are_classified(self) -> None:
         """Audit real mounted Legacy source without printing configuration values."""
 
-        if "MALIEV_WORKSPACE_ROOT" not in os.environ or not WORKSPACE_ROOT.is_dir():
+        if "MALIEV_WORKSPACE_ROOT" not in os.environ:
             self.skipTest(f"Legacy workspace is not mounted: {WORKSPACE_ROOT}")
+        if not WORKSPACE_ROOT.is_dir():
+            self.fail(f"Legacy workspace is not mounted: {WORKSPACE_ROOT}")
 
         for service, binding in self.services.items():
             repository = WORKSPACE_ROOT / service
