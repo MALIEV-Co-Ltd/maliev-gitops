@@ -39,8 +39,16 @@ def verify_evidence(
     identity: dict[str, Any],
     nonidentity: dict[str, Any],
     contract: dict[str, Any],
+    *,
+    require_complete_table_inventory: bool | None = None,
 ) -> dict[str, Any]:
     """Validate immutable rehearsal receipts without authorizing a cutover."""
+
+    strict_table_inventory = (
+        contract.get("requireCompleteTableInventory", False)
+        if require_complete_table_inventory is None
+        else require_complete_table_inventory
+    )
 
     expected_active = set(contract["activeDatabases"])
     expected_identity = contract["identityRowCounts"]
@@ -81,13 +89,31 @@ def verify_evidence(
     _require("MachineLearningData" not in copied, "MachineLearningData must remain excluded")
     _require("Log" not in copied, "Log must remain archive-only")
     _require(set(copied) == expected_nonidentity, "nonidentity receipt must cover exactly the 19 active nonidentity databases")
+    all_table_inventories_complete = True
     for database, item in copied.items():
         _require(item.get("state") == "disposable_copy_validated", f"{database} was not validated as a disposable copy")
         _require(item.get("cutover_authorized") is False, f"{database} receipt must not authorize cutover")
         tables = item.get("tables", [])
-        _require(bool(tables), f"{database} receipt contains no table reconciliation")
+        _require(isinstance(tables, list) and bool(tables), f"{database} receipt contains no table reconciliation")
+        table_inventory_complete = item.get("table_inventory_complete") is True
+        all_table_inventories_complete &= table_inventory_complete
+        if strict_table_inventory:
+            _require(
+                table_inventory_complete,
+                f"{database} receipt does not attest to a complete table inventory",
+            )
+        table_count = item.get("table_count")
+        if table_count is not None:
+            _require(
+                isinstance(table_count, int) and table_count == len(tables),
+                f"{database} table inventory count does not match its receipt",
+            )
+        table_names: list[str] = []
         for table in tables:
-            table_name = table.get("table", "<unknown>")
+            _require(isinstance(table, dict), f"{database} contains an invalid table reconciliation")
+            table_name = table.get("table")
+            _require(isinstance(table_name, str) and table_name, f"{database} contains a table without a name")
+            table_names.append(table_name)
             _require(
                 table.get("source_count") == table.get("destination_count"),
                 f"{database}.{table_name} row count mismatch",
@@ -104,6 +130,10 @@ def verify_evidence(
                 _require(isinstance(next_value, int), f"{database}.{table_name}.{column} has no sequence next value")
                 if migrated_maximum is not None:
                     _require(next_value > migrated_maximum, f"{database}.{table_name}.{column} sequence was not reseeded")
+        _require(
+            len(set(table_names)) == len(table_names),
+            f"{database} receipt contains duplicate table names",
+        )
 
     verified_baseline = contract["verifiedBaselineGates"]
     required = contract["requiredCutoverGates"]
@@ -115,7 +145,8 @@ def verify_evidence(
         "sourceCommit": contract["sourceEvidenceCommit"],
         "activeDatabases": sorted(expected_active),
         "verifiedBaselineGates": verified_baseline,
-        "blockingGates": blocking,
+        "blockingGates": blocking + ([] if all_table_inventories_complete else ["table-inventory-completeness"]),
+        "tableInventoryComplete": all_table_inventories_complete,
         "cutoverAuthorized": False,
     }
 
@@ -126,6 +157,10 @@ def authorize_cutover(
     """Authorize only when a separate live receipt satisfies every remaining gate."""
 
     _require(baseline_report.get("evidenceValid") is True, "baseline evidence is not valid")
+    _require(
+        baseline_report.get("tableInventoryComplete") is True,
+        "complete table inventory evidence is required before cutover",
+    )
     _require(live_receipt.get("ownerApproved") is True, "explicit owner approval is required")
     _require(live_receipt.get("sourceWriteFreezeConfirmed") is True, "source write freeze is not confirmed")
     gates = _database_map(live_receipt.get("gates", []), "id", "live cutover receipt")
@@ -178,6 +213,11 @@ def main(argv: list[str] | None = None) -> int:
         default=Path("3-apps/_legacy-postgres/readiness/migration-readiness-contract.json"),
     )
     parser.add_argument("--live-cutover-receipt", type=Path)
+    parser.add_argument(
+        "--require-complete-table-inventory",
+        action="store_true",
+        help="Reject historical receipts that do not attest to a complete, unique table inventory.",
+    )
     parser.add_argument("--require-cutover", action="store_true")
     args = parser.parse_args(argv)
 
@@ -189,6 +229,7 @@ def main(argv: list[str] | None = None) -> int:
             verify_receipt_file(args.identity_evidence, receipt_hashes["identity"]),
             verify_receipt_file(args.nonidentity_evidence, receipt_hashes["nonidentity"]),
             contract,
+            require_complete_table_inventory=args.require_complete_table_inventory,
         )
         if args.live_cutover_receipt:
             report = authorize_cutover(report, _load(args.live_cutover_receipt), contract)

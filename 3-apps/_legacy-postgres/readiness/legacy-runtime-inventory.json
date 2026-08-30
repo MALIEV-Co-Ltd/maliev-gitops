@@ -25,21 +25,21 @@
       "service": "Legacy.Maliev.CareerService",
       "repository": "Legacy.Maliev.CareerService",
       "gitOpsResource": "_legacy-career-service",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["Jobs"]
     },
     {
       "service": "Legacy.Maliev.CatalogService",
       "repository": "Legacy.Maliev.CatalogService",
       "gitOpsResource": "_legacy-catalog-service",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["catalog"]
     },
     {
       "service": "Legacy.Maliev.ContactService",
       "repository": "Legacy.Maliev.ContactService",
       "gitOpsResource": "_legacy-contact-service",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["messages"]
     },
     {
@@ -53,14 +53,14 @@
       "service": "Legacy.Maliev.CustomerService",
       "repository": "Legacy.Maliev.CustomerService",
       "gitOpsResource": "_legacy-customer-service",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["customer"]
     },
     {
       "service": "Legacy.Maliev.DocumentService",
       "repository": "Legacy.Maliev.DocumentService",
       "gitOpsResource": "_legacy-document-service",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["documents"]
     },
     {
@@ -95,21 +95,21 @@
       "service": "Legacy.Maliev.OrderService",
       "repository": "Legacy.Maliev.OrderService",
       "gitOpsResource": "_legacy-order-service",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["order"]
     },
     {
       "service": "Legacy.Maliev.ProcurementService",
       "repository": "Legacy.Maliev.ProcurementService",
       "gitOpsResource": "_legacy-procurement-service",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["procurement"]
     },
     {
       "service": "Legacy.Maliev.QuotationService",
       "repository": "Legacy.Maliev.QuotationService",
       "gitOpsResource": "_legacy-quotation-service",
-      "lifecycle": "planned",
+      "lifecycle": "deferred",
       "healthPrefixes": ["quotation"]
     },
     {

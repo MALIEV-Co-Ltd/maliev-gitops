@@ -12,8 +12,24 @@ spec:
   ingress:
     - from:
         - podSelector:
-            matchLabels:
-              app.kubernetes.io/part-of: maliev-legacy
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - legacy-maliev-accounting-service
+                  - legacy-maliev-career-service
+                  - legacy-maliev-catalog-service
+                  - legacy-maliev-contact-service
+                  - legacy-maliev-country-service
+                  - legacy-maliev-customer-service
+                  - legacy-maliev-employee-service
+                  - legacy-maliev-file-service
+                  - legacy-maliev-intranet
+                  - legacy-maliev-intranet-bff
+                  - legacy-maliev-order-service
+                  - legacy-maliev-procurement-service
+                  - legacy-maliev-quotation-service
+                  - legacy-maliev-web
       ports:
         - protocol: TCP
           port: 6379
