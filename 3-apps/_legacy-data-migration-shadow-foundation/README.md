@@ -17,3 +17,7 @@ separate change:
 
 This foundation does not create a canonical service database, mutate data or
 schema, start a migration workload, or enable Argo auto-sync.
+
+The provisioner RBAC and admission-policy copy is semantically pinned by tests
+to `Legacy.Maliev.DataMigration` protected main. The current synchronized
+source checkpoint is `3d1764f0046663b9b31eb38881f1a982beebea85`.
