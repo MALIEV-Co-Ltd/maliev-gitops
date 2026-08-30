@@ -9,11 +9,23 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LEGACY_ENVIRONMENT = "3-apps/_legacy-redis/overlays/legacy"
+ROOT_ENVIRONMENT = "2-environments/4-legacy"
 
 
 def render() -> list[dict]:
     result = subprocess.run(
         ["kubectl", "kustomize", str(REPO_ROOT / LEGACY_ENVIRONMENT)],
+        cwd=REPO_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return [document for document in yaml.safe_load_all(result.stdout) if document]
+
+
+def render_path(relative_path: str) -> list[dict]:
+    result = subprocess.run(
+        ["kubectl", "kustomize", str(REPO_ROOT / relative_path)],
         cwd=REPO_ROOT,
         check=True,
         capture_output=True,
@@ -71,18 +83,45 @@ class LegacyRedisManifestTests(unittest.TestCase):
             {"key": "maliev-legacy-secrets", "property": "legacy-redis-password"},
         )
 
-    def test_network_policy_allows_only_legacy_workloads_to_reach_redis(self) -> None:
+    def test_network_policy_allows_only_declared_legacy_redis_consumers(self) -> None:
         policy = next(
             resource
             for resource in self.documents
             if resource.get("kind") == "NetworkPolicy"
             and resource["metadata"]["name"] == "legacy-redis"
         )
-        self.assertEqual(policy["spec"]["policyTypes"], ["Ingress", "Egress"])
-        allowed_labels = policy["spec"]["ingress"][0]["from"][0]["podSelector"]["matchLabels"]
-        self.assertEqual(allowed_labels["app.kubernetes.io/part-of"], "maliev-legacy")
-        self.assertEqual(allowed_labels["app.kubernetes.io/environment"], "legacy")
-        self.assertEqual(policy["spec"]["egress"], [])
+        expression = policy["spec"]["ingress"][0]["from"][0]["podSelector"]["matchExpressions"][0]
+        self.assertEqual(expression["key"], "app.kubernetes.io/name")
+        self.assertEqual(expression["operator"], "In")
+        self.assertEqual(
+            set(expression["values"]),
+            {
+                "legacy-maliev-accounting-service",
+                "legacy-maliev-career-service",
+                "legacy-maliev-catalog-service",
+                "legacy-maliev-contact-service",
+                "legacy-maliev-country-service",
+                "legacy-maliev-customer-service",
+                "legacy-maliev-employee-service",
+                "legacy-maliev-file-service",
+                "legacy-maliev-intranet",
+                "legacy-maliev-intranet-bff",
+                "legacy-maliev-order-service",
+                "legacy-maliev-procurement-service",
+                "legacy-maliev-quotation-service",
+                "legacy-maliev-web",
+            },
+        )
+        self.assertEqual(
+            policy["spec"]["ingress"][0]["ports"],
+            [{"protocol": "TCP", "port": 6379}],
+        )
+
+    def test_legacy_environment_reconciles_redis_alongside_postgres_foundation(self) -> None:
+        root = render_path(ROOT_ENVIRONMENT)
+        names = {(resource.get("kind"), resource["metadata"]["name"]) for resource in root}
+        self.assertIn(("Deployment", "legacy-redis"), names)
+        self.assertIn(("NetworkPolicy", "legacy-redis"), names)
 
 
 if __name__ == "__main__":
