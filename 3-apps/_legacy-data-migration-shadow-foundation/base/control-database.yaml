@@ -1,0 +1,14 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-migration-control
+  namespace: maliev-legacy
+  labels:
+    app.kubernetes.io/name: legacy-data-migration
+    app.kubernetes.io/part-of: maliev-legacy
+spec:
+  name: legacy_migration_control
+  owner: legacy_migration_control
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain

@@ -4,6 +4,15 @@
   "cluster": "legacy-postgres-main",
   "poolerService": "legacy-postgres-pooler-rw",
   "poolerPort": 5432,
+  "exact25ShadowMigration": {
+    "lifecycle": "dormant",
+    "gitOpsResource": "_legacy-data-migration-shadow-foundation",
+    "controlDatabase": "legacy_migration_control",
+    "controlRole": "legacy_migration_control",
+    "shadowRole": "legacy_migration_shadow",
+    "aclBootstrap": "manual-owner-approved",
+    "mutatesCanonicalDataOrSchema": false
+  },
   "serviceDefaultsProject": "Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Legacy.Maliev.ServiceDefaults.csproj",
   "databases": {
     "Auth": { "owner": "legacy_auth_refresh", "binding": "Legacy.Maliev.AuthService" },
