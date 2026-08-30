@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: legacy-quotation-migration
+  namespace: maliev-legacy
+  labels:
+    app.kubernetes.io/name: legacy-quotation-migration
+    app.kubernetes.io/part-of: maliev-legacy
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: legacy-quotation-migration
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress: []
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: maliev-legacy
+      ports:
+        - protocol: TCP
+          port: 5432

@@ -1,0 +1,239 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: legacy-quotation-request-schema-migration
+  namespace: maliev-legacy
+  labels:
+    app.kubernetes.io/name: legacy-quotation-migration
+    app.kubernetes.io/component: quotation-request
+    app.kubernetes.io/part-of: maliev-legacy
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  # The owner-approved activation overlay must remove suspension only after it
+  # supplies both enforced evidence resources and a scanned immutable digest.
+  suspend: true
+  backoffLimit: 0
+  activeDeadlineSeconds: 300
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: legacy-quotation-migration
+        app.kubernetes.io/component: quotation-request
+        app.kubernetes.io/part-of: maliev-legacy
+    spec:
+      serviceAccountName: legacy-quotation-migration
+      automountServiceAccountToken: false
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: example.invalid/maliev/legacy-maliev-quotation-migration@sha256:0000000000000000000000000000000000000000000000000000000000000000
+          imagePullPolicy: IfNotPresent
+          args:
+            - quotation-request
+          env:
+            - name: ConnectionStrings__QuotationRequestDbContext
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-quotation-migration-runtime
+                  key: ConnectionStrings__QuotationRequestDbContext
+            - name: Migration__SourceSnapshotId
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-quotation-schema-baseline-evidence
+                  key: quotation-request-source-snapshot-id
+            - name: Migration__CopyPlanId
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-quotation-schema-baseline-evidence
+                  key: quotation-request-copy-plan-id
+            - name: Migration__SchemaHash
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-quotation-schema-baseline-evidence
+                  key: quotation-request-schema-hash
+            - name: Migration__TrustedKeyId
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-quotation-migration-runtime
+                  key: trusted-key-id
+            - name: Migration__ReceiptPath
+              value: /evidence/quotation-request.receipt.json
+            - name: Migration__TrustedPublicKeyPath
+              value: /trust/trusted-public-key.pem
+            - name: Migration__LockTimeoutSeconds
+              value: "5"
+            - name: DOTNET_EnableDiagnostics
+              value: "0"
+            - name: TMPDIR
+              value: /tmp
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 192Mi
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: schema-baseline-evidence
+              mountPath: /evidence
+              readOnly: true
+            - name: migration-trust
+              mountPath: /trust
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: schema-baseline-evidence
+          secret:
+            secretName: legacy-quotation-schema-baseline-evidence
+            optional: false
+            items:
+              - key: quotation-request.receipt.json
+                path: quotation-request.receipt.json
+        - name: migration-trust
+          secret:
+            secretName: legacy-quotation-migration-runtime
+            optional: false
+            items:
+              - key: trusted-public-key.pem
+                path: trusted-public-key.pem
+        - name: tmp
+          emptyDir:
+            sizeLimit: 16Mi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: legacy-quotation-schema-migration
+  namespace: maliev-legacy
+  labels:
+    app.kubernetes.io/name: legacy-quotation-migration
+    app.kubernetes.io/component: quotation
+    app.kubernetes.io/part-of: maliev-legacy
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/sync-wave: "30"
+spec:
+  suspend: true
+  backoffLimit: 0
+  activeDeadlineSeconds: 300
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: legacy-quotation-migration
+        app.kubernetes.io/component: quotation
+        app.kubernetes.io/part-of: maliev-legacy
+    spec:
+      serviceAccountName: legacy-quotation-migration
+      automountServiceAccountToken: false
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: example.invalid/maliev/legacy-maliev-quotation-migration@sha256:0000000000000000000000000000000000000000000000000000000000000000
+          imagePullPolicy: IfNotPresent
+          args:
+            - quotation
+          env:
+            - name: ConnectionStrings__QuotationDbContext
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-quotation-migration-runtime
+                  key: ConnectionStrings__QuotationDbContext
+            - name: Migration__SourceSnapshotId
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-quotation-schema-baseline-evidence
+                  key: quotation-source-snapshot-id
+            - name: Migration__CopyPlanId
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-quotation-schema-baseline-evidence
+                  key: quotation-copy-plan-id
+            - name: Migration__SchemaHash
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-quotation-schema-baseline-evidence
+                  key: quotation-schema-hash
+            - name: Migration__TrustedKeyId
+              valueFrom:
+                secretKeyRef:
+                  name: legacy-quotation-migration-runtime
+                  key: trusted-key-id
+            - name: Migration__ReceiptPath
+              value: /evidence/quotation.receipt.json
+            - name: Migration__TrustedPublicKeyPath
+              value: /trust/trusted-public-key.pem
+            - name: Migration__LockTimeoutSeconds
+              value: "5"
+            - name: DOTNET_EnableDiagnostics
+              value: "0"
+            - name: TMPDIR
+              value: /tmp
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 192Mi
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: schema-baseline-evidence
+              mountPath: /evidence
+              readOnly: true
+            - name: migration-trust
+              mountPath: /trust
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: schema-baseline-evidence
+          secret:
+            secretName: legacy-quotation-schema-baseline-evidence
+            optional: false
+            items:
+              - key: quotation.receipt.json
+                path: quotation.receipt.json
+        - name: migration-trust
+          secret:
+            secretName: legacy-quotation-migration-runtime
+            optional: false
+            items:
+              - key: trusted-public-key.pem
+                path: trusted-public-key.pem
+        - name: tmp
+          emptyDir:
+            sizeLimit: 16Mi
