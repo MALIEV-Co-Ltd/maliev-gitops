@@ -163,7 +163,7 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
             policy["spec"]["matchConditions"],
             [{
                 "name": "shadow-resources-only",
-                "expression": "request.namespace == 'maliev-legacy' && ((object != null && object.metadata.name.matches('^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$')) || (oldObject != null && oldObject.metadata.name.matches('^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$')))",
+                "expression": "request.namespace == 'maliev-legacy' && ((object != null && (object.metadata.name.matches('^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$') || object.spec.name.matches('^legacy_shadow_[a-z0-9_]+_[0-9a-f]{32}$'))) || (oldObject != null && (oldObject.metadata.name.matches('^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$') || oldObject.spec.name.matches('^legacy_shadow_[a-z0-9_]+_[0-9a-f]{32}$'))))",
             }],
         )
         self.assertNotIn(
@@ -171,8 +171,34 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
             policy["spec"]["matchConditions"][0]["expression"],
         )
         shadow_name = re.compile(r"^legacy-shadow-[a-z0-9-]+-[0-9a-f]{32}$")
+        shadow_database = re.compile(r"^legacy_shadow_[a-z0-9_]+_[0-9a-f]{32}$")
         self.assertIsNotNone(shadow_name.fullmatch("legacy-shadow-order-0123456789abcdef0123456789abcdef"))
         self.assertIsNone(shadow_name.fullmatch("legacy-postgres-order"))
+
+        def selects_shadow(
+            current_metadata: str | None,
+            current_database: str | None,
+            old_metadata: str | None,
+            old_database: str | None,
+        ) -> bool:
+            return any(
+                pattern.fullmatch(value)
+                for pattern, value in (
+                    (shadow_name, current_metadata),
+                    (shadow_database, current_database),
+                    (shadow_name, old_metadata),
+                    (shadow_database, old_database),
+                )
+                if value is not None
+            )
+
+        shadow_physical = "legacy_shadow_order_0123456789abcdef0123456789abcdef"
+        self.assertTrue(selects_shadow("legacy-postgres-order", shadow_physical, None, None))  # CREATE
+        self.assertTrue(selects_shadow("legacy-postgres-order", shadow_physical, "legacy-postgres-order", shadow_physical))  # UPDATE
+        self.assertTrue(selects_shadow(None, None, "legacy-postgres-order", shadow_physical))  # DELETE
+        self.assertFalse(selects_shadow("legacy-postgres-order", "Order", None, None))  # CREATE
+        self.assertFalse(selects_shadow("legacy-postgres-order", "Order", "legacy-postgres-order", "Order"))  # UPDATE
+        self.assertFalse(selects_shadow(None, None, "legacy-postgres-order", "Order"))  # DELETE
         validations = {
             item["message"]: item["expression"]
             for item in policy["spec"]["validations"]
