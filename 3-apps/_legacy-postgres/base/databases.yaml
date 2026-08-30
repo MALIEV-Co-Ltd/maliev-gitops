@@ -279,7 +279,7 @@ metadata:
     app.kubernetes.io/name: legacy-postgres
 spec:
   name: Auth
-  owner: legacy_auth_owner
+  owner: legacy_auth_refresh
   cluster:
     name: legacy-postgres-main
   databaseReclaimPolicy: retain

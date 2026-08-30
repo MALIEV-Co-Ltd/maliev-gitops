@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import base64
 import json
 import re
 import shutil
@@ -9,9 +8,28 @@ import subprocess
 import sys
 from pathlib import Path
 
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-secret-contract.json"
+PRIVATE_KEY_NAME = "legacy-jwt-private-key"
+PUBLIC_KEY_NAME = "legacy-jwt-public-key"
+KEY_ID_NAME = "legacy-jwt-key-id"
+
+
+def pem_pattern(label: str) -> re.Pattern[str]:
+    escaped_label = re.escape(label)
+    return re.compile(
+        rf"-----BEGIN {escaped_label}-----\r?\n(?:[A-Za-z0-9+/]{{1,64}}={{0,2}}\r?\n)+"
+        rf"-----END {escaped_label}-----(?:\r?\n)?\Z"
+    )
+
+
+PRIVATE_KEY_PEM = pem_pattern("PRIVATE KEY")
+PUBLIC_KEY_PEM = pem_pattern("PUBLIC KEY")
+KEY_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}\Z")
 
 
 def load_contract() -> dict:
@@ -50,7 +68,7 @@ def validate_value_shapes(payload: dict[str, object], expected: set[str]) -> lis
     """
 
     invalid: list[str] = []
-    key_material_names = {"legacy-jwt-private-key", "legacy-jwt-public-key"}
+    key_material_names = {PRIVATE_KEY_NAME, PUBLIC_KEY_NAME}
     for name in sorted(expected):
         value = payload.get(name)
         if not isinstance(value, str) or not value.strip():
@@ -64,18 +82,49 @@ def validate_value_shapes(payload: dict[str, object], expected: set[str]) -> lis
             continue
         if name.endswith("-secret-sha256") and not re.fullmatch(r"[0-9a-fA-F]{64}", value):
             invalid.append(name)
-        elif name in {"legacy-jwt-private-key", "legacy-jwt-public-key"}:
-            if "-----BEGIN " in value:
-                if "-----END " not in value:
-                    invalid.append(name)
+        elif name == KEY_ID_NAME and not KEY_ID.fullmatch(value):
+            invalid.append(name)
+
+    private_value = payload.get(PRIVATE_KEY_NAME)
+    public_value = payload.get(PUBLIC_KEY_NAME)
+    if PRIVATE_KEY_NAME in expected or PUBLIC_KEY_NAME in expected:
+        key_pair_invalid = False
+        private_key = None
+        public_key = None
+        if not isinstance(private_value, str) or not PRIVATE_KEY_PEM.fullmatch(private_value):
+            key_pair_invalid = True
+        else:
+            try:
+                private_key = serialization.load_pem_private_key(
+                    private_value.encode("ascii"),
+                    password=None,
+                )
+            except (TypeError, ValueError, UnicodeEncodeError):
+                key_pair_invalid = True
             else:
-                try:
-                    decoded = base64.b64decode(value, validate=True)
-                except (ValueError, base64.binascii.Error):
-                    invalid.append(name)
-                else:
-                    if len(decoded) < 32:
-                        invalid.append(name)
+                if not isinstance(private_key, rsa.RSAPrivateKey) or private_key.key_size < 2048:
+                    key_pair_invalid = True
+
+        if not isinstance(public_value, str) or not PUBLIC_KEY_PEM.fullmatch(public_value):
+            key_pair_invalid = True
+        else:
+            try:
+                public_key = serialization.load_pem_public_key(public_value.encode("ascii"))
+            except (TypeError, ValueError, UnicodeEncodeError):
+                key_pair_invalid = True
+            else:
+                if not isinstance(public_key, rsa.RSAPublicKey) or public_key.key_size < 2048:
+                    key_pair_invalid = True
+
+        if private_key is not None and public_key is not None:
+            if private_key.public_key().public_numbers() != public_key.public_numbers():
+                key_pair_invalid = True
+
+        if key_pair_invalid:
+            if PRIVATE_KEY_NAME in expected:
+                invalid.append(PRIVATE_KEY_NAME)
+            if PUBLIC_KEY_NAME in expected:
+                invalid.append(PUBLIC_KEY_NAME)
 
     return sorted(set(invalid))
 
