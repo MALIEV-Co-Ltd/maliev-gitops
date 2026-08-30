@@ -166,7 +166,10 @@ class LegacySecretContractTests(unittest.TestCase):
 
     def test_apphost_gke_secret_references_are_catalogued(self) -> None:
         if not APPHOST_SOURCE.is_file():
-            self.skipTest(f"Legacy AppHost is not mounted: {APPHOST_SOURCE}")
+            message = f"Legacy AppHost is not mounted: {APPHOST_SOURCE}"
+            if "MALIEV_WORKSPACE_ROOT" in os.environ:
+                self.fail(message)
+            self.skipTest(message)
 
         source = APPHOST_SOURCE.read_text(encoding="utf-8")
         properties = set(
@@ -189,6 +192,9 @@ class LegacySecretContractTests(unittest.TestCase):
                     projected.update(projection["properties"])
         for pair in self.contract["rules"]["pairedServiceCredentialProperties"]:
             projected.update((pair["rawProperty"], pair["hashProperty"]))
+        projected.update(
+            self.contract["rules"]["exact25ShadowMigration"]["credentialProperties"]
+        )
 
         self.assertEqual(self.pending, self.pending & projected)
 
@@ -293,6 +299,25 @@ class LegacySecretContractTests(unittest.TestCase):
                     properties <= self.present,
                     f"active service {service_name} references a pending property",
                 )
+
+    def test_active_secret_projections_match_active_overlay_lifecycle(self) -> None:
+        active_text = ACTIVE_ENVIRONMENT.read_text(encoding="utf-8")
+        active_resources = {
+            resource
+            for resource in re.findall(r"../../3-apps/(_legacy-[a-z0-9-]+)", active_text)
+        }
+        for projection in self.contract["activeProjections"]:
+            service = projection["service"]
+            resource = f"_legacy-{service}-service"
+            if service == "postgres":
+                resource = "_legacy-postgres"
+            elif service == "redis":
+                resource = "_legacy-redis"
+            self.assertIn(
+                resource,
+                active_resources,
+                f"active secret projection {service} has no active GitOps resource",
+            )
 
     def test_runtime_session_values_are_not_secret_properties(self) -> None:
         forbidden = set(self.contract["rules"]["dynamicSessionValuesAreForbidden"])

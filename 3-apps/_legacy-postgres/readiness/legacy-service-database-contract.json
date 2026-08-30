@@ -4,9 +4,18 @@
   "cluster": "legacy-postgres-main",
   "poolerService": "legacy-postgres-pooler-rw",
   "poolerPort": 5432,
+  "exact25ShadowMigration": {
+    "lifecycle": "dormant",
+    "gitOpsResource": "_legacy-data-migration-shadow-foundation",
+    "controlDatabase": "legacy_migration_control",
+    "controlRole": "legacy_migration_control",
+    "shadowRole": "legacy_migration_shadow",
+    "aclBootstrap": "manual-owner-approved",
+    "mutatesCanonicalDataOrSchema": false
+  },
   "serviceDefaultsProject": "Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Legacy.Maliev.ServiceDefaults.csproj",
   "databases": {
-    "Auth": { "owner": "legacy_auth_owner", "binding": "Legacy.Maliev.AuthService" },
+    "Auth": { "owner": "legacy_auth_refresh", "binding": "Legacy.Maliev.AuthService" },
     "Country": { "owner": "legacy_country_owner", "binding": "Legacy.Maliev.CountryService" },
     "Currency": { "owner": "legacy_currency_owner", "binding": null },
     "Customer": { "owner": "legacy_customer_owner", "binding": "Legacy.Maliev.CustomerService" },
@@ -39,8 +48,7 @@
     "Legacy.Maliev.AuthService": {
       "repository": "Legacy.Maliev.AuthService",
       "databases": ["Auth", "CustomerIdentity", "EmployeeIdentity"],
-      "connectionKeys": ["CustomerIdentity", "EmployeeIdentity"],
-      "localOnlyConnectionKeys": ["RefreshSessions"],
+      "connectionKeys": ["CustomerIdentity", "EmployeeIdentity", "RefreshSessions"],
       "testPackage": "Testcontainers.PostgreSql"
     },
     "Legacy.Maliev.CareerService": {
@@ -146,21 +154,20 @@
   "deferredGitOpsServiceResources": [
     "_legacy-accounting-service",
     "_legacy-auth-service",
+    "_legacy-career-service",
+    "_legacy-catalog-service",
+    "_legacy-contact-service",
     "_legacy-country-service",
+    "_legacy-customer-service",
+    "_legacy-document-service",
     "_legacy-employee-service",
     "_legacy-file-service",
     "_legacy-intranet",
     "_legacy-notification-service",
-    "_legacy-web"
-  ],
-  "plannedGitOpsServiceResources": [
-    "_legacy-career-service",
-    "_legacy-catalog-service",
-    "_legacy-contact-service",
-    "_legacy-customer-service",
-    "_legacy-document-service",
     "_legacy-order-service",
     "_legacy-procurement-service",
-    "_legacy-quotation-service"
-  ]
+    "_legacy-quotation-service",
+    "_legacy-web"
+  ],
+  "plannedGitOpsServiceResources": []
 }
