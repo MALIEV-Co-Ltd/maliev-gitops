@@ -1,2 +1,2 @@
-# Upstream Barman v0.13.0 release Secret stores only the public sidecar image name.
-1-cluster-infra/07-barman-cloud-plugin/release.yaml:kubernetes-secret-yaml:963
+# Test-only regex that validates PKCS#8 PEM framing; it contains no key material.
+e82220e1e3dd377f94d4281b249e849c19ab7135:scripts/validate_legacy_secret_contract.py:private-key:21
