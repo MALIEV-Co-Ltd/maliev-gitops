@@ -5,7 +5,7 @@
   "poolerService": "legacy-postgres-pooler-rw",
   "poolerPort": 5432,
   "exact25ShadowMigration": {
-    "lifecycle": "dormant",
+    "lifecycle": "owner-approved-shadow-validation",
     "gitOpsResource": "_legacy-data-migration-shadow-foundation",
     "controlDatabase": "legacy_migration_control",
     "controlRole": "legacy_migration_control",

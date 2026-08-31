@@ -290,7 +290,14 @@ class LegacySecretContractTests(unittest.TestCase):
         active_services = set(
             re.findall(r"../../3-apps/(_legacy-[a-z0-9-]+)", active_text)
         )
-        self.assertEqual(active_services, {"_legacy-postgres", "_legacy-redis"})
+        self.assertEqual(
+            active_services,
+            {
+                "_legacy-postgres",
+                "_legacy-redis",
+                "_legacy-data-migration-shadow-foundation",
+            },
+        )
         for path, properties in self.properties.items():
             relative_parts = path.relative_to(LEGACY_APPS).parts
             service_name = next(
