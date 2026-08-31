@@ -129,6 +129,18 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
                 self.fail(message)
             self.skipTest(message)
 
+        source_checkpoint = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=DATA_MIGRATION_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        foundation_readme = (
+            REPO_ROOT / "3-apps/_legacy-data-migration-shadow-foundation/README.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn(f"source checkpoint is `{source_checkpoint}`", foundation_readme)
+
         source_text = SOURCE_POLICY.read_text(encoding="utf-8")
         # The reviewed source contract stores CEL as unquoted plain scalars. Its
         # ternary colons are not valid YAML, so canonicalize only expression
@@ -176,6 +188,10 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
         policy = by_kind(self.foundation, "ValidatingAdmissionPolicy")[0]
         self.assertEqual(policy["spec"]["failurePolicy"], "Fail")
         self.assertEqual(
+            policy["spec"]["matchConstraints"]["resourceRules"][0]["resources"],
+            ["databases", "databases/status"],
+        )
+        self.assertEqual(
             policy["spec"]["matchConditions"],
             [{
                 "name": "migration-identity-or-shadow-object",
@@ -216,10 +232,83 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
             item["message"]: item["expression"]
             for item in policy["spec"]["validations"]
         }
-        self.assertEqual(
-            validations["Only the dedicated migration identity may mutate legacy shadow resources."],
-            "request.userInfo.username == 'system:serviceaccount:maliev-legacy:legacy-data-migration-shadow-provisioner'",
+        migration_identity = "system:serviceaccount:maliev-legacy:legacy-data-migration-shadow-provisioner"
+        controller_identity = "system:serviceaccount:maliev-legacy:legacy-postgres-main"
+        identity_expression = validations[
+            "Only the dedicated migration identity or the exact CloudNativePG instance manager may perform its restricted update on legacy shadow resources."
+        ]
+        self.assertIn(migration_identity, identity_expression)
+        self.assertIn(controller_identity, identity_expression)
+        self.assertIn("request.operation == 'UPDATE'", identity_expression)
+
+        controller_expression = validations[
+            "The CloudNativePG instance manager may update only status and its exact cnpg.io/deleteDatabase finalizer on an otherwise unchanged fenced shadow resource."
+        ]
+        for immutable_field in (
+            "object.spec == oldObject.spec",
+            "object.metadata.labels == oldObject.metadata.labels",
+            "object.metadata.annotations == oldObject.metadata.annotations",
+            "object.metadata.ownerReferences == oldObject.metadata.ownerReferences",
+            "finalizer != 'cnpg.io/deleteDatabase'",
+        ):
+            self.assertIn(immutable_field, controller_expression)
+
+        def identity_gate(
+            username: str,
+            operation: str,
+            *,
+            spec_equal: bool = True,
+            labels_equal: bool = True,
+            annotations_equal: bool = True,
+            owner_references_equal: bool = True,
+            old_finalizers: tuple[str, ...] = (),
+            new_finalizers: tuple[str, ...] = (),
+        ) -> bool:
+            if username == migration_identity:
+                return True
+            return (
+                username == controller_identity
+                and operation == "UPDATE"
+                and spec_equal
+                and labels_equal
+                and annotations_equal
+                and owner_references_equal
+                and tuple(item for item in old_finalizers if item != "cnpg.io/deleteDatabase")
+                == tuple(item for item in new_finalizers if item != "cnpg.io/deleteDatabase")
+            )
+
+        self.assertFalse(identity_gate(controller_identity, "CREATE"))
+        self.assertFalse(identity_gate(controller_identity, "DELETE"))
+        self.assertFalse(identity_gate(controller_identity, "UPDATE", spec_equal=False))
+        self.assertFalse(identity_gate(controller_identity, "UPDATE", labels_equal=False))
+        self.assertFalse(identity_gate(controller_identity, "UPDATE", annotations_equal=False))
+        self.assertFalse(identity_gate(controller_identity, "UPDATE", owner_references_equal=False))
+        self.assertFalse(
+            identity_gate(
+                controller_identity,
+                "UPDATE",
+                old_finalizers=("third-party.example/fence",),
+                new_finalizers=(),
+            )
         )
+        self.assertTrue(identity_gate(controller_identity, "UPDATE"))  # status only
+        self.assertTrue(
+            identity_gate(
+                controller_identity,
+                "UPDATE",
+                new_finalizers=("cnpg.io/deleteDatabase",),
+            )
+        )
+        self.assertTrue(
+            identity_gate(
+                controller_identity,
+                "UPDATE",
+                old_finalizers=("cnpg.io/deleteDatabase",),
+            )
+        )
+        self.assertTrue(identity_gate(migration_identity, "CREATE"))
+        self.assertTrue(identity_gate(migration_identity, "DELETE"))
+        self.assertFalse(identity_gate("system:serviceaccount:maliev-legacy:other", "UPDATE"))
         self.assertEqual(
             validations["Shadow creation requires delete reclaim policy."],
             "request.operation != 'CREATE' || object.spec.databaseReclaimPolicy == 'delete'",
@@ -232,6 +321,40 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
             validations["Shadow deletion requires the fenced disabled absent state and delete reclaim policy."],
             "request.operation != 'DELETE' || (oldObject.spec.databaseReclaimPolicy == 'delete' && oldObject.spec.allowConnections == false && oldObject.spec.ensure == 'absent')",
         )
+        connection_expression = validations[
+            "Connections may only be enabled from a fenced disabled resource."
+        ]
+        self.assertIn(controller_identity, connection_expression)
+        self.assertIn("object.spec == oldObject.spec", connection_expression)
+
+        def connections_gate(
+            username: str,
+            old_allow_connections: bool,
+            new_allow_connections: bool,
+            ensure: str,
+            spec_equal: bool,
+        ) -> bool:
+            return (
+                not new_allow_connections
+                or (
+                    username == controller_identity
+                    and spec_equal
+                )
+                or (
+                    not old_allow_connections
+                    and ensure == "present"
+                )
+            )
+
+        self.assertTrue(connections_gate(controller_identity, False, False, "present", True))
+        self.assertTrue(connections_gate(controller_identity, True, True, "present", True))
+        # The generic connection transition accepts false -> true, but the
+        # independent controller immutability validation above rejects its
+        # accompanying spec drift for the controller identity.
+        self.assertTrue(connections_gate(controller_identity, False, True, "present", False))
+        self.assertTrue(connections_gate(migration_identity, False, True, "present", False))
+        self.assertTrue(connections_gate(migration_identity, True, False, "present", False))
+        self.assertFalse(connections_gate(migration_identity, True, True, "present", True))
         binding = by_kind(self.foundation, "ValidatingAdmissionPolicyBinding")[0]
         self.assertEqual(binding["spec"]["validationActions"], ["Deny"])
 
@@ -261,6 +384,15 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
         self.assertFalse(foundation["mutatesCanonicalDataOrSchema"])
         self.assertEqual(foundation["aclBootstrap"], "manual-owner-approved")
         self.assertNotIn("value", json.dumps(foundation).lower())
+
+        runbook = (
+            REPO_ROOT / "3-apps/_legacy-data-migration-shadow-foundation/README.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("REVOKE CONNECT ON DATABASE postgres FROM PUBLIC;", runbook)
+        self.assertIn("GRANT CONNECT ON DATABASE postgres TO streaming_replica;", runbook)
+        self.assertIn("GRANT CONNECT ON DATABASE postgres TO legacy_migration_shadow;", runbook)
+        self.assertIn("REVOKE CREATE ON DATABASE postgres FROM legacy_migration_shadow;", runbook)
+        self.assertIn("GitOps does not execute these SQL statements", runbook)
 
     def test_ci_mounts_canonical_data_migration_policy_for_alignment_test(self) -> None:
         workflow = (REPO_ROOT / ".github/workflows/validate.yml").read_text(encoding="utf-8")
