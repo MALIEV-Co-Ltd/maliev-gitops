@@ -47,13 +47,14 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
         cls.foundation = render(FOUNDATION)
         cls.active = render(ACTIVE_ENVIRONMENT)
 
-    def test_foundation_is_dormant_and_has_no_workload_or_canonical_database(self) -> None:
+    def test_foundation_is_isolated_and_has_no_workload_or_canonical_database(self) -> None:
         active_names = {
             (resource["kind"], resource["metadata"]["name"])
             for resource in self.active
         }
-        self.assertNotIn(("Database", "legacy-postgres-migration-control"), active_names)
-        self.assertNotIn(("ServiceAccount", "legacy-data-migration-shadow-provisioner"), active_names)
+        self.assertIn(("Database", "legacy-postgres-migration-control"), active_names)
+        self.assertIn(("ServiceAccount", "legacy-data-migration-shadow-provisioner"), active_names)
+        self.assertEqual(by_kind(self.foundation, "Cluster"), [])
         self.assertEqual(by_kind(self.foundation, "Deployment"), [])
         self.assertEqual(by_kind(self.foundation, "Job"), [])
 
@@ -73,8 +74,15 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
         self.assertNotIn("legacy_shadow_", control["spec"]["name"])
 
     def test_control_and_shadow_roles_are_distinct_unprivileged_and_secret_backed(self) -> None:
-        cluster = by_kind(self.foundation, "Cluster")[0]
-        roles = {role["name"]: role for role in cluster["spec"]["managed"]["roles"]}
+        clusters = by_kind(self.active, "Cluster")
+        self.assertEqual(len(clusters), 1)
+        cluster = clusters[0]
+        role_list = cluster["spec"]["managed"]["roles"]
+        role_names = [role["name"] for role in role_list]
+        self.assertEqual(len(role_names), len(set(role_names)))
+        self.assertEqual(role_names.count("legacy_migration_control"), 1)
+        self.assertEqual(role_names.count("legacy_migration_shadow"), 1)
+        roles = {role["name"]: role for role in role_list}
         expected = {
             "legacy_migration_control": "legacy-postgres-migration-control",
             "legacy_migration_shadow": "legacy-postgres-migration-shadow",
@@ -230,7 +238,7 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
     def test_contract_is_value_free_and_records_manual_acl_and_activation_gates(self) -> None:
         contract = json.loads(SECRET_CONTRACT.read_text(encoding="utf-8"))
         migration = contract["rules"]["exact25ShadowMigration"]
-        self.assertFalse(migration["active"])
+        self.assertTrue(migration["active"])
         self.assertEqual(migration["controlDatabase"], "legacy_migration_control")
         self.assertEqual(migration["controlRole"], "legacy_migration_control")
         self.assertEqual(migration["shadowRole"], "legacy_migration_shadow")
@@ -239,18 +247,16 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
         self.assertNotIn("value", json.dumps(migration).lower())
         self.assertNotIn("connectionstring", json.dumps(migration).lower())
 
-        catalogued = set(contract["presentProperties"]) | {
-            item["name"] for item in contract["pendingProperties"]
-        }
-        self.assertTrue(set(migration["credentialProperties"]) <= catalogued)
+        present = set(contract["presentProperties"])
+        self.assertTrue(set(migration["credentialProperties"]) <= present)
         self.assertEqual(
             {item["name"] for item in contract["pendingProperties"] if item["name"] in migration["credentialProperties"]},
-            set(migration["credentialProperties"]),
+            set(),
         )
 
         database_contract = json.loads(DATABASE_CONTRACT.read_text(encoding="utf-8"))
         foundation = database_contract["exact25ShadowMigration"]
-        self.assertEqual(foundation["lifecycle"], "dormant")
+        self.assertEqual(foundation["lifecycle"], "owner-approved-shadow-validation")
         self.assertEqual(foundation["controlDatabase"], "legacy_migration_control")
         self.assertFalse(foundation["mutatesCanonicalDataOrSchema"])
         self.assertEqual(foundation["aclBootstrap"], "manual-owner-approved")
@@ -261,16 +267,37 @@ class LegacyExact25ShadowFoundationTests(unittest.TestCase):
         self.assertIn("Legacy.Maliev.DataMigration.git", workflow)
         self.assertIn('"$workspace/Legacy.Maliev.DataMigration"', workflow)
 
-    def test_argocd_does_not_activate_or_expand_cluster_scope_for_dormant_foundation(self) -> None:
+    def test_argocd_activation_is_exact_and_cluster_scope_is_narrow(self) -> None:
         project = yaml.safe_load(PROJECT.read_text(encoding="utf-8"))
         self.assertEqual(
             project["spec"]["clusterResourceWhitelist"],
-            [{"group": "", "kind": "Namespace"}],
+            [
+                {"group": "", "kind": "Namespace"},
+                {"group": "admissionregistration.k8s.io", "kind": "ValidatingAdmissionPolicy"},
+                {"group": "admissionregistration.k8s.io", "kind": "ValidatingAdmissionPolicyBinding"},
+            ],
         )
         active_kustomization = (
             REPO_ROOT / "2-environments/4-legacy/kustomization.yaml"
         ).read_text(encoding="utf-8")
-        self.assertNotIn("_legacy-data-migration-shadow-foundation", active_kustomization)
+        self.assertEqual(active_kustomization.count("_legacy-postgres/overlays/legacy"), 1)
+        self.assertEqual(active_kustomization.count("_legacy-data-migration-shadow-foundation/overlays/legacy"), 1)
+
+        foundation_kustomization = (
+            REPO_ROOT
+            / "3-apps/_legacy-data-migration-shadow-foundation/overlays/legacy/kustomization.yaml"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn("_legacy-postgres", foundation_kustomization)
+
+        active_identities = [
+            (resource["kind"], resource["metadata"]["name"])
+            for resource in self.active
+        ]
+        self.assertEqual(active_identities.count(("Cluster", "legacy-postgres-main")), 1)
+        self.assertEqual(
+            active_identities.count(("Database", "legacy-postgres-migration-control")),
+            1,
+        )
 
 
 if __name__ == "__main__":
