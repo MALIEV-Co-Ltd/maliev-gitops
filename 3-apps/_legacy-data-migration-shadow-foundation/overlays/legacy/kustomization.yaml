@@ -2,11 +2,3 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../base
-  - ../../../_legacy-postgres/overlays/legacy
-patches:
-  - path: migration-roles-patch.yaml
-    target:
-      group: postgresql.cnpg.io
-      version: v1
-      kind: Cluster
-      name: legacy-postgres-main

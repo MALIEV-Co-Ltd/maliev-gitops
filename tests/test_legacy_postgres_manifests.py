@@ -117,9 +117,22 @@ class LegacyPostgresManifestTests(unittest.TestCase):
         namespace = resources_by_kind(self.legacy, "Namespace")
         self.assertEqual([item["metadata"]["name"] for item in namespace], ["maliev-legacy"])
 
-        cluster_scoped_kinds = {"Namespace", "CustomResourceDefinition", "ClusterRole", "ClusterRoleBinding"}
+        cluster_scoped_kinds = {
+            "Namespace",
+            "CustomResourceDefinition",
+            "ClusterRole",
+            "ClusterRoleBinding",
+            "ValidatingAdmissionPolicy",
+            "ValidatingAdmissionPolicyBinding",
+        }
         for resource in self.legacy:
-            if resource["kind"] not in cluster_scoped_kinds:
+            if resource["kind"] in cluster_scoped_kinds:
+                self.assertNotIn(
+                    "namespace",
+                    resource["metadata"],
+                    f"cluster-scoped {resource['kind']}/{resource['metadata']['name']} was namespaced",
+                )
+            else:
                 self.assertEqual(
                     resource["metadata"].get("namespace"),
                     "maliev-legacy",
@@ -236,7 +249,11 @@ class LegacyPostgresManifestTests(unittest.TestCase):
     def test_all_active_databases_have_distinct_owner_roles(self) -> None:
         databases = resources_by_kind(self.legacy, "Database")
         actual = {item["spec"]["name"]: item["spec"]["owner"] for item in databases}
-        self.assertEqual(actual, ACTIVE_DATABASES)
+        self.assertEqual(
+            {name: owner for name, owner in actual.items() if name != "legacy_migration_control"},
+            ACTIVE_DATABASES,
+        )
+        self.assertEqual(actual["legacy_migration_control"], "legacy_migration_control")
         self.assertNotIn("Log", actual)
         self.assertNotIn("MachineLearningData", actual)
         self.assertEqual(
@@ -246,7 +263,15 @@ class LegacyPostgresManifestTests(unittest.TestCase):
 
         cluster = resources_by_kind(self.legacy, "Cluster")[0]
         roles = cluster["spec"]["managed"]["roles"]
-        self.assertEqual({role["name"] for role in roles}, set(ACTIVE_DATABASES.values()))
+        role_names = [role["name"] for role in roles]
+        self.assertEqual(len(role_names), len(set(role_names)))
+        self.assertEqual(role_names.count("legacy_migration_control"), 1)
+        self.assertEqual(role_names.count("legacy_migration_shadow"), 1)
+        self.assertEqual(
+            set(role_names),
+            set(ACTIVE_DATABASES.values())
+            | {"legacy_migration_control", "legacy_migration_shadow"},
+        )
         self.assertTrue(all(role["login"] for role in roles))
 
     def test_external_secrets_use_only_the_single_legacy_gsm_secret(self) -> None:
@@ -255,7 +280,7 @@ class LegacyPostgresManifestTests(unittest.TestCase):
             for resource in resources_by_kind(self.legacy, "ExternalSecret")
             if resource["metadata"]["name"].startswith("legacy-postgres-")
         ]
-        self.assertEqual(len(external_secrets), len(ACTIVE_DATABASES) + 1)
+        self.assertEqual(len(external_secrets), len(ACTIVE_DATABASES) + 3)
         properties: set[str] = set()
         for external_secret in external_secrets:
             self.assertEqual(
@@ -284,6 +309,7 @@ class LegacyPostgresManifestTests(unittest.TestCase):
                 binding["passwordProperty"],
             )
         )
+        expected.update(contract["rules"]["exact25ShadowMigration"]["credentialProperties"])
         self.assertEqual(properties, expected)
 
     def test_argo_project_and_app_are_exactly_scoped_to_legacy(self) -> None:
