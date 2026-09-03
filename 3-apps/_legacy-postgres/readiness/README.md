@@ -75,6 +75,26 @@ Adding `--require-cutover` must fail until a separate live receipt proves every 
 records explicit owner approval plus the source write freeze. The verifier never connects to either
 database and never calls `kubectl`, Argo CD, Google Cloud, or the Kubernetes API.
 
+## Live parity receipt
+
+`scripts/legacy_live_parity.py` validates the next migration evidence artifact:
+an externally collected, value-free source/target receipt. The collector must
+use a read-only SQL Server principal inside a snapshot transaction and record
+only database/table inventories, row/null counts, canonical content hashes,
+foreign-key orphan counts, identity sequence state, and schema fingerprints.
+The target must be `maliev-legacy/legacy-postgres-main`. The validator has no
+database or cluster access, rejects credential-shaped fields, and is not a
+cutover authorization by itself.
+
+```powershell
+python scripts/legacy_live_parity.py --receipt live-parity-receipt.json
+python -m unittest tests.test_legacy_live_parity -v
+```
+
+The existing `legacy_data_readiness.py --require-cutover` gate must still pass
+with a separate complete live receipt, source write-freeze confirmation, and
+owner approval before any service is promoted or any target writer is changed.
+
 ## CNPG recovery rehearsal
 
 `recovery-rehearsal` renders a one-instance, resource-bounded cluster named
