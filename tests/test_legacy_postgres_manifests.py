@@ -20,6 +20,7 @@ REPOSITORY = "https://github.com/MALIEV-Co-Ltd/maliev-gitops.git"
 
 ACTIVE_DATABASES = {
     "Auth": "legacy_auth_refresh",
+    "ContactRequest": "legacy_contact_request_owner",
     "Country": "legacy_country_owner",
     "Currency": "legacy_currency_owner",
     "Customer": "legacy_customer_owner",
@@ -30,6 +31,7 @@ ACTIVE_DATABASES = {
     "EmployeeIdentity": "legacy_employee_identity_owner",
     "Invoice": "legacy_invoice_owner",
     "JobOffers": "legacy_job_offers_owner",
+    "LocationData": "legacy_location_data_owner",
     "Material": "legacy_material_owner",
     "Message": "legacy_message_owner",
     "Order": "legacy_order_owner",
