@@ -1,6 +1,19 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
+  name: legacy-postgres-contact-request
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: ContactRequest
+  owner: legacy_contact_request_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
   name: legacy-postgres-country
   labels:
     app.kubernetes.io/name: legacy-postgres
@@ -124,6 +137,19 @@ metadata:
 spec:
   name: JobOffers
   owner: legacy_job_offers_owner
+  cluster:
+    name: legacy-postgres-main
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: legacy-postgres-location-data
+  labels:
+    app.kubernetes.io/name: legacy-postgres
+spec:
+  name: LocationData
+  owner: legacy_location_data_owner
   cluster:
     name: legacy-postgres-main
   databaseReclaimPolicy: retain
