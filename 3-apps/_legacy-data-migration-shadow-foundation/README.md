@@ -56,4 +56,4 @@ This admits CNPG-owned finalizer and status reconciliation, including status
 updates after connections are enabled, but denies controller creation, deletion,
 or migration-state changes. The provisioner RBAC and admission-policy copy is semantically pinned by tests
 to `Legacy.Maliev.DataMigration` protected main. The current synchronized
-source checkpoint is `f9cb90a622e7d680ccbd9d64cb1922c3ed2b7594`.
+source checkpoint is `9f786746c79dcc3082860ea3d522218c8cb96dfd`.

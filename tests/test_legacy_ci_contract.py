@@ -11,10 +11,14 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[1]
 INVENTORY_PATH = REPO_ROOT / "3-apps/_legacy-postgres/readiness/legacy-runtime-inventory.json"
 WORKSPACE_ROOT = Path(os.environ.get("MALIEV_WORKSPACE_ROOT", REPO_ROOT.parent))
-PINNED_WORKFLOW = (
+PINNED_WORKFLOWS = {
     "MALIEV-Co-Ltd/Legacy.Maliev.Workflows/.github/workflows/publish-image.yml@"
-    "6017816fa67f369d785ed30794f002cfd6299af7"
-)
+    + sha
+    for sha in (
+        "6017816fa67f369d785ed30794f002cfd6299af7",
+        "6e3bb55f5ff3ee2b69dd6b4aee6333777ba0ed36",
+    )
+}
 
 
 class LegacyCiContractTests(unittest.TestCase):
@@ -87,7 +91,7 @@ class LegacyCiContractTests(unittest.TestCase):
             for name, publish in publish_jobs.items():
                 with self.subTest(service=item["service"], job=name):
                     self.assertIn("LEGACY_DEPLOY_ENABLED == 'true'", publish["if"])
-                    self.assertEqual(publish["uses"], PINNED_WORKFLOW)
+                    self.assertIn(publish["uses"], PINNED_WORKFLOWS)
                     self.assertEqual(publish["with"]["context"], ".")
                     dockerfile = repository / publish["with"]["dockerfile"]
                     self.assertTrue(dockerfile.is_file(), f"missing Dockerfile for {item['service']}")
@@ -146,7 +150,7 @@ class LegacyCiContractTests(unittest.TestCase):
                                 self.assertEqual(condition, "vars.LEGACY_DEPLOY_ENABLED == 'true'")
                             permissions = job.get("permissions", workflow.get("permissions", {}))
                             self.assertEqual(permissions.get("id-token"), "write")
-                            self.assertEqual(job.get("uses"), PINNED_WORKFLOW)
+                            self.assertIn(job.get("uses"), PINNED_WORKFLOWS)
                             inputs = job.get("with", {})
                             self.assertEqual(inputs.get("context"), ".")
                             self.assertRegex(
