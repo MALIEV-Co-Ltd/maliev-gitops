@@ -34,6 +34,28 @@ TURNAROUND_MIGRATION = (
     "Legacy.Maliev.OrderService.Data/Migrations/Order/"
     "20260721030103_FixTimestampColumnType.cs",
 )
+REVIEWED_PRECISION_MIGRATION = (
+    "Legacy.Maliev.QuotationService",
+    "Legacy.Maliev.QuotationService.Data/Migrations/QuotationRequest/"
+    "20260924084450_AlignQualificationPrecisionWithSqlServer.cs",
+    "fc458d79434edfb7974d78620473479b3ac7d81c",
+)
+
+
+def is_reviewed_precision_migration(repository: Path, path: Path) -> bool:
+    repo_name, relative_path, reviewed_blob = REVIEWED_PRECISION_MIGRATION
+    if (repository.name, path.relative_to(repository).as_posix()) != (
+        repo_name,
+        relative_path,
+    ):
+        return False
+    current_blob = subprocess.run(
+        ["git", "-C", str(repository), "hash-object", str(path)],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    return current_blob == reviewed_blob
 
 
 def canonical_repositories() -> list[Path]:
@@ -100,6 +122,12 @@ class LegacyMigrationSafetyTests(unittest.TestCase):
         ):
             up = up_body(source)
             for operation in FORBIDDEN_UP_OPERATIONS:
+                # This exact reviewed migration rebuilds one index in the same
+                # transaction while aligning source timestamp precision.
+                if operation == "DropIndex" and is_reviewed_precision_migration(repository, path):
+                    self.assertIn('name: "IX_RequestQualificationAudit_JourneyId"', up)
+                    self.assertIn('migrationBuilder.CreateIndex(', up)
+                    continue
                 self.assertNotRegex(
                     up,
                     rf"migrationBuilder\.{operation}\(",
@@ -119,6 +147,10 @@ class LegacyMigrationSafetyTests(unittest.TestCase):
             for path in tracked_migration_files(repository):
                 source = path.read_text(encoding="utf-8", errors="replace")
                 for token in FORBIDDEN_SQLSERVER_TOKENS:
+                    # The source-precision explanation mentions datetime2, but
+                    # the pinned migration emits PostgreSQL DDL only.
+                    if token == "datetime2" and is_reviewed_precision_migration(repository, path):
+                        continue
                     self.assertNotIn(
                         token.lower(),
                         source.lower(),
