@@ -58,6 +58,11 @@ spec:
         connectionLimit: 4
         passwordSecret:
           name: legacy-postgres-auth
+      - name: legacy_contact_request_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-contact-request
       - name: legacy_country_owner
         login: true
         connectionLimit: 4
@@ -108,6 +113,11 @@ spec:
         connectionLimit: 4
         passwordSecret:
           name: legacy-postgres-job-offers
+      - name: legacy_location_data_owner
+        login: true
+        connectionLimit: 4
+        passwordSecret:
+          name: legacy-postgres-location-data
       - name: legacy_material_owner
         login: true
         connectionLimit: 4
