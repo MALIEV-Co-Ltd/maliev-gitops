@@ -16,6 +16,7 @@
   "serviceDefaultsProject": "Legacy.Maliev.ServiceDefaults/src/Legacy.Maliev.ServiceDefaults/Legacy.Maliev.ServiceDefaults.csproj",
   "databases": {
     "Auth": { "owner": "legacy_auth_refresh", "binding": "Legacy.Maliev.AuthService" },
+    "ContactRequest": { "owner": "legacy_contact_request_owner", "binding": null },
     "Country": { "owner": "legacy_country_owner", "binding": "Legacy.Maliev.CountryService" },
     "Currency": { "owner": "legacy_currency_owner", "binding": null },
     "Customer": { "owner": "legacy_customer_owner", "binding": "Legacy.Maliev.CustomerService" },
@@ -26,6 +27,7 @@
     "EmployeeIdentity": { "owner": "legacy_employee_identity_owner", "binding": "Legacy.Maliev.AuthService" },
     "Invoice": { "owner": "legacy_invoice_owner", "binding": "Legacy.Maliev.AccountingService" },
     "JobOffers": { "owner": "legacy_job_offers_owner", "binding": "Legacy.Maliev.CareerService" },
+    "LocationData": { "owner": "legacy_location_data_owner", "binding": null },
     "Material": { "owner": "legacy_material_owner", "binding": "Legacy.Maliev.CatalogService" },
     "Message": { "owner": "legacy_message_owner", "binding": "Legacy.Maliev.ContactService" },
     "Order": { "owner": "legacy_order_owner", "binding": "Legacy.Maliev.OrderService" },
@@ -143,9 +145,11 @@
     "Legacy.Maliev.Workflows"
   ],
   "sourceOnlyDatabases": {
+    "ContactRequest": "Retained source database; current ContactService runtime binds its request context to Message and has no reviewed data-merge parity receipt.",
     "Currency": "Retained source database; Catalog currently reads the Currency table from its Material database context and no merge parity receipt exists.",
     "DataProtectionKeys": "Retained source database; runtime key ring is Redis-backed.",
-    "DataProtectionKeysEmployee": "Retained source database; runtime key ring is Redis-backed."
+    "DataProtectionKeysEmployee": "Retained source database; runtime key ring is Redis-backed.",
+    "LocationData": "Retained source database; no runtime binding or reviewed data-merge parity receipt exists."
   },
   "activeGitOpsInfrastructureResources": [
     "_legacy-redis"
